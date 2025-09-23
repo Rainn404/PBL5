@@ -93,3 +93,100 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+// FAQ Accordion
+document.addEventListener('DOMContentLoaded', function() {
+    // FAQ functionality
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        question.addEventListener('click', () => {
+            item.classList.toggle('active');
+        });
+    });
+
+    // Password toggle
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.querySelector('i').classList.toggle('fa-eye');
+            this.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+    }
+
+    // Prestasi filter functionality
+    const tahunFilter = document.getElementById('tahun-filter');
+    const tingkatFilter = document.getElementById('tingkat-filter');
+    const kategoriFilter = document.getElementById('kategori-filter');
+    const searchPrestasi = document.getElementById('search-prestasi');
+    const prestasiCards = document.querySelectorAll('.prestasi-card-large');
+
+    function filterPrestasi() {
+        const tahunValue = tahunFilter?.value || 'all';
+        const tingkatValue = tingkatFilter?.value || 'all';
+        const kategoriValue = kategoriFilter?.value || 'all';
+        const searchValue = searchPrestasi?.value.toLowerCase() || '';
+
+        prestasiCards.forEach(card => {
+            const cardTahun = card.getAttribute('data-tahun');
+            const cardTingkat = card.getAttribute('data-tingkat');
+            const cardKategori = card.getAttribute('data-kategori');
+            const cardText = card.textContent.toLowerCase();
+
+            const tahunMatch = tahunValue === 'all' || cardTahun === tahunValue;
+            const tingkatMatch = tingkatValue === 'all' || cardTingkat === tingkatValue;
+            const kategoriMatch = kategoriValue === 'all' || cardKategori === kategoriValue;
+            const searchMatch = cardText.includes(searchValue);
+
+            if (tahunMatch && tingkatMatch && kategoriMatch && searchMatch) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    if (tahunFilter) tahunFilter.addEventListener('change', filterPrestasi);
+    if (tingkatFilter) tingkatFilter.addEventListener('change', filterPrestasi);
+    if (kategoriFilter) kategoriFilter.addEventListener('change', filterPrestasi);
+    if (searchPrestasi) searchPrestasi.addEventListener('input', filterPrestasi);
+
+    // Form submission
+    const pendaftaranForm = document.getElementById('pendaftaranForm');
+    if (pendaftaranForm) {
+        pendaftaranForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Here you would typically send the form data to the server
+            alert('Formulir pendaftaran berhasil dikirim! Kami akan menghubungi Anda melalui email.');
+            this.reset();
+        });
+    }
+
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Here you would typically send the login data to the server
+            alert('Login berhasil! Mengarahkan ke dashboard...');
+        });
+    }
+
+    // Load more prestasi
+    const loadMoreBtn = document.getElementById('loadMorePrestasi');
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', function() {
+            // Simulate loading more content
+            this.textContent = 'Memuat...';
+            this.disabled = true;
+            
+            setTimeout(() => {
+                this.textContent = 'Muat Lebih Banyak';
+                this.disabled = false;
+                alert('Fitur ini akan menampilkan lebih banyak prestasi ketika diintegrasikan dengan database.');
+            }, 1000);
+        });
+    }
+});
