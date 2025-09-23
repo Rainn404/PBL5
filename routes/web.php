@@ -32,3 +32,7 @@ Route::get('/login', function () {
     return view('auth.login');
 });
 
+Route::get('/index', function () {
+    return view('index');
+});
+
