@@ -4,12 +4,31 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\PendaftaranController;
 
-// Halaman awal
-Route::get('/', function () {
-    return view('welcome'); 
+Route::get('home/', function () {
+    return view('home');
 });
 
-// Route pendaftaran
-Route::get('/index', [IndexController::class, 'index']);
-Route::get('/pendaftaran', [PendaftaranController::class, 'index'])->name('pendaftaran.index');
-Route::post('/pendaftaran', [PendaftaranController::class, 'store'])->name('pendaftaran.store');
+Route::get('/divisi', function () {
+    return view('divisi');
+});
+
+Route::get('/anggota', function () {
+    return view('anggota');
+});
+
+Route::get('/berita', function () {
+    return view('berita');
+});
+
+Route::get('/pendaftaran', function () {
+    return view('pendaftaran');
+});
+
+Route::get('/prestasi', function () {
+    return view('prestasi');
+});
+
+Route::get('/login', function () {
+    return view('auth.login');
+});
+
