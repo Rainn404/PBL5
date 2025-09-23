@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PrestasiController;
+use App\Http\Controllers\IndexController;
+use App\Http\Controllers\PendaftaranController;
+
 
 Route::get('/home', function () {
     return view('home');
@@ -32,6 +35,7 @@ Route::get('/login', function () {
 });
 
 
+
 // Prestasi Routes
 Route::get('/prestasi', [PrestasiController::class, 'index'])->name('prestasi.index');
 Route::get('/prestasi/create', [PrestasiController::class, 'create'])->name('prestasi.create')->middleware('auth');
@@ -43,3 +47,9 @@ Route::delete('/prestasi/{id}', [PrestasiController::class, 'destroy'])->name('p
 Route::post('/prestasi/{id}/validate', [PrestasiController::class, 'validatePrestasi'])->name('prestasi.validate')->middleware('auth');
 Route::post('/prestasi/{id}/reject', [PrestasiController::class, 'rejectPrestasi'])->name('prestasi.reject')->middleware('auth');
 Route::get('/prestasi/validasi', [PrestasiController::class, 'validasiIndex'])->name('prestasi.validasi')->middleware('auth');
+
+Route::get('/index', function () {
+    return view('index');
+});
+
+
