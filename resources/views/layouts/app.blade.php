@@ -20,7 +20,7 @@
                 </a>
             </div>
             <div class="nav-menu" id="navMenu">
-                <a href="{{ url('/') }}" class="nav-link">Home</a>
+                <a href="{{ url('/home') }}" class="nav-link">Home</a>
                 <a href="{{ url('/divisi') }}" class="nav-link">Divisi</a>
                 <a href="{{ url('/anggota') }}" class="nav-link">Profil Anggota</a>
                 <a href="{{ url('/berita') }}" class="nav-link">Berita</a>
@@ -57,7 +57,7 @@
             <div class="footer-section">
                 <h3>Menu Cepat</h3>
                 <ul>
-                    <li><a href="{{ url('/') }}">Home</a></li>
+                    <li><a href="{{ url('/home') }}">Home</a></li>
                     <li><a href="{{ url('/divisi') }}">Divisi</a></li>
                     <li><a href="{{ url('/anggota') }}">Profil Anggota</a></li>
                     <li><a href="{{ url('/berita') }}">Berita</a></li>

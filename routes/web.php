@@ -32,8 +32,7 @@ Route::get('/prestasi', function () {
 
 Route::get('/login', function () {
     return view('auth.login');
-});
-
+})->name('login');
 
 
 // Prestasi Routes
