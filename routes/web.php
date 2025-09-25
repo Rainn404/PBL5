@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PrestasiController;
 use App\Http\Controllers\IndexController;
-use App\Http\Controllers\PendaftaranController;
+use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\DivisiController;
 
 
 Route::get('/home', function () {
@@ -238,7 +238,7 @@ Route::redirect('/', '/admin/dashboard');
 
 
 
-
+use App\Http\Controllers\PrestasiController;
 
 // Prestasi Routes
 Route::get('/prestasi', [PrestasiController::class, 'index'])->name('prestasi.index');
@@ -256,4 +256,114 @@ Route::get('/index', function () {
     return view('index');
 });
 
+
+
+
+use App\Http\Controllers\AnggotaController;
+use App\Http\Controllers\DashboardController;
+
+
+// Route untuk admin
+Route::prefix('admin')->name('admin.')->group(function () {
+    
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Anggota Management
+    Route::get('/anggota', [AnggotaController::class, 'index'])->name('anggota.index');
+    Route::post('/anggota', [AnggotaController::class, 'store'])->name('anggota.store');
+    Route::put('/anggota/{id}', [AnggotaController::class, 'update'])->name('anggota.update');
+    Route::delete('/anggota/{id}', [AnggotaController::class, 'destroy'])->name('anggota.destroy');
+    
+    // Divisi Management
+    Route::get('/divisi', [DivisiController::class, 'index'])->name('divisi.index');
+    Route::post('/divisi', [DivisiController::class, 'store'])->name('divisi.store');
+    Route::put('/divisi/{id}', [DivisiController::class, 'update'])->name('divisi.update');
+    Route::delete('/divisi/{id}', [DivisiController::class, 'destroy'])->name('divisi.destroy');
+    
+});
+
+// Redirect root to admin dashboard
+Route::redirect('/', '/admin/dashboard');
+
+// Fallback route
+Route::fallback(function () {
+    return redirect('/admin/dashboard');
+});
+
+
+
+use App\Http\Controllers\PendaftaranController;
+use App\Http\Controllers\MahasiswaBermasalahController;
+use App\Http\Controllers\PelanggaranSanksiController;
+
+
+// Route untuk admin
+Route::prefix('admin')->name('admin.')->group(function () {
+    
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Anggota Management
+    Route::get('/anggota', [AnggotaController::class, 'index'])->name('anggota.index');
+    Route::post('/anggota', [AnggotaController::class, 'store'])->name('anggota.store');
+    Route::put('/anggota/{id}', [AnggotaController::class, 'update'])->name('anggota.update');
+    Route::delete('/anggota/{id}', [AnggotaController::class, 'destroy'])->name('anggota.destroy');
+    
+    // Divisi Management
+    Route::get('/divisi', [DivisiController::class, 'index'])->name('divisi.index');
+    Route::post('/divisi', [DivisiController::class, 'store'])->name('divisi.store');
+    Route::put('/divisi/{id}', [DivisiController::class, 'update'])->name('divisi.update');
+    Route::delete('/divisi/{id}', [DivisiController::class, 'destroy'])->name('divisi.destroy');
+    
+    // Prestasi Management
+    Route::get('admin/prestasi', [PrestasiController::class, 'index'])->name('prestasi.index');
+    Route::post('admin/prestasi', [PrestasiController::class, 'store'])->name('prestasi.store');
+    Route::put('admin/prestasi/{id}', [PrestasiController::class, 'update'])->name('prestasi.update');
+    Route::delete('admin/prestasi/{id}', [PrestasiController::class, 'destroy'])->name('prestasi.destroy');
+    
+    // Mahasiswa Bermasalah Management
+    
+    Route::resource('mahasiswa-bermasalah', MahasiswaBermasalahController::class);
+    Route::resource('pelanggaran-sanksi', PelanggaranSanksiController::class);
+});
+
+
+
+// Redirect root to admin dashboard
+Route::redirect('/', '/admin/dashboard');
+
+// Fallback route
+Route::fallback(function () {
+    return redirect('/admin/dashboard');
+});
+
+//berita cuy
+
+
+Route::prefix('admin')->group(function () {
+    Route::get('/berita', [BeritaController::class, 'index'])->name('berita.index');
+    Route::post('/berita', [BeritaController::class, 'store'])->name('berita.store');
+    Route::put('/berita/{id}', [BeritaController::class, 'update'])->name('berita.update');
+    Route::delete('/berita/{id}', [BeritaController::class, 'destroy'])->name('berita.destroy');
+});
+
+Route::prefix('admin')->group(function () {
+    Route::get('/pendaftaran', [PendaftaranController::class, 'index'])->name('pendaftaran.index');
+    Route::put('/pendaftaran/{id}', [PendaftaranController::class, 'update'])->name('pendaftaran.update');
+    Route::delete('/pendaftaran/{id}', [PendaftaranController::class, 'destroy'])->name('pendaftaran.destroy');
+});
+
+
+
+Route::prefix('admin')->group(function () {
+    // Route untuk menyimpan pelanggaran dan sanksi baru
+    Route::post('/pelanggaran-sanksi', [MahasiswaBermasalahController::class, 'storePelanggaranSanksi'])
+        ->name('admin.pelanggaran-sanksi.store');
+        
+});
+
+Route::get('/admin/pelanggaran-sanksi', function() {
+    return view('admin.pelanggaran-sanksi');
+})->name('admin.pelanggaran-sanksi.form');
 

@@ -9,7 +9,7 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <h1>HIMPUNAN MAHASISWA TEKNIK INFORMATIKA</h1>
+            <h1>HIMPUNAN MAHASISWA TEKNOLOGI INFORMASI</h1>
             <p>Wadah pengembangan potensi mahasiswa Teknik Informatika dalam bidang teknologi, kepemimpinan, dan sosial.</p>
             <div class="hero-buttons">
                 <a href="{{ url('/pendaftaran') }}" class="btn btn-primary">Daftar Sekarang</a>
