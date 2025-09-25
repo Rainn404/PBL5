@@ -26,34 +26,15 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
-    // Relasi ke prestasi
-    public function prestasi()
+    // Relasi dengan pendaftaran
+    public function pendaftaran()
     {
-        return $this->hasMany(Prestasi::class, 'id_user');
+        return $this->hasMany(Pendaftaran::class, 'id_user');
     }
 
-   
-   
-
-    // Check if user is admin
-    public function isAdmin()
+    // Relasi sebagai validator
+    public function validasiPendaftaran()
     {
-        return $this->role === 'admin';
-    }
-
-    // Check if user is anggota
-    public function isAnggota()
-    {
-        return $this->role === 'anggota';
-    }
-
-    // Check if user is freeuser
-    public function isFreeUser()
-    {
-        return $this->role === 'freeuser';
+        return $this->hasMany(Pendaftaran::class, 'divalidasi_oleh');
     }
 }

@@ -9,24 +9,19 @@
             <h1 class="h3 fw-bold gradient-text mb-1">Kelola Pendaftaran</h1>
             <p class="text-muted">Validasi dan kelola pendaftaran anggota baru</p>
         </div>
-        <div>
-            <a href="{{ route('admin.pendaftaran.create') }}" class="btn btn-primary me-2">
-                <i class="fas fa-plus me-2"></i>Tambah Pendaftaran
-            </a>
-            <div class="btn-group">
-                <button class="btn btn-outline-primary active" onclick="filterPendaftaran('all')">
-                    Semua <span class="badge bg-primary ms-1">{{ count($pendaftaran) }}</span>
-                </button>
-                <button class="btn btn-outline-warning" onclick="filterPendaftaran('pending')">
-                    Pending <span class="badge bg-warning ms-1">{{ $pendaftaran->where('status_pendaftaran', 'pending')->count() }}</span>
-                </button>
-                <button class="btn btn-outline-success" onclick="filterPendaftaran('diterima')">
-                    Diterima <span class="badge bg-success ms-1">{{ $pendaftaran->where('status_pendaftaran', 'diterima')->count() }}</span>
-                </button>
-                <button class="btn btn-outline-danger" onclick="filterPendaftaran('ditolak')">
-                    Ditolak <span class="badge bg-danger ms-1">{{ $pendaftaran->where('status_pendaftaran', 'ditolak')->count() }}</span>
-                </button>
-            </div>
+        <div class="btn-group">
+            <button class="btn btn-outline-primary active" onclick="filterPendaftaran('all')">
+                Semua <span class="badge bg-primary ms-1">{{ count($pendaftaran) }}</span>
+            </button>
+            <button class="btn btn-outline-warning" onclick="filterPendaftaran('pending')">
+                Pending <span class="badge bg-warning ms-1">{{ $pendaftaran->where('status_pendaftaran', 'pending')->count() }}</span>
+            </button>
+            <button class="btn btn-outline-success" onclick="filterPendaftaran('diterima')">
+                Diterima <span class="badge bg-success ms-1">{{ $pendaftaran->where('status_pendaftaran', 'diterima')->count() }}</span>
+            </button>
+            <button class="btn btn-outline-danger" onclick="filterPendaftaran('ditolak')">
+                Ditolak <span class="badge bg-danger ms-1">{{ $pendaftaran->where('status_pendaftaran', 'ditolak')->count() }}</span>
+            </button>
         </div>
     </div>
 
@@ -59,12 +54,12 @@
                             <th>Alasan Mendaftar</th>
                             <th>Dokumen</th>
                             <th>Status</th>
-                            <th width="180">Aksi</th>
+                            <th width="150">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($pendaftaran as $index => $item)
-                        <tr data-status="{{ $item->status_pendaftaran }}">
+                        <tr data-status="{{ $item['status_pendaftaran'] }}">
                             <td>{{ $index + 1 }}</td>
                             <td>
                                 <div class="d-flex align-items-center">
@@ -73,30 +68,30 @@
                                         <i class="fas fa-user text-white"></i>
                                     </div>
                                     <div>
-                                        <strong>{{ $item->nama }}</strong>
+                                        <strong>{{ $item['nama'] }}</strong>
                                         <br>
-                                        <small class="text-muted">{{ $item->submitted_at->format('d M Y H:i') }}</small>
+                                        <small class="text-muted">{{ \Carbon\Carbon::parse($item['submitted_at'])->format('d M Y H:i') }}</small>
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                <code>{{ $item->nim }}</code>
+                                <code>{{ $item['nim'] }}</code>
                             </td>
                             <td>
-                                <span class="badge bg-info">Semester {{ $item->semester }}</span>
+                                <span class="badge bg-info">Semester {{ $item['semester'] }}</span>
                             </td>
                             <td>
                                 <small>
-                                    <i class="fas fa-phone me-1"></i> {{ $item->no_hp ?? '-' }}<br>
-                                    <i class="fas fa-envelope me-1"></i> {{ $item->user->email ?? '-' }}
+                                    <i class="fas fa-phone me-1"></i> {{ $item['no_hp'] ?? '-' }}<br>
+                                    <i class="fas fa-envelope me-1"></i> {{ $item['email'] ?? '-' }}
                                 </small>
                             </td>
                             <td>
-                                <span class="text-muted">{{ Str::limit($item->alasan_mendaftar, 50) }}</span>
+                                <span class="text-muted">{{ Str::limit($item['alasan_mendaftar'], 50) }}</span>
                             </td>
                             <td>
-                                @if($item->dokumen)
-                                <a href="{{ asset('storage/' . $item->dokumen) }}" 
+                                @if($item['dokumen'])
+                                <a href="{{ asset('storage/' . $item['dokumen']) }}" 
                                    target="_blank" 
                                    class="btn btn-sm btn-outline-primary"
                                    data-bs-toggle="tooltip" title="Lihat Dokumen">
@@ -108,50 +103,35 @@
                             </td>
                             <td>
                                 <span class="badge 
-                                    @if($item->status_pendaftaran == 'pending') bg-warning
-                                    @elseif($item->status_pendaftaran == 'diterima') bg-success
+                                    @if($item['status_pendaftaran'] == 'pending') bg-warning
+                                    @elseif($item['status_pendaftaran'] == 'diterima') bg-success
                                     @else bg-danger @endif">
-                                    {{ ucfirst($item->status_pendaftaran) }}
+                                    {{ ucfirst($item['status_pendaftaran']) }}
                                 </span>
-                                @if($item->divalidasi_oleh && $item->status_pendaftaran != 'pending')
+                                @if($item['divalidasi_oleh'] && $item['status_pendaftaran'] != 'pending')
                                 <br>
-                                <small class="text-muted">Oleh: {{ $item->validator->nama ?? 'Admin' }}</small>
+                                <small class="text-muted">Oleh: {{ $item['validator'] ?? 'Admin' }}</small>
                                 @endif
                             </td>
                             <td>
                                 <div class="btn-group">
-                                    <a href="{{ route('admin.pendaftaran.show', $item->id_pendaftaran) }}" 
-                                       class="btn btn-sm btn-outline-info"
-                                       data-bs-toggle="tooltip" title="Detail">
+                                    <button class="btn btn-sm btn-outline-info" 
+                                            onclick="viewDetail({{ $item['id_pendaftaran'] }})"
+                                            data-bs-toggle="tooltip" title="Detail">
                                         <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="{{ route('admin.pendaftaran.edit', $item->id_pendaftaran) }}" 
-                                       class="btn btn-sm btn-outline-warning"
-                                       data-bs-toggle="tooltip" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    @if($item->status_pendaftaran == 'pending')
+                                    </button>
+                                    @if($item['status_pendaftaran'] == 'pending')
                                     <button class="btn btn-sm btn-outline-success" 
-                                            onclick="updateStatus({{ $item->id_pendaftaran }}, 'diterima')"
+                                            onclick="updateStatus({{ $item['id_pendaftaran'] }}, 'diterima')"
                                             data-bs-toggle="tooltip" title="Terima">
                                         <i class="fas fa-check"></i>
                                     </button>
                                     <button class="btn btn-sm btn-outline-danger" 
-                                            onclick="updateStatus({{ $item->id_pendaftaran }}, 'ditolak')"
+                                            onclick="updateStatus({{ $item['id_pendaftaran'] }}, 'ditolak')"
                                             data-bs-toggle="tooltip" title="Tolak">
                                         <i class="fas fa-times"></i>
                                     </button>
                                     @endif
-                                    <form action="{{ route('admin.pendaftaran.destroy', $item->id_pendaftaran) }}" 
-                                          method="POST" style="display: inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                onclick="return confirm('Apakah Anda yakin ingin menghapus?')"
-                                                data-bs-toggle="tooltip" title="Hapus">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -208,19 +188,19 @@
                     <div id="diterimaContent" style="display: none;">
                         <div class="mb-3">
                             <label for="id_divisi" class="form-label">Divisi *</label>
-                            <select class="form-select" id="id_divisi" name="id_divisi" required>
+                            <select class="form-select" id="id_divisi" name="id_divisi">
                                 <option value="">Pilih Divisi</option>
                                 @foreach($divisi as $div)
-                                <option value="{{ $div->id_divisi }}">{{ $div->nama }}</option>
+                                <option value="{{ $div['id_divisi'] }}">{{ $div['nama'] }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="id_jabatan" class="form-label">Jabatan *</label>
-                            <select class="form-select" id="id_jabatan" name="id_jabatan" required>
+                            <select class="form-select" id="id_jabatan" name="id_jabatan">
                                 <option value="">Pilih Jabatan</option>
                                 @foreach($jabatan as $jab)
-                                <option value="{{ $jab->id_jabatan }}">{{ $jab->nama_jabatan }}</option>
+                                <option value="{{ $jab['id_jabatan'] }}">{{ $jab['nama_jabatan'] }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -248,6 +228,9 @@
 
 @push('scripts')
 <script>
+// Data pendaftaran dari controller
+const pendaftaranData = @json($pendaftaran);
+
 function filterPendaftaran(status) {
     const rows = document.querySelectorAll('#pendaftaranTable tbody tr');
     rows.forEach(row => {
@@ -265,30 +248,89 @@ function filterPendaftaran(status) {
     event.target.classList.add('active');
 }
 
-function updateStatus(id, status) {
-    document.getElementById('pendaftaranId').value = id;
-    document.getElementById('statusValue').value = status;
-    document.getElementById('statusForm').action = "{{ url('admin/pendaftaran') }}/" + id + "/status";
-    
-    // Show/hide content based on status
-    document.getElementById('diterimaContent').style.display = status === 'diterima' ? 'block' : 'none';
-    document.getElementById('ditolakContent').style.display = status === 'ditolak' ? 'block' : 'none';
-    
-    // Update modal content
-    if (status === 'diterima') {
-        document.getElementById('statusTitle').textContent = 'Terima Pendaftaran';
-        document.getElementById('confirmationText').textContent = 'Apakah Anda yakin ingin menerima pendaftaran ini?';
-        document.getElementById('submitButton').className = 'btn btn-success';
-        document.getElementById('submitButton').textContent = 'Terima';
-    } else {
-        document.getElementById('statusTitle').textContent = 'Tolak Pendaftaran';
-        document.getElementById('confirmationText').textContent = 'Apakah Anda yakin ingin menolak pendaftaran ini?';
-        document.getElementById('submitButton').className = 'btn btn-danger';
-        document.getElementById('submitButton').textContent = 'Tolak';
+function viewDetail(id) {
+    const data = pendaftaranData.find(p => p.id_pendaftaran === id);
+    if (data) {
+        let content = `
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Data Pribadi</h6>
+                    <table class="table table-sm">
+                        <tr><td><strong>Nama</strong></td><td>${data.nama}</td></tr>
+                        <tr><td><strong>NIM</strong></td><td>${data.nim}</td></tr>
+                        <tr><td><strong>Semester</strong></td><td>Semester ${data.semester}</td></tr>
+                        <tr><td><strong>No HP</strong></td><td>${data.no_hp || '-'}</td></tr>
+                        <tr><td><strong>Email</strong></td><td>${data.email || '-'}</td></tr>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <h6>Informasi Pendaftaran</h6>
+                    <table class="table table-sm">
+                        <tr><td><strong>Tanggal Daftar</strong></td><td>${new Date(data.submitted_at).toLocaleDateString('id-ID')}</td></tr>
+                        <tr><td><strong>Status</strong></td>
+                            <td>
+                                <span class="badge ${data.status_pendaftaran === 'pending' ? 'bg-warning' : data.status_pendaftaran === 'diterima' ? 'bg-success' : 'bg-danger'}">
+                                    ${data.status_pendaftaran}
+                                </span>
+                            </td>
+                        </tr>
+                        ${data.divalidasi_oleh ? `<tr><td><strong>Divalidasi Oleh</strong></td><td>${data.validator || 'Admin'}</td></tr>` : ''}
+                    </table>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <h6>Alasan Mendaftar</h6>
+                    <div class="border rounded p-3">
+                        ${data.alasan_mendaftar.replace(/\n/g, '<br>')}
+                    </div>
+                </div>
+            </div>
+            ${data.dokumen ? `
+            <div class="row mt-3">
+                <div class="col-12">
+                    <h6>Dokumen Pendaftaran</h6>
+                    <a href="{{ asset('storage/') }}/${data.dokumen}" target="_blank" class="btn btn-outline-primary">
+                        <i class="fas fa-file-pdf me-2"></i>Lihat Dokumen
+                    </a>
+                </div>
+            </div>
+            ` : ''}
+        `;
+        
+        document.getElementById('detailContent').innerHTML = content;
+        const modal = new bootstrap.Modal(document.getElementById('detailModal'));
+        modal.show();
     }
-    
-    const modal = new bootstrap.Modal(document.getElementById('statusModal'));
-    modal.show();
+}
+
+function updateStatus(id, status) {
+    const data = pendaftaranData.find(p => p.id_pendaftaran === id);
+    if (data) {
+        document.getElementById('pendaftaranId').value = id;
+        document.getElementById('statusValue').value = status;
+        document.getElementById('statusForm').action = "{{ url('pendaftaran') }}/" + id;
+        
+        // Show/hide content based on status
+        document.getElementById('diterimaContent').style.display = status === 'diterima' ? 'block' : 'none';
+        document.getElementById('ditolakContent').style.display = status === 'ditolak' ? 'block' : 'none';
+        
+        // Update modal content
+        if (status === 'diterima') {
+            document.getElementById('statusTitle').textContent = 'Terima Pendaftaran';
+            document.getElementById('confirmationText').textContent = `Apakah Anda yakin ingin menerima pendaftaran ${data.nama}?`;
+            document.getElementById('submitButton').className = 'btn btn-success';
+            document.getElementById('submitButton').textContent = 'Terima';
+        } else {
+            document.getElementById('statusTitle').textContent = 'Tolak Pendaftaran';
+            document.getElementById('confirmationText').textContent = `Apakah Anda yakin ingin menolak pendaftaran ${data.nama}?`;
+            document.getElementById('submitButton').className = 'btn btn-danger';
+            document.getElementById('submitButton').textContent = 'Tolak';
+        }
+        
+        const modal = new bootstrap.Modal(document.getElementById('statusModal'));
+        modal.show();
+    }
 }
 
 // Reset modal ketika ditutup

@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends('layouts.app_admin')
 
 @section('title', 'Kelola Anggota - HIMA Sistem Manajemen')
 
@@ -139,7 +139,7 @@
                 <h5 class="modal-title" id="modalTitle">Tambah Anggota</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form id="anggotaForm" method="POST">
+            <form id="anggotaForm" method="POST" action="{{ route('admin.anggota.store') }}">
                 @csrf
                 <div class="modal-body">
                     <input type="hidden" id="anggotaId" name="id">
@@ -215,6 +215,18 @@ function editAnggota(id) {
         document.getElementById('alamat').value = anggota.alamat;
         document.getElementById('status').value = anggota.status;
         
+        // Update form action untuk update
+        document.getElementById('anggotaForm').action = "{{ url('admin/anggota') }}/" + id;
+        document.getElementById('anggotaForm').method = "POST";
+        // Tambahkan method spoofing untuk PUT
+        if (!document.querySelector('input[name="_method"]')) {
+            const methodInput = document.createElement('input');
+            methodInput.type = 'hidden';
+            methodInput.name = '_method';
+            methodInput.value = 'PUT';
+            document.getElementById('anggotaForm').appendChild(methodInput);
+        }
+        
         const modal = new bootstrap.Modal(document.getElementById('anggotaModal'));
         modal.show();
     }
@@ -222,8 +234,25 @@ function editAnggota(id) {
 
 function confirmDelete(id) {
     if (confirm('Apakah Anda yakin ingin menghapus anggota ini?')) {
-        // Submit form delete (akan diimplementasikan nanti)
-        alert('Fungsi delete akan diimplementasikan dengan form submission');
+        // Create delete form
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = "{{ url('admin/anggota') }}/" + id;
+        
+        const csrf = document.createElement('input');
+        csrf.type = 'hidden';
+        csrf.name = '_token';
+        csrf.value = "{{ csrf_token() }}";
+        
+        const method = document.createElement('input');
+        method.type = 'hidden';
+        method.name = '_method';
+        method.value = 'DELETE';
+        
+        form.appendChild(csrf);
+        form.appendChild(method);
+        document.body.appendChild(form);
+        form.submit();
     }
 }
 
@@ -271,6 +300,14 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('anggotaForm').reset();
         document.getElementById('modalTitle').textContent = 'Tambah Anggota';
         document.getElementById('anggotaId').value = '';
+        document.getElementById('anggotaForm').action = "{{ route('admin.anggota.store') }}";
+        document.getElementById('anggotaForm').method = "POST";
+        
+        // Hapus method spoofing jika ada
+        const methodInput = document.querySelector('input[name="_method"]');
+        if (methodInput) {
+            methodInput.remove();
+        }
     });
 
     // Tooltip initialization
