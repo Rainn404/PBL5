@@ -361,8 +361,6 @@ Route::get('/admin/pelanggaran-sanksi', function() {
 
 
 
-// Admin Routes
-
 
 
 // Routes untuk Pendaftaran
@@ -375,6 +373,10 @@ Route::prefix('admin')->group(function () {
     Route::put('/pendaftaran/{id}', [PendaftaranController::class, 'update'])->name('admin.pendaftaran.update');
     Route::put('/pendaftaran/{id}/status', [PendaftaranController::class, 'updateStatus'])->name('admin.pendaftaran.updateStatus');
     Route::delete('/pendaftaran/{id}', [PendaftaranController::class, 'destroy'])->name('admin.pendaftaran.destroy');
+    Route::post('/pendaftaran', [PendaftaranController::class, 'store'])
+    ->middleware('auth')
+    ->name('admin.pendaftaran.store');
+
 });
 
 // Route untuk test

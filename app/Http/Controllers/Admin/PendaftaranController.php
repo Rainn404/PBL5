@@ -42,6 +42,10 @@ class PendaftaranController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->check()) {
+    return redirect()->back()->with('error', 'Silakan login terlebih dahulu!');
+}
+
         try {
             $request->validate([
                 'nim' => 'required|unique:pendaftaran,nim',
@@ -53,7 +57,8 @@ class PendaftaranController extends Controller
             ]);
 
             $data = $request->all();
-            $data['id_user'] = auth()->id();
+            $data['id_user'] = auth()->guard('admin')->id();
+
             $data['status_pendaftaran'] = 'pending';
 
             // Handle file upload
