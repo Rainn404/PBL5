@@ -180,13 +180,32 @@ Route::delete('/berita/{id}/komentar/{komentar}', [\App\Http\Controllers\BeritaC
 
 use Illuminate\Support\Facades\Auth;
 
-/* =========================
-   GLOBAL LOGOUT ROUTE (untuk semua user)
-   ========================= */
 Route::post('/logout', function () {
     Auth::logout();
     request()->session()->invalidate();
     request()->session()->regenerateToken();
     return redirect('/login')->with('success', 'Berhasil logout.');
 })->name('logout');
+
+// Admin Berita - tambahkan route show yang hilang
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/berita/{id}', [App\Http\Controllers\BeritaController::class, 'adminShow'])
+        ->name('berita.show'); // FIXED: untuk error Route [admin.berita.show] not defined
+});
+
+// Route publik untuk berita (tampilan umum)
+Route::get('/berita', [App\Http\Controllers\BeritaController::class, 'publicIndex'])
+    ->name('berita.index');
+Route::get('/berita-lainnya', [App\Http\Controllers\BeritaController::class, 'lainnya'])
+    ->name('berita.lainnya');
+Route::get('/berita/{id}', [App\Http\Controllers\BeritaController::class, 'publicShow'])
+    ->name('berita.show');
+
+// Komentar publik pada berita
+Route::post('/berita/{id}/komentar', [App\Http\Controllers\BeritaController::class, 'publicCommentStore'])
+    ->name('berita.komentar.store');
+Route::put('/berita/{id}/komentar/{komentar}', [App\Http\Controllers\BeritaController::class, 'publicCommentUpdate'])
+    ->name('berita.komentar.update');
+Route::delete('/berita/{id}/komentar/{komentar}', [App\Http\Controllers\BeritaController::class, 'publicCommentDestroy'])
+    ->name('berita.komentar.destroy');
 
