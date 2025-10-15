@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <h1 class="mb-4">Manajemen Berita</h1>
 
-    {{-- Alert notifikasi --}}
+    {{-- ✅ Alert notifikasi --}}
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
@@ -20,14 +20,14 @@
         </div>
     @endif
 
-    {{-- Tombol tambah berita --}}
+    {{-- ✅ Tombol tambah berita --}}
     <div class="mb-3">
         <a href="{{ route('admin.berita.create') }}" class="btn btn-primary">
             <i class="fas fa-plus me-2"></i> Tambah Berita
         </a>
     </div>
 
-    {{-- Tabel daftar berita --}}
+    {{-- ✅ Daftar berita --}}
     <div class="card shadow-sm">
         <div class="card-header bg-light fw-semibold">Daftar Berita</div>
         <div class="card-body p-0">
@@ -71,17 +71,17 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="{{ route('admin.berita.show', $row->Id_berita) }}"
+                                    <a href="{{ route('admin.berita.show', $row->Id_berita ?? $row->id) }}"
                                        class="btn btn-sm btn-info text-white">
                                         <i class="fas fa-eye"></i> Lihat
                                     </a>
 
-                                    <a href="{{ route('admin.berita.edit', $row->Id_berita) }}"
+                                    <a href="{{ route('admin.berita.edit', $row->Id_berita ?? $row->id) }}"
                                        class="btn btn-sm btn-warning text-white">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>
 
-                                    <form action="{{ route('admin.berita.destroy', $row->Id_berita) }}"
+                                    <form action="{{ route('admin.berita.destroy', $row->Id_berita ?? $row->id) }}"
                                           method="POST"
                                           class="d-inline"
                                           onsubmit="return confirm('Yakin hapus berita ini?')">

@@ -52,7 +52,7 @@ class BeritaController extends Controller
         return view('admin.berita.show', compact('berita'));
     }
 
-    /* Tambahan khusus untuk tombol "Lihat" di admin (tidak ke halaman publik) */
+    // Tambahan khusus tombol “Lihat” di admin (tidak ke halaman publik)
     public function adminShow($id)
     {
         $berita = Berita::findOrFail($id);

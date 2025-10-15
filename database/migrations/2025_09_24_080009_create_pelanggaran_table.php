@@ -8,20 +8,27 @@ return new class extends Migration
 {
     public function up()
     {
+        // Buat tabel pelanggaran
         Schema::create('pelanggaran', function (Blueprint $table) {
             $table->id('id_masalah');
             $table->string('nama', 150);
             $table->text('deskripsi')->nullable();
-            $table->timestamps();
+            $table->timestamps(); // Menambahkan kolom created_at & updated_at
         });
 
-        // Insert data default
+        // Buat tabel sanksi dengan relasi ke pelanggaran
         Schema::create('sanksi', function (Blueprint $table) {
             $table->id('id_sanksi');
-            $table->foreignId('id_masalah')->constrained('pelanggaran', 'id_masalah')->onDelete('cascade');
+            $table->unsignedBigInteger('id_masalah'); // Foreign key manual
             $table->string('nama_sanksi', 150);
             $table->text('deskripsi')->nullable();
             $table->timestamps();
+
+            // Definisi foreign key
+            $table->foreign('id_masalah')
+                  ->references('id_masalah')
+                  ->on('pelanggaran')
+                  ->onDelete('cascade');
         });
     }
 
