@@ -10,9 +10,21 @@ return new class extends Migration
     {
         Schema::create('anggota_hima', function (Blueprint $table) {
             $table->id('id_anggota_hima');
-            $table->foreignId('id_user')->constrained('users', 'id_user')->onDelete('cascade');
-            $table->foreignId('id_divisi')->nullable()->constrained('divisi', 'id_divisi')->onDelete('set null');
-            $table->foreignId('id_jabatan')->nullable()->constrained('jabatan', 'id_jabatan')->onDelete('set null');
+
+        
+            $table->foreignId('id_user')
+                ->constrained('users', 'id')
+                ->onDelete('cascade');
+
+            // biarkan yang lain, ini sudah benar
+            $table->foreignId('id_divisi')->nullable()
+                ->constrained('divisi', 'id_divisi')
+                ->onDelete('set null');
+
+            $table->foreignId('id_jabatan')->nullable()
+                ->constrained('jabatan', 'id_jabatan')
+                ->onDelete('set null');
+
             $table->string('nim', 30)->unique();
             $table->string('nama', 150);
             $table->tinyInteger('semester')->nullable();

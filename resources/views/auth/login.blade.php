@@ -333,68 +333,47 @@
             color: var(--success);
         }
 
-        .support-section {
-            margin-top: 50px;
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
         }
 
-        .support-section h2 {
-            text-align: center;
-            margin-bottom: 10px;
-            color: var(--dark);
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
         }
 
-        .support-section p {
-            text-align: center;
-            color: var(--gray);
-            margin-bottom: 30px;
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
         }
 
-        .support-options {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .support-option {
-            flex: 1;
-            min-width: 200px;
-            text-align: center;
+        .demo-accounts {
+            background: var(--light);
             padding: 20px;
             border-radius: 10px;
-            background: var(--light);
-            transition: all 0.3s;
+            margin-top: 20px;
         }
 
-        .support-option:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .support-option i {
-            font-size: 30px;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .support-option h4 {
+        .demo-accounts h4 {
             margin-bottom: 10px;
             color: var(--dark);
         }
 
-        .support-option p {
-            font-weight: 600;
-            color: var(--dark);
+        .demo-account {
+            display: flex;
+            justify-content: space-between;
             margin-bottom: 5px;
+            font-size: 14px;
         }
 
-        .support-option span {
-            font-size: 12px;
-            color: var(--gray);
+        .demo-account .role {
+            font-weight: 600;
+            color: var(--primary);
         }
 
         /* Responsive Design */
@@ -414,10 +393,6 @@
             }
             
             .social-login {
-                flex-direction: column;
-            }
-            
-            .support-options {
                 flex-direction: column;
             }
         }
@@ -471,10 +446,26 @@
             <h1>Masuk ke Akun Anda</h1>
             <p class="subtitle">Akses dashboard dan fitur eksklusif untuk anggota HIMA-TI</p>
             
-            <form class="login-form" id="loginForm">
+            <!-- Error Messages -->
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    {{ $errors->first() }}
+                </div>
+            @endif
+
+            @if(session('success'))
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i>
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            <form class="login-form" method="POST" action="{{ route('login') }}">
+                @csrf
                 <div class="form-group">
-                    <label for="email">Email atau NIM</label>
-                    <input type="text" id="email" name="email" placeholder="email@example.com atau NIM" required>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="email@example.com" required autofocus>
                     <i class="fas fa-envelope input-icon"></i>
                 </div>
 
@@ -499,18 +490,23 @@
                 <button type="submit" class="btn btn-primary">Masuk</button>
 
                 <div class="login-divider">
-                    <span>atau masuk dengan</span>
+                    <span>Akun Demo</span>
                 </div>
 
-                <div class="social-login">
-                    <button type="button" class="btn btn-google" id="googleLogin">
-                        <i class="fab fa-google"></i>
-                        Google
-                    </button>
-                    <button type="button" class="btn btn-microsoft">
-                        <i class="fab fa-microsoft"></i>
-                        Microsoft
-                    </button>
+                <div class="demo-accounts">
+                    <h4>Gunakan akun demo berikut:</h4>
+                    <div class="demo-account">
+                        <span class="role">Super Admin:</span>
+                        <span>superadmin@hima.com / password123</span>
+                    </div>
+                    <div class="demo-account">
+                        <span class="role">Admin:</span>
+                        <span>admin@hima.com / password123</span>
+                    </div>
+                    <div class="demo-account">
+                        <span class="role">Mahasiswa:</span>
+                        <span>ahmad@hima.com / password123</span>
+                    </div>
                 </div>
             </form>
         </div>
@@ -523,7 +519,7 @@
                     </div>
                     <h3>Anggota HIMA-TI</h3>
                     <p>Login untuk mengakses dashboard anggota, mengajukan prestasi, dan berpartisipasi dalam kegiatan</p>
-                    <a href="#" class="btn-outline">Daftar Menjadi Anggota</a>
+                    <a href="{{ route('pendaftaran.create') }}" class="btn-outline">Daftar Menjadi Anggota</a>
                 </div>
 
                 <div class="info-card">
@@ -548,31 +544,6 @@
         </div>
     </div>
 
-    <div class="support-section">
-        <h2>Butuh Bantuan Login?</h2>
-        <p>Hubungi tim support kami untuk masalah teknis atau pertanyaan seputar akun</p>
-        <div class="support-options">
-            <div class="support-option">
-                <i class="fas fa-envelope"></i>
-                <h4>Email Support</h4>
-                <p>support@himati.ac.id</p>
-                <span>Response time: 1-2 jam</span>
-            </div>
-            <div class="support-option">
-                <i class="fas fa-phone"></i>
-                <h4>Telepon</h4>
-                <p>+62 812 3456 7890</p>
-                <span>Senin - Jumat, 08:00 - 16:00</span>
-            </div>
-            <div class="support-option">
-                <i class="fas fa-comments"></i>
-                <h4>Live Chat</h4>
-                <p>Available 24/7</p>
-                <span>Chat dengan bot kami</span>
-            </div>
-        </div>
-    </div>
-
     <script>
         // Toggle password visibility
         document.getElementById('togglePassword').addEventListener('click', function() {
@@ -590,45 +561,24 @@
             }
         });
 
-        // Form submission
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // Auto-fill demo accounts for testing
+        document.addEventListener('DOMContentLoaded', function() {
+            // You can remove this in production
+            const urlParams = new URLSearchParams(window.location.search);
+            const demo = urlParams.get('demo');
             
-            const submitButton = this.querySelector('button[type="submit"]');
-            const originalText = submitButton.textContent;
-            
-            // Show loading state
-            submitButton.classList.add('btn-loading');
-            submitButton.disabled = true;
-            
-            // Simulate API call
-            setTimeout(() => {
-                submitButton.classList.remove('btn-loading');
-                submitButton.disabled = false;
-                submitButton.textContent = originalText;
+            if (demo) {
+                const accounts = {
+                    'superadmin': {email: 'superadmin@hima.com', password: 'password123'},
+                    'admin': {email: 'admin@hima.com', password: 'password123'},
+                    'mahasiswa': {email: 'ahmad@hima.com', password: 'password123'}
+                };
                 
-                // In a real app, you would handle the response here
-                alert('Login berhasil! (Ini hanya simulasi)');
-            }, 2000);
-        });
-
-        // Google login simulation
-        document.getElementById('googleLogin').addEventListener('click', function() {
-            const button = this;
-            const originalText = button.innerHTML;
-            
-            // Show loading state
-            button.innerHTML = '<i class="fab fa-google"></i> Mengarahkan ke Google...';
-            button.disabled = true;
-            
-            // Simulate OAuth redirect
-            setTimeout(() => {
-                button.innerHTML = originalText;
-                button.disabled = false;
-                
-                // In a real app, this would redirect to Google OAuth
-                alert('Mengarahkan ke halaman login Google... (Ini hanya simulasi)');
-            }, 1500);
+                if (accounts[demo]) {
+                    document.getElementById('email').value = accounts[demo].email;
+                    document.getElementById('password').value = accounts[demo].password;
+                }
+            }
         });
     </script>
 </body>

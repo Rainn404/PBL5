@@ -10,15 +10,13 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $table = 'users';
-    protected $primaryKey = 'id_user';
-
     protected $fillable = [
-        'nama',
+        'name',
         'email',
+        'nim',
+        'phone',
+        'role',
         'password',
-        'no_hp',
-        'role'
     ];
 
     protected $hidden = [
@@ -26,15 +24,35 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    // Relasi dengan pendaftaran
-    public function pendaftaran()
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+
+    // Relationship dengan prestasi
+    public function prestasi()
     {
-        return $this->hasMany(Pendaftaran::class, 'id_user');
+        return $this->hasMany(Prestasi::class, 'nim', 'nim');
     }
 
-    // Relasi sebagai validator
-    public function validasiPendaftaran()
+    // Helper methods untuk check role
+    public function isMahasiswa()
     {
-        return $this->hasMany(Pendaftaran::class, 'divalidasi_oleh');
+        return $this->role === 'mahasiswa';
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isSuperAdmin()
+    {
+        return $this->role === 'super_admin';
+    }
+
+    // Method yang diperbaiki - tambahkan ini
+    public function isAdminOrSuperAdmin()
+    {
+        return $this->isAdmin() || $this->isSuperAdmin();
     }
 }

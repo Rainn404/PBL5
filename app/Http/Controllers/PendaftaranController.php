@@ -2,139 +2,140 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Pendaftaran;
-use App\Models\AnggotaHima;
-use Illuminate\Support\Facades\Auth;
+use App\Models\SystemSetting;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PendaftaranController extends Controller
 {
-    /**
-     * Display pendaftaran management page
-     */
-    public function index()
+
+
+    public function checkPendaftaranStatus()
     {
-        // Data dummy untuk sementara
-        $pendaftaran = collect([
-            [
-                'id_pendaftaran' => 1,
-                'nama' => 'Ahmad Rizki',
-                'nim' => '20210001',
-                'semester' => 3,
-                'no_hp' => '081234567890',
-                'email' => 'ahmad@example.com',
-                'alasan_mendaftar' => 'Saya ingin bergabung dengan HIMA TI untuk mengembangkan skill dan berkontribusi untuk organisasi.',
-                'dokumen' => 'dokumen/dokumen1.pdf',
-                'status_pendaftaran' => 'pending',
-                'submitted_at' => '2024-09-01 10:00:00',
-                'divalidasi_oleh' => null,
-                'validator' => null
-            ],
-            [
-                'id_pendaftaran' => 2,
-                'nama' => 'Lisa Putri',
-                'nim' => '20210002',
-                'semester' => 5,
-                'no_hp' => '081298765432',
-                'email' => 'lisa@example.com',
-                'alasan_mendaftar' => 'Berminat untuk belajar organisasi dan pengembangan diri melalui HIMA TI.',
-                'dokumen' => null,
-                'status_pendaftaran' => 'diterima',
-                'submitted_at' => '2024-08-28 14:30:00',
-                'divalidasi_oleh' => 1,
-                'validator' => 'Admin HIMA'
-            ],
-            [
-                'id_pendaftaran' => 3,
-                'nama' => 'Andi Pratama',
-                'nim' => '20210003',
-                'semester' => 2,
-                'no_hp' => '08111222333',
-                'email' => 'andi@example.com',
-                'alasan_mendaftar' => 'Ingin menambah pengalaman organisasi dan relasi di kampus.',
-                'dokumen' => 'dokumen/dokumen3.pdf',
-                'status_pendaftaran' => 'ditolak',
-                'submitted_at' => '2024-08-25 09:15:00',
-                'divalidasi_oleh' => 1,
-                'validator' => 'Admin HIMA'
-            ]
-        ]);
-
-        // Data divisi dan jabatan untuk form
-        $divisi = collect([
-            ['id_divisi' => 1, 'nama' => 'Divisi IT'],
-            ['id_divisi' => 2, 'nama' => 'Divisi Humas'],
-            ['id_divisi' => 3, 'nama' => 'Divisi Akademik']
-        ]);
-
-        $jabatan = collect([
-            ['id_jabatan' => 1, 'nama_jabatan' => 'Anggota'],
-            ['id_jabatan' => 2, 'nama_jabatan' => 'Koordinator'],
-            ['id_jabatan' => 3, 'nama_jabatan' => 'Sekretaris']
-        ]);
-
-        return view('admin.pendaftaran', compact('pendaftaran', 'divisi', 'jabatan'));
+        $settings = SystemSetting::getSettings();
+        
+        // Cek jika pendaftaran tidak aktif
+        if (!SystemSetting::isRegistrationActive()) {
+            return view('users.pendaftaran.closed', compact('settings'));
+        }
+        
+        // Cek jika kuota sudah penuh
+        if (SystemSetting::isQuotaFull()) {
+            return view('users.pendaftaran.quota-full', compact('settings'));
+        }
+        
+        // Jika semua kondisi terpenuhi, tampilkan form pendaftaran
+        return view('users.pendaftaran.create', compact('settings'));
     }
 
-    /**
-     * Update status pendaftaran
-     */
-    public function update(Request $request, $id)
+    public function create()
     {
+        // Redirect ke method checkPendaftaranStatus untuk konsistensi
+        return $this->checkPendaftaranStatus();
+    }
+
+    public function store(Request $request)
+    {
+        // Validasi input
         $validated = $request->validate([
-            'status_pendaftaran' => 'required|in:pending,diterima,ditolak',
-            'id_divisi' => 'required_if:status_pendaftaran,diterima',
-            'id_jabatan' => 'required_if:status_pendaftaran,diterima',
-            'alasan_penolakan' => 'nullable|string|max:500'
+            'nama' => 'required|string|max:150',
+            'nim' => 'required|string|max:30|unique:pendaftaran,nim',
+            'semester' => 'required|integer|between:1,8',
+            'no_hp' => 'required|string|max:20',
+            'alasan_mendaftar' => 'required|string|min:50',
+            'pengalaman' => 'nullable|string',
+            'skill' => 'nullable|string',
+            'dokumen' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+            'agree' => 'required|accepted'
         ]);
 
-        try {
-            // $pendaftaran = Pendaftaran::findOrFail($id);
-            
-            if ($validated['status_pendaftaran'] === 'diterima') {
-                // Tambahkan ke anggota hima
-                // AnggotaHima::create([
-                //     'id_user' => $pendaftaran->id_user,
-                //     'id_divisi' => $validated['id_divisi'],
-                //     'id_jabatan' => $validated['id_jabatan'],
-                //     'nim' => $pendaftaran->nim,
-                //     'nama' => $pendaftaran->nama,
-                //     'semester' => $pendaftaran->semester,
-                //     'status' => 'active'
-                // ]);
-            }
-
-            // Update status pendaftaran
-            // $pendaftaran->update([
-            //     'status_pendaftaran' => $validated['status_pendaftaran'],
-            //     'divalidasi_oleh' => Auth::id()
-            // ]);
-
-            $statusText = $validated['status_pendaftaran'] === 'diterima' ? 'diterima' : 'ditolak';
-            return redirect()->route('admin.pendaftaran.index')
-                ->with('success', "Pendaftaran berhasil di{$statusText}.");
-
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Gagal memperbarui status pendaftaran: ' . $e->getMessage());
+        // Cek status pendaftaran sebelum menyimpan
+        if (!SystemSetting::isRegistrationActive()) {
+            return redirect()->route('pendaftaran.closed');
         }
+
+        if (SystemSetting::isQuotaFull()) {
+            return redirect()->route('pendaftaran.quota-full');
+        }
+
+        // Handle file upload
+        if ($request->hasFile('dokumen')) {
+            $dokumenPath = $request->file('dokumen')->store('dokumen_pendaftaran', 'public');
+            $validated['dokumen'] = $dokumenPath;
+        }
+
+        // Tambahkan submitted_at
+        $validated['submitted_at'] = now();
+        $validated['status_pendaftaran'] = 'pending';
+
+        // Simpan data pendaftaran
+        $pendaftaran = Pendaftaran::create($validated);
+
+        return redirect()->route('pendaftaran.success', ['id' => $pendaftaran->id_pendaftaran]);
     }
 
-    /**
-     * Delete pendaftaran
-     */
-    public function destroy($id)
+    public function closed()
     {
-        try {
-            // $pendaftaran = Pendaftaran::findOrFail($id);
-            // $pendaftaran->delete();
+        $settings = SystemSetting::getSettings();
+        return view('users.pendaftaran.closed', compact('settings'));
+    }
 
-            return redirect()->route('admin.pendaftaran.index')
-                ->with('success', 'Data pendaftaran berhasil dihapus.');
+    public function quotaFull()
+    {
+        $settings = SystemSetting::getSettings();
+        return view('users.pendaftaran.quota-full', compact('settings'));
+    }
 
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Gagal menghapus data pendaftaran: ' . $e->getMessage());
+    public function status($id)
+    {
+        $pendaftaran = Pendaftaran::findOrFail($id);
+        return view('users.pendaftaran.status', compact('pendaftaran'));
+    }
+
+    public function success()
+    {
+        return view('users.pendaftaran.success');
+    }
+
+    public function showCheckStatus()
+    {
+        return view('users.pendaftaran.check-status');
+    }
+
+    public function checkStatus(Request $request)
+    {
+        $request->validate([
+            'nim' => 'required|string'
+        ]);
+
+        $pendaftaran = Pendaftaran::where('nim', $request->nim)->first();
+
+        if (!$pendaftaran) {
+            return back()->with('error', 'Data pendaftaran tidak ditemukan');
         }
+
+        return redirect()->route('pendaftaran.status', $pendaftaran->id_pendaftaran);
+    }
+
+    public function showApi($id)
+    {
+        $pendaftaran = Pendaftaran::findOrFail($id);
+        return response()->json($pendaftaran);
+    }
+
+    public function getStatus()
+    {
+        $settings = SystemSetting::getSettings();
+        return response()->json([
+            'pendaftaran_aktif' => $settings->pendaftaran_aktif,
+            'is_active' => SystemSetting::isRegistrationActive(),
+            'is_quota_full' => SystemSetting::isQuotaFull(),
+            'tanggal_mulai' => $settings->tanggal_mulai,
+            'tanggal_selesai' => $settings->tanggal_selesai,
+            'kuota' => $settings->kuota,
+            'total_diterima' => Pendaftaran::where('status_pendaftaran', 'diterima')->count(),
+            'total_pending' => Pendaftaran::where('status_pendaftaran', 'pending')->count()
+        ]);
     }
 }

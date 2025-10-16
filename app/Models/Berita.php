@@ -11,23 +11,20 @@ class Berita extends Model
 
     protected $table = 'berita';
     protected $primaryKey = 'id_berita';
-
+    
     protected $fillable = [
-        'id_user',
         'judul',
         'isi',
-        'foto',
-        'tanggal'
+        'tanggal',
+        'penulis',
+        'foto'
     ];
 
     protected $casts = [
-        'tanggal' => 'datetime'
+        'tanggal' => 'date'
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'id_user');
-    }
-
-    
+    // Jika primary key bukan 'id', tambahkan ini:
+    public $incrementing = true;
+    protected $keyType = 'int';
 }

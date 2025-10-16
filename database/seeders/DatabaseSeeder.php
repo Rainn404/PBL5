@@ -3,76 +3,80 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        // Insert user admin
-        DB::table('users')->insert([
-            'nama' => 'Admin HIMA',
+        // Create Super Admin
+        User::create([
+            'name' => 'Super Admin',
+            'email' => 'superadmin@hima.com',
+            'nim' => 'SUPER001',
+            'phone' => '081234567890',
+            'role' => 'super_admin',
+            'password' => Hash::make('password123'),
+        ]);
+
+        // Create Admin
+        User::create([
+            'name' => 'Admin HIMA',
             'email' => 'admin@hima.com',
-            'password' => Hash::make('password123'),
-            'no_hp' => '081234567890',
+            'nim' => 'ADMIN001',
+            'phone' => '081234567891',
             'role' => 'admin',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        // Insert user biasa
-        $userId = DB::table('users')->insertGetId([
-            'nama' => 'User Pendaftar',
-            'email' => 'user@example.com',
             'password' => Hash::make('password123'),
-            'no_hp' => '081298765432',
-            'role' => 'freeuser',
-            'created_at' => now(),
-            'updated_at' => now(),
         ]);
 
-        // Insert divisi
-        DB::table('divisi')->insert([
-            ['nama' => 'Divisi IT', 'deskripsi' => 'Divisi Teknologi Informasi', 'created_at' => now()],
-            ['nama' => 'Divisi Humas', 'deskripsi' => 'Divisi Hubungan Masyarakat', 'created_at' => now()],
-            ['nama' => 'Divisi Acara', 'deskripsi' => 'Divisi Penyelenggara Acara', 'created_at' => now()],
+        // Create Mahasiswa
+        User::create([
+            'name' => 'Ahmad Fauzi',
+            'email' => 'ahmad@hima.com',
+            'nim' => '12345678',
+            'phone' => '081234567892',
+            'role' => 'mahasiswa',
+            'password' => Hash::make('password123'),
         ]);
 
-        // Insert jabatan
-        DB::table('jabatan')->insert([
-            ['nama_jabatan' => 'Ketua', 'deskripsi' => 'Pimpinan', 'created_at' => now()],
-            ['nama_jabatan' => 'Anggota', 'deskripsi' => 'Anggota Biasa', 'created_at' => now()],
-            ['nama_jabatan' => 'Sekretaris', 'deskripsi' => 'Penanggung Jawab Administrasi', 'created_at' => now()],
+        User::create([
+            'name' => 'Siti Rahayu',
+            'email' => 'siti@hima.com',
+            'nim' => '22334455',
+            'phone' => '081234567893',
+            'role' => 'mahasiswa',
+            'password' => Hash::make('password123'),
         ]);
 
-        // Insert data pendaftaran contoh
-        DB::table('pendaftaran')->insert([
-            [
-                'id_user' => $userId,
-                'nim' => '20210001',
-                'nama' => 'Budi Santoso',
-                'semester' => 3,
-                'alasan_mendaftar' => 'Ingin mengembangkan skill dan pengalaman di HIMA TI',
-                'no_hp' => '08123456789',
-                'status_pendaftaran' => 'pending',
-                'submitted_at' => now(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'id_user' => $userId,
-                'nim' => '20210002',
-                'nama' => 'Siti Rahayu',
-                'semester' => 5,
-                'alasan_mendaftar' => 'Mau aktif berorganisasi dan berkontribusi untuk kampus',
-                'no_hp' => '08129876543',
-                'status_pendaftaran' => 'diterima',
-                'divalidasi_oleh' => 1,
-                'submitted_at' => now()->subDays(2),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
+        User::create([
+            'name' => 'Budi Santoso',
+            'email' => 'budi@hima.com',
+            'nim' => '33445566',
+            'phone' => '081234567894',
+            'role' => 'mahasiswa',
+            'password' => Hash::make('password123'),
         ]);
+
+        User::create([
+            'name' => 'Maya Sari',
+            'email' => 'maya@hima.com',
+            'nim' => '44556677',
+            'phone' => '081234567895',
+            'role' => 'mahasiswa',
+            'password' => Hash::make('password123'),
+        ]);
+
+        User::create([
+            'name' => 'Rizki Pratama',
+            'email' => 'rizki@hima.com',
+            'nim' => '55667788',
+            'phone' => '081234567896',
+            'role' => 'mahasiswa',
+            'password' => Hash::make('password123'),
+        ]);
+
+        // Create sample prestasi data
+        $this->call(PrestasiSeeder::class);
     }
 }
