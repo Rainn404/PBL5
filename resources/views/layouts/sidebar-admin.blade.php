@@ -29,7 +29,7 @@
             </a>
         </li>
 
-<<<<<<< HEAD
+
         <li class="nav-item">
             <a href="{{ route('admin.jabatan.index') }}" class="nav-link {{ Request::routeIs('admin.jabatan.*') ? 'active' : '' }}">
                 <i class="fas fa-user-tie me-3"></i>
@@ -39,11 +39,10 @@
         
         <li class="nav-item">
             <a href="{{ route('admin.prestasi.index') }}" class="nav-link {{ Request::routeIs('admin.prestasi.*') ? 'active' : '' }}">
-=======
+
         {{-- Prestasi --}}
         <li class="nav-item mb-1">
             <a href="{{ route('admin.prestasi.index') }}" class="nav-link d-flex align-items-center {{ Request::routeIs('admin.prestasi.*') ? 'active' : '' }}">
->>>>>>> a71095d5ee2fe0a68106f6d8451d0822c6670154
                 <i class="fas fa-trophy me-3"></i>
                 <span>Kelola Prestasi</span>
             </a>
