@@ -7,12 +7,14 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\DivisiController;
+
 use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\PrestasiController;
 use App\Http\Controllers\AnggotaController;
+use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\MahasiswaBermasalahController;
-use App\Http\Controllers\PelanggaranSanksiController;
-
+use App\Http\Controllers\PelanggaranController;
+use App\Http\Controllers\SanksiController;
 /* =========================
    STATIC PAGES (tetap)
    ========================= */
@@ -71,13 +73,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::put('/prestasi/{id}',     [PrestasiController::class, 'update'])->name('prestasi.update');
     Route::delete('/prestasi/{id}',  [PrestasiController::class, 'destroy'])->name('prestasi.destroy');
 
-    /* ----- Admin: Mahasiswa Bermasalah & Pelanggaran/Sanksi ----- */
-    Route::resource('mahasiswa-bermasalah', MahasiswaBermasalahController::class);
-    Route::resource('pelanggaran-sanksi', PelanggaranSanksiController::class);
-    Route::post('/pelanggaran-sanksi', [MahasiswaBermasalahController::class, 'storePelanggaranSanksi'])
-        ->name('pelanggaran-sanksi.store');
-    Route::get('/pelanggaran-sanksi-form', fn () => view('admin.pelanggaran-sanksi'))
-        ->name('pelanggaran-sanksi.form');
 
     /* ----- Admin: Menu view statis (tidak bentrok URI controller) ----- */
     Route::prefix('komentar')->group(function () {
@@ -101,12 +96,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/view/{id}', fn ($id) => view('admin.sanksi.view', compact('id')))->name('sanksi.view');
     });
 
-    Route::prefix('pelanggaran')->group(function () {
-        Route::get('/', fn () => view('admin.pelanggaran.index'))->name('pelanggaran');
-        Route::get('/create', fn () => view('admin.pelanggaran.create'))->name('pelanggaran.create');
-        Route::get('/edit/{id}', fn ($id) => view('admin.pelanggaran.edit', compact('id')))->name('pelanggaran.edit');
-        Route::get('/view/{id}', fn ($id) => view('admin.pelanggaran.view', compact('id')))->name('pelanggaran.view');
-    });
+   Route::controller(PelanggaranController::class)->group(function () {
+    Route::get('/pelanggaran', 'index')->name('pelanggaran.index');
+    Route::get('/pelanggaran/create', 'create')->name('pelanggaran.create');
+    Route::post('/pelanggaran', 'store')->name('pelanggaran.store');
+    Route::get('/pelanggaran/{id}/edit', 'edit')->name('pelanggaran.edit');
+    Route::put('/pelanggaran/{id}', 'update')->name('pelanggaran.update');
+    Route::delete('/pelanggaran/{id}', 'destroy')->name('pelanggaran.destroy');
+});
 
     /* ----- Admin: Data & Auth (view) ----- */
     Route::prefix('auth')->group(function () {
@@ -165,8 +162,125 @@ Route::post('/logout', function () {
     return redirect('/login')->with('success', 'Berhasil logout.');
 })->name('logout');
 
-/* =========================
-   TEST & FALLBACK
-   ========================= */
+
 Route::get('/test', fn () => 'Aplikasi berjalan!');
 Route::fallback(fn () => redirect('/admin/dashboard'));
+
+
+// ==================== ROUTE FRONTEND (PUBLIC) ====================
+Route::get('/home', function () {
+    return view('home');
+})->name('home');
+
+Route::get('/divisi', function () {
+    return view('divisi');
+})->name('divisi');
+
+Route::get('/anggota', function () {
+    return view('anggota');
+})->name('anggota');
+
+Route::get('/berita', function () {
+    return view('berita');
+})->name('berita');
+
+Route::get('/pendaftaran', function () {
+    return view('pendaftaran');
+})->name('pendaftaran');
+
+Route::get('/prestasi', function () {
+    return view('prestasi');
+})->name('prestasi');
+
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
+
+// Route Data Mahasiswa untuk FRONTEND (hanya baca)
+Route::get('/mahasiswa', [MahasiswaController::class, 'frontIndex'])->name('mahasiswa.index');
+
+// ==================== ROUTE ADMIN PANEL ====================
+Route::prefix('admin')->name('admin.')->group(function () {
+    
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+
+    
+    // ========== TAMBAHKAN ROUTE MAHASISWA BERMASALAH DI SINI ==========
+    // Mahasiswa Bermasalah Management
+ 
+    Route::controller(MahasiswaBermasalahController::class)->group(function () {
+        Route::get('/mahasiswa-bermasalah', 'index')->name('mahasiswa-bermasalah.index');
+        Route::get('/mahasiswa-bermasalah/create', 'create')->name('mahasiswa-bermasalah.create');
+        Route::post('/mahasiswa-bermasalah', 'store')->name('admin.mahasiswa-bermasalah.store');
+        Route::get('/mahasiswa-bermasalah/{id}/edit', 'edit')->name('mahasiswa-bermasalah.edit');
+        Route::put('/mahasiswa-bermasalah/{id}', 'update')->name('mahasiswa-bermasalah.update');
+        Route::delete('/mahasiswa-bermasalah/{id}', 'destroy')->name('mahasiswa-bermasalah.destroy');
+        Route::get('/mahasiswa-bermasalah/get-mahasiswa/{nim}', 'getMahasiswaByNim')->name('mahasiswa-bermasalah.get-mahasiswa');
+    });
+
+    // Anggota Management
+    Route::get('/anggota', [AnggotaController::class, 'index'])->name('anggota.index');
+    Route::post('/anggota', [AnggotaController::class, 'store'])->name('anggota.store');
+    Route::put('/anggota/{id}', [AnggotaController::class, 'update'])->name('anggota.update');
+    Route::delete('/anggota/{id}', [AnggotaController::class, 'destroy'])->name('anggota.destroy');
+    
+    // Divisi Management
+    Route::get('/divisi', [DivisiController::class, 'index'])->name('divisi.index');
+    Route::post('/divisi', [DivisiController::class, 'store'])->name('divisi.store');
+    Route::put('/divisi/{id}', [DivisiController::class, 'update'])->name('divisi.update');
+    Route::delete('/divisi/{id}', [DivisiController::class, 'destroy'])->name('divisi.destroy');
+    
+    // Prestasi Management
+    Route::get('/prestasi', [PrestasiController::class, 'index'])->name('prestasi.index');
+    Route::post('/prestasi', [PrestasiController::class, 'store'])->name('prestasi.store');
+    Route::put('/prestasi/{id}', [PrestasiController::class, 'update'])->name('prestasi.update');
+    Route::delete('/prestasi/{id}', [PrestasiController::class, 'destroy'])->name('prestasi.destroy');
+    
+
+    
+    // Berita Management
+    Route::get('/berita', [BeritaController::class, 'adminIndex'])->name('berita.index');
+    Route::post('/berita', [BeritaController::class, 'store'])->name('berita.store');
+    Route::put('/berita/{id}', [BeritaController::class, 'update'])->name('berita.update');
+    Route::delete('/berita/{id}', [BeritaController::class, 'destroy'])->name('berita.destroy');
+    
+    // Pendaftaran Management
+    Route::get('/pendaftaran', [PendaftaranController::class, 'index'])->name('pendaftaran.index');
+    Route::get('/pendaftaran/create', [PendaftaranController::class, 'create'])->name('pendaftaran.create');
+    Route::post('/pendaftaran', [PendaftaranController::class, 'store'])->name('pendaftaran.store');
+    Route::get('/pendaftaran/{id}', [PendaftaranController::class, 'show'])->name('pendaftaran.show');
+    Route::get('/pendaftaran/{id}/edit', [PendaftaranController::class, 'edit'])->name('pendaftaran.edit');
+    Route::put('/pendaftaran/{id}', [PendaftaranController::class, 'update'])->name('pendaftaran.update');
+    Route::put('/pendaftaran/{id}/status', [PendaftaranController::class, 'updateStatus'])->name('pendaftaran.updateStatus');
+    Route::delete('/pendaftaran/{id}', [PendaftaranController::class, 'destroy'])->name('pendaftaran.destroy');
+    
+    // Authentication Admin
+    Route::prefix('auth')->group(function () {
+        Route::get('/login', function () {
+            return view('admin.auth.login');
+        })->name('login');
+        Route::post('/logout', function () {
+            return redirect('/admin/login');
+        })->name('logout');
+    });
+});
+
+// Prestasi Routes (public)
+Route::get('/prestasi', [PrestasiController::class, 'index'])->name('prestasi.index');
+Route::get('/prestasi/create', [PrestasiController::class, 'create'])->name('prestasi.create')->middleware('auth');
+Route::post('/prestasi', [PrestasiController::class, 'store'])->name('prestasi.store')->middleware('auth');
+Route::get('/prestasi/{id}', [PrestasiController::class, 'show'])->name('prestasi.show');
+Route::get('/prestasi/{id}/edit', [PrestasiController::class, 'edit'])->name('prestasi.edit')->middleware('auth');
+Route::put('/prestasi/{id}', [PrestasiController::class, 'update'])->name('prestasi.update')->middleware('auth');
+Route::delete('/prestasi/{id}', [PrestasiController::class, 'destroy'])->name('prestasi.destroy')->middleware('auth');
+
+// Redirect root to admin dashboard
+Route::redirect('/', '/admin/dashboard');
+
+// Fallback route
+Route::fallback(function () {
+    return redirect('/admin/dashboard');
+});
+

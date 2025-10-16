@@ -10,22 +10,29 @@ class MahasiswaBermasalah extends Model
     use HasFactory;
 
     protected $table = 'mahasiswa_bermasalah';
-    protected $primaryKey = 'id';
     
     protected $fillable = [
-        'nama', 'nim', 'semester', 'nama_orang_tua', 
-        'bukti', 'tanggal', 'id_masalah', 'id_sanksi'
+        'nim',
+        'nama',
+        'semester',
+        'nama_orang_tua',
+        'pelanggaran_id',
+        'sanksi_id',
+        'deskripsi'
     ];
-
-    protected $dates = ['tanggal'];
 
     public function pelanggaran()
     {
-        return $this->belongsTo(Pelanggaran::class, 'id_masalah');
+        return $this->belongsTo(Pelanggaran::class);
     }
 
     public function sanksi()
     {
-        return $this->belongsTo(Sanksi::class, 'id_sanksi');
+        return $this->belongsTo(Sanksi::class);
+    }
+
+    public function mahasiswa()
+    {
+        return $this->belongsTo(Mahasiswa::class, 'nim', 'nim');
     }
 }

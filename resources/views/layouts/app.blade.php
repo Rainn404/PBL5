@@ -180,6 +180,9 @@
             margin-top: 20px;
         }
     </style>
+=======
+    <script src="https://cdn.tailwindcss.com"></script>
+>>>>>>> 72d34e1 (update mahasiswa bermasalah)
 </head>
 
 <body>
@@ -196,6 +199,7 @@
                 <a href="{{ url('/home') }}" class="nav-link">Home</a>
                 <a href="{{ url('/divisi') }}" class="nav-link">Divisi</a>
                 <a href="{{ url('/anggota') }}" class="nav-link">Profil Anggota</a>
+                <a href="{{ url('/mahasiswa') }}" class="nav-link">Data Mahasiswa</a>
                 <a href="{{ url('/berita') }}" class="nav-link">Berita</a>
                 <a href="{{ url('/pendaftaran') }}" class="nav-link">Pendaftaran</a>
                 <a href="{{ url('/prestasi') }}" class="nav-link">Prestasi</a>
@@ -233,6 +237,7 @@
                     <li><a href="{{ url('/home') }}">Home</a></li>
                     <li><a href="{{ url('/divisi') }}">Divisi</a></li>
                     <li><a href="{{ url('/anggota') }}">Profil Anggota</a></li>
+                    <li><a href="{{ url('/mahasiswa') }}">Data Mahasiswa</a></li>
                     <li><a href="{{ url('/berita') }}">Berita</a></li>
                 </ul>
             </div>
@@ -255,3 +260,5 @@
     </script>
 </body>
 </html>
+
+

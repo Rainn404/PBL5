@@ -1,4 +1,5 @@
 <?php
+// app/Models/Pelanggaran.php
 
 namespace App\Models;
 
@@ -10,17 +11,14 @@ class Pelanggaran extends Model
     use HasFactory;
 
     protected $table = 'pelanggaran';
-    protected $primaryKey = 'id_masalah';
-    
-    protected $fillable = ['nama', 'deskripsi'];
 
-    public function sanksi()
-    {
-        return $this->hasOne(Sanksi::class, 'id_masalah');
-    }
+    protected $fillable = [
+        'kode_pelanggaran',
+        'nama_pelanggaran',
+        'jenis_pelanggaran'
+    ];
 
-    public function mahasiswaBermasalah()
-    {
-        return $this->hasMany(MahasiswaBermasalah::class, 'id_masalah');
-    }
+    protected $casts = [
+        'jenis_pelanggaran' => 'string'
+    ];
 }

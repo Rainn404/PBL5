@@ -37,25 +37,47 @@
             </a>
         </li>
 
+
         {{-- Mahasiswa Bermasalah --}}
         <li class="nav-item mb-1">
             <a href="{{ route('admin.mahasiswa-bermasalah.index') }}" class="nav-link d-flex align-items-center {{ Request::routeIs('admin.mahasiswa-bermasalah.*') ? 'active' : '' }}">
+
+        <!-- Tambahkan Data Mahasiswa di sini -->
+        <li class="nav-item">
+            <a href="{{ route('admin.mahasiswa.index') }}" class="nav-link {{ Request::routeIs('admin.mahasiswa.*') ? 'active' : '' }}">
+                <i class="fas fa-user-graduate me-3"></i>
+                <span>Data Mahasiswa</span>
+            </a>
+        </li>
+        
+        <!-- Tambahkan Mahasiswa Bermasalah di sini -->
+        <li class="nav-item">
+            <a href="{{ route('admin.mahasiswa-bermasalah.index') }}" class="nav-link {{ Request::routeIs('admin.mahasiswa-bermasalah.*') ? 'active' : '' }}">)
                 <i class="fas fa-exclamation-triangle me-3"></i>
                 <span>Mahasiswa Bermasalah</span>
             </a>
         </li>
 
+
         {{-- Berita --}}
         <li class="nav-item mb-1">
             <a href="{{ route('admin.berita.index') }}" class="nav-link d-flex align-items-center {{ Request::routeIs('admin.berita.*') ? 'active' : '' }}">
+           
+        <li class="nav-item">
+            <a href="{{ route('admin.berita.index') }}" class="nav-link {{ Request::routeIs('admin.berita.*') ? 'active' : '' }}">
+
                 <i class="fas fa-newspaper me-3"></i>
                 <span>Berita</span>
             </a>
         </li>
 
+
         {{-- Pendaftaran --}}
         <li class="nav-item mb-1">
             <a href="{{ route('admin.pendaftaran.index') }}" class="nav-link d-flex align-items-center {{ Request::routeIs('admin.pendaftaran.*') ? 'active' : '' }}">
+        
+        <li class="nav-item">
+            <a href="{{ route('admin.pendaftaran.index') }}" class="nav-link {{ Request::routeIs('admin.pendaftaran.*') ? 'active' : '' }}">
                 <i class="fas fa-user-check me-3"></i>
                 <span>Pendaftaran</span>
             </a>
@@ -66,6 +88,27 @@
         {{-- Pengaturan --}}
         <li class="nav-item mb-1">
             <a href="#" class="nav-link d-flex align-items-center">
+        
+        <!-- Tambahkan Data Pelanggaran di sini -->
+        <li class="nav-item">
+            <a href="{{ route('admin.pelanggaran.index') }}" class="nav-link {{ Request::routeIs('admin.pelanggaran.*') ? 'active' : '' }}">
+                <i class="fas fa-exclamation-circle me-3"></i>
+                <span>Data Pelanggaran</span>
+            </a>
+        </li>
+        
+        <!-- Tambahkan Data Master Sanksi di sini -->
+        <li class="nav-item">
+            <a href="{{ route('admin.sanksi.index') }}" class="nav-link {{ Request::routeIs('admin.sanksi.*') ? 'active' : '' }}">
+                <i class="fas fa-balance-scale me-3"></i>
+                <span>Data Sanksi</span>
+            </a>
+        </li>
+        
+        <li class="nav-divider"></li>
+        
+        <li class="nav-item">
+            <a href="#" class="nav-link">
                 <i class="fas fa-cog me-3"></i>
                 <span>Pengaturan</span>
             </a>

@@ -2044,3 +2044,23 @@ section {
     background-color: #f44336;
     color: white;
 }
+/* resources/css/style.css */
+.container {
+    max-width: 1200px;
+}
+
+.bg-blue-600 {
+    background-color: #2563eb;
+}
+
+.bg-blue-600:hover {
+    background-color: #1d4ed8;
+}
+
+/* Tambahan style untuk responsivitas */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
