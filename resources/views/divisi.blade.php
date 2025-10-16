@@ -1,170 +1,156 @@
 @extends('layouts.app')
 
-@section('title', 'Divisi - HIMA-TI')
+@section('title', 'Divisi HIMA-TI')
 
 @section('content')
-    <!-- Page Header -->
-    <section class="page-header">
-        <div class="container">
-            <h1>Divisi HIMA-TI</h1>
-            <p>Struktur organisasi dan deskripsi divisi-divisi dalam Himpunan Mahasiswa Teknik Informatika</p>
-        </div>
-    </section>
+<div class="container py-4">
+    <div class="text-center mb-5">
+        <h1 class="fw-bold gradient-text">Divisi HIMA-TI</h1>
+        <p class="lead text-muted">
+            Struktur organisasi dan deskripsi divisi-divisi dalam Himpunan Mahasiswa<br>
+            Teknik Informatika
+        </p>
+    </div>
 
-    <!-- Divisi List -->
-    <section class="divisi-list">
-        <div class="container">
-            <div class="divisi-cards">
-                <div class="divisi-card-large">
-                    <div class="divisi-header">
-                        <div class="divisi-icon">
-                            <i class="fas fa-code"></i>
-                        </div>
-                        <div class="divisi-info">
-                            <h2>Divisi Teknologi</h2>
-                            <span class="anggota-count">15 Anggota</span>
-                        </div>
+    <div class="row g-4">
+        @foreach($divisis as $divisi)
+        <div class="col-lg-6 col-xl-4">
+            <div class="card divisi-card h-100 shadow-sm">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="card-title mb-0 fw-bold">{{ $divisi->nama_divisi }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-info fs-6">
+                            <i class="fas fa-users me-1"></i>
+                            {{ $divisi->anggotas_count }} Anggota
+                        </span>
+                        <span class="badge bg-success">
+                            {{ $divisi->status ? 'Aktif' : 'Tidak Aktif' }}
+                        </span>
                     </div>
-                    <div class="divisi-content">
-                        <p>Divisi Teknologi bertanggung jawab untuk mengembangkan kemampuan teknis anggota dalam pemrograman, pengembangan web, mobile development, dan teknologi terkini lainnya.</p>
-                        <div class="divisi-responsibilities">
-                            <h4>Tanggung Jawab:</h4>
-                            <ul>
-                                <li>Mengadakan workshop dan pelatihan teknologi</li>
-                                <li>Mengembangkan sistem informasi HIMA-TI</li>
-                                <li>Memberikan dukungan teknis untuk kegiatan</li>
-                                <li>Mengikuti kompetisi teknologi</li>
-                            </ul>
+                    
+                    <p class="card-text divisi-desc">
+                        {{ Str::limit($divisi->deskripsi, 120) }}
+                    </p>
+
+                    <div class="divisi-detail d-none">
+                        <div class="mb-3">
+                            <strong><i class="fas fa-user me-2"></i>Ketua Divisi:</strong>
+                            <span class="ms-2">{{ $divisi->ketua_divisi ?? 'Belum ditentukan' }}</span>
                         </div>
-                        <div class="divisi-ketua">
-                            <h4>Ketua Divisi:</h4>
-                            <div class="ketua-profile">
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="Ketua Divisi">
-                                <div>
-                                    <h5>Ahmad Fauzi</h5>
-                                    <span>Semester 5</span>
-                                </div>
+                        
+                        <div class="mb-3">
+                            <strong><i class="fas fa-info-circle me-2"></i>Deskripsi Lengkap:</strong>
+                            <p class="mt-2 mb-0">{{ $divisi->deskripsi }}</p>
+                        </div>
+
+                        @if($divisi->anggotas_count > 0)
+                        <div class="anggota-list">
+                            <strong><i class="fas fa-list me-2"></i>Daftar Anggota:</strong>
+                            <div class="mt-2">
+                                @foreach($divisi->anggotas->take(5) as $anggota)
+                                <span class="badge bg-light text-dark me-1 mb-1">
+                                    {{ $anggota->nama }}
+                                </span>
+                                @endforeach
+                                @if($divisi->anggotas_count > 5)
+                                <span class="badge bg-secondary">
+                                    +{{ $divisi->anggotas_count - 5 }} lainnya
+                                </span>
+                                @endif
                             </div>
                         </div>
+                        @endif
                     </div>
                 </div>
-
-                <div class="divisi-card-large">
-                    <div class="divisi-header">
-                        <div class="divisi-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="divisi-info">
-                            <h2>Divisi Keanggotaan</h2>
-                            <span class="anggota-count">12 Anggota</span>
-                        </div>
-                    </div>
-                    <div class="divisi-content">
-                        <p>Divisi Keanggotaan mengelola data anggota, proses pendaftaran, dan pengembangan soft skills melalui berbagai pelatihan dan kegiatan pengembangan diri.</p>
-                        <div class="divisi-responsibilities">
-                            <h4>Tanggung Jawab:</h4>
-                            <ul>
-                                <li>Mengelola database anggota</li>
-                                <li>Memproses pendaftaran anggota baru</li>
-                                <li>Mengadakan pelatihan soft skills</li>
-                                <li>Membangun jaringan alumni</li>
-                            </ul>
-                        </div>
-                        <div class="divisi-ketua">
-                            <h4>Ketua Divisi:</h4>
-                            <div class="ketua-profile">
-                                <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="Ketua Divisi">
-                                <div>
-                                    <h5>Siti Rahayu</h5>
-                                    <span>Semester 5</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="divisi-card-large">
-                    <div class="divisi-header">
-                        <div class="divisi-icon">
-                            <i class="fas fa-newspaper"></i>
-                        </div>
-                        <div class="divisi-info">
-                            <h2>Divisi Media & Komunikasi</h2>
-                            <span class="anggota-count">10 Anggota</span>
-                        </div>
-                    </div>
-                    <div class="divisi-content">
-                        <p>Divisi Media & Komunikasi bertugas mengelola konten media sosial, website, dan publikasi kegiatan HIMA-TI kepada masyarakat internal dan eksternal.</p>
-                        <div class="divisi-responsibilities">
-                            <h4>Tanggung Jawab:</h4>
-                            <ul>
-                                <li>Mengelola media sosial HIMA-TI</li>
-                                <li>Memproduksi konten kreatif</li>
-                                <li>Meliput dan mendokumentasikan kegiatan</li>
-                                <li>Membuat newsletter bulanan</li>
-                            </ul>
-                        </div>
-                        <div class="divisi-ketua">
-                            <h4>Ketua Divisi:</h4>
-                            <div class="ketua-profile">
-                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Ketua Divisi">
-                                <div>
-                                    <h5>Rizki Pratama</h5>
-                                    <span>Semester 5</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="divisi-card-large">
-                    <div class="divisi-header">
-                        <div class="divisi-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <div class="divisi-info">
-                            <h2>Divisi Kewirausahaan</h2>
-                            <span class="anggota-count">8 Anggota</span>
-                        </div>
-                    </div>
-                    <div class="divisi-content">
-                        <p>Divisi Kewirausahaan fokus pada pengembangan jiwa kewirausahaan dan mengelola unit usaha HIMA-TI untuk menghasilkan pendapatan yang digunakan untuk kegiatan organisasi.</p>
-                        <div class="divisi-responsibilities">
-                            <h4>Tanggung Jawab:</h4>
-                            <ul>
-                                <li>Mengelola unit usaha HIMA-TI</li>
-                                <li>Mengadakan seminar kewirausahaan</li>
-                                <li>Mencari sponsorship untuk kegiatan</li>
-                                <li>Mengembangkan produk digital</li>
-                            </ul>
-                        </div>
-                        <div class="divisi-ketua">
-                            <h4>Ketua Divisi:</h4>
-                            <div class="ketua-profile">
-                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="Ketua Divisi">
-                                <div>
-                                    <h5>Budi Santoso</h5>
-                                    <span>Semester 5</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="card-footer bg-transparent">
+                    <button class="btn btn-outline-primary btn-sm toggle-detail" 
+                            data-divisi="{{ $divisi->id_divisi }}">
+                        <span class="show-text">Selengkapnya</span>
+                        <span class="hide-text d-none">Sembunyikan</span>
+                        <i class="fas fa-chevron-down ms-1"></i>
+                    </button>
                 </div>
             </div>
         </div>
-    </section>
+        @endforeach
+    </div>
+</div>
 
-    <!-- Join Section -->
-    <section class="join-section">
-        <div class="container">
-            <div class="join-content">
-                <h2>Tertarik Bergabung dengan Divisi Kami?</h2>
-                <p>Dapatkan pengalaman berharga, kembangkan skill Anda, dan jadi bagian dari perubahan positif di HIMA-TI</p>
-                <div class="join-buttons">
-                    <a href="{{ url('/pendaftaran') }}" class="btn btn-primary">Daftar Sekarang</a>
-                    <a href="{{ url('/anggota') }}" class="btn btn-outline">Lihat Profil Anggota</a>
-                </div>
-            </div>
-        </div>
-    </section>
+<style>
+.divisi-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    border-radius: 15px;
+}
+
+.divisi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+.card-header {
+    border-radius: 15px 15px 0 0 !important;
+}
+
+.divisi-desc {
+    color: #6c757d;
+    line-height: 1.6;
+}
+
+.toggle-detail {
+    transition: all 0.3s ease;
+    border-radius: 20px;
+}
+
+.toggle-detail:hover {
+    transform: scale(1.05);
+}
+
+.anggota-list .badge {
+    font-size: 0.75rem;
+    padding: 0.35em 0.65em;
+}
+</style>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButtons = document.querySelectorAll('.toggle-detail');
+    
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const card = this.closest('.divisi-card');
+            const detailSection = card.querySelector('.divisi-detail');
+            const descSection = card.querySelector('.divisi-desc');
+            const showText = card.querySelector('.show-text');
+            const hideText = card.querySelector('.hide-text');
+            const icon = this.querySelector('i');
+            
+            // Toggle visibility
+            detailSection.classList.toggle('d-none');
+            descSection.classList.toggle('d-none');
+            showText.classList.toggle('d-none');
+            hideText.classList.toggle('d-none');
+            
+            // Rotate icon
+            if (icon.classList.contains('fa-chevron-down')) {
+                icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+            } else {
+                icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+            }
+            
+            // Smooth scroll to card if detail is opened
+            if (!detailSection.classList.contains('d-none')) {
+                card.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'nearest' 
+                });
+            }
+        });
+    });
+});
+</script>
+@endpush

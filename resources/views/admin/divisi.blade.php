@@ -16,23 +16,23 @@
 
     <!-- Alert Notifikasi -->
     @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show">
-        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
     @endif
 
     @if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show">
-        <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
     @endif
 
     <div class="table-card">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover align-middle">
                     <thead>
                         <tr>
                             <th width="50">#</th>
@@ -45,50 +45,42 @@
                     </thead>
                     <tbody>
                         @forelse($divisi as $index => $item)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" 
-                                         style="width: 40px; height: 40px;">
-                                        <i class="fas fa-users text-white"></i>
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                            style="width: 40px; height: 40px;">
+                                            <i class="fas fa-users text-white"></i>
+                                        </div>
+                                        <strong>{{ $item['nama_divisi'] }}</strong>
                                     </div>
-                                    <strong>{{ $item['nama'] }}</strong>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="text-muted">{{ Str::limit($item['deskripsi'], 50) }}</span>
-                            </td>
-                            <td>
-                                <span class="badge bg-info">{{ $item['ketua'] }}</span>
-                            </td>
-                            <td>
-                                <span class="badge bg-secondary">{{ $item['anggota'] }} Anggota</span>
-                            </td>
-                            <td>
-                                <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary" 
-                                            onclick="editDivisi({{ $item['id'] }})"
+                                </td>
+                                <td><span class="text-muted">{{ Str::limit($item['deskripsi'], 50) }}</span></td>
+                                <td><span class="badge bg-info">{{ $item['ketua_divisi'] }}</span></td>
+                                <td><span class="badge bg-secondary">{{ $item['anggota'] ?? 0 }} Anggota</span></td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-outline-primary" 
+                                            onclick="editDivisi({{ $item['id_divisi'] }})"
                                             data-bs-toggle="tooltip" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" 
-                                            onclick="confirmDelete({{ $item['id'] }})"
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" 
+                                            onclick="confirmDelete({{ $item['id_divisi'] }})"
                                             data-bs-toggle="tooltip" title="Hapus">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
                         @empty
-                        <tr>
-                            <td colspan="6" class="text-center py-4">
-                                <div class="text-muted">
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted">
                                     <i class="fas fa-folder-open fa-2x mb-3"></i>
                                     <p>Belum ada data divisi</p>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -108,28 +100,28 @@
             <form id="divisiForm" method="POST" action="{{ route('admin.divisi.store') }}">
                 @csrf
                 <div class="modal-body">
-                    <input type="hidden" id="divisiId" name="id">
+                    <input type="hidden" id="divisiId" name="id_divisi">
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label for="nama" class="form-label">Nama Divisi *</label>
-                            <input type="text" class="form-control" id="nama" name="nama" 
-                                   placeholder="Masukkan nama divisi" required maxlength="255">
-                            @error('nama')
+                            <label for="nama_divisi" class="form-label">Nama Divisi *</label>
+                            <input type="text" class="form-control" id="nama_divisi" name="nama_divisi" 
+                                placeholder="Masukkan nama divisi" required maxlength="255">
+                            @error('nama_divisi')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-md-6">
-                            <label for="ketua" class="form-label">Ketua Divisi *</label>
-                            <input type="text" class="form-control" id="ketua" name="ketua" 
-                                   placeholder="Masukkan nama ketua divisi" required maxlength="255">
-                            @error('ketua')
+                            <label for="ketua_divisi" class="form-label">Ketua Divisi *</label>
+                            <input type="text" class="form-control" id="ketua_divisi" name="ketua_divisi" 
+                                placeholder="Masukkan nama ketua divisi" required maxlength="255">
+                            @error('ketua_divisi')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-12">
                             <label for="deskripsi" class="form-label">Deskripsi Divisi *</label>
                             <textarea class="form-control" id="deskripsi" name="deskripsi" 
-                                      rows="4" placeholder="Masukkan deskripsi divisi" required>{{ old('deskripsi') }}</textarea>
+                                rows="4" placeholder="Masukkan deskripsi divisi" required></textarea>
                             @error('deskripsi')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
@@ -148,20 +140,19 @@
 
 @push('scripts')
 <script>
-// Data divisi dari controller
 const divisiData = @json($divisi);
 
 function editDivisi(id) {
-    const divisi = divisiData.find(d => d.id === id);
+    const divisi = divisiData.find(d => d.id_divisi === id);
     if (divisi) {
         document.getElementById('modalTitle').textContent = 'Edit Data Divisi';
-        document.getElementById('divisiId').value = divisi.id;
-        document.getElementById('nama').value = divisi.nama;
-        document.getElementById('ketua').value = divisi.ketua;
+        document.getElementById('divisiId').value = divisi.id_divisi;
+        document.getElementById('nama_divisi').value = divisi.nama_divisi;
+        document.getElementById('ketua_divisi').value = divisi.ketua_divisi;
         document.getElementById('deskripsi').value = divisi.deskripsi;
         
         // Update form action untuk update
-        document.getElementById('divisiForm').action = "{{ url('divisi') }}/" + id;
+        document.getElementById('divisiForm').action = "{{ url('admin/divisi') }}/" + id;
         document.getElementById('divisiForm').method = "POST";
         
         // Tambahkan method spoofing untuk PUT
@@ -180,10 +171,10 @@ function editDivisi(id) {
 
 function confirmDelete(id) {
     if (confirm('Apakah Anda yakin ingin menghapus divisi ini?')) {
-        // Create delete form
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = "{{ url('divisi') }}/" + id;
+        // 🔧 perbaikan utama: gunakan route helper agar pasti sesuai
+        form.action = "{{ route('admin.divisi.destroy', ':id') }}".replace(':id', id);
         
         const csrf = document.createElement('input');
         csrf.type = 'hidden';
@@ -202,6 +193,7 @@ function confirmDelete(id) {
     }
 }
 
+
 // Reset modal ketika ditutup
 document.addEventListener('DOMContentLoaded', function() {
     const divisiModal = document.getElementById('divisiModal');
@@ -212,20 +204,16 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('divisiForm').action = "{{ route('admin.divisi.store') }}";
         document.getElementById('divisiForm').method = "POST";
         
-        // Hapus method spoofing jika ada
         const methodInput = document.querySelector('input[name="_method"]');
-        if (methodInput) {
-            methodInput.remove();
-        }
-        
-        // Clear error messages
+        if (methodInput) methodInput.remove();
+
         const errorElements = document.querySelectorAll('.text-danger');
         errorElements.forEach(element => element.remove());
     });
-    
-    // Tooltip initialization
+
+    // Tooltip
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    const tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+    tooltipTriggerList.map(function(tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
 });

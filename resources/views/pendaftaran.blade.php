@@ -97,10 +97,10 @@
                         <label for="divisi">Divisi yang Diminati *</label>
                         <select id="divisi" name="divisi" required>
                             <option value="">Pilih Divisi</option>
-                            <option value="teknologi">Divisi Teknologi</option>
-                            <option value="keanggotaan">Divisi Keanggotaan</option>
-                            <option value="media">Divisi Media & Komunikasi</option>
-                            <option value="kewirausahaan">Divisi Kewirausahaan</option>
+                            <option value="teknologi">Divisi Kaderisasi</option>
+                            <option value="keanggotaan">Divisi Tecno</option>
+                            <option value="media">Divisi Humas</option>
+                            <option value="kewirausahaan">Divisi Media Informasi</option>
                         </select>
                     </div>
 

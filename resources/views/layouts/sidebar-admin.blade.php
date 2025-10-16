@@ -25,6 +25,13 @@
                 <span>Kelola Divisi</span>
             </a>
         </li>
+
+        <li class="nav-item">
+            <a href="{{ route('admin.jabatan.index') }}" class="nav-link {{ Request::routeIs('admin.jabatan.*') ? 'active' : '' }}">
+                <i class="fas fa-user-tie me-3"></i>
+                <span>Kelola Jabatan</span>
+            </a>
+        </li>
         
         <li class="nav-item">
             <a href="{{ route('admin.prestasi.index') }}" class="nav-link {{ Request::routeIs('admin.prestasi.*') ? 'active' : '' }}">
