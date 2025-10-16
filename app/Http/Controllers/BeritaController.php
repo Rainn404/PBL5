@@ -3,137 +3,186 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Berita;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Berita;
+use App\Models\Komentar;
 
 class BeritaController extends Controller
 {
-    /**
-     * Display berita management page
-     */
+    /* =========================================================
+     * ADMIN AREA
+     * ========================================================= */
+
     public function index()
     {
-        // Data dummy untuk sementara
-        $berita = [
-            [
-                'id_berita' => 1,
-                'judul' => 'Pembukaan Pendaftaran Anggota Baru HIMA TI 2024',
-                'isi' => 'Himpunan Mahasiswa Teknik Informatika membuka pendaftaran anggota baru untuk periode 2024. Pendaftaran dibuka dari tanggal 1 September hingga 15 September 2024.',
-                'foto' => 'berita/berita1.jpg',
-                'tanggal' => '2024-09-01 10:00:00',
-                'penulis' => 'Admin HIMA'
-            ],
-            [
-                'id_berita' => 2,
-                'judul' => 'Workshop Web Development Modern',
-                'isi' => 'HIMA TI akan mengadakan workshop web development dengan teknologi terkini. Workshop terbuka untuk semua mahasiswa TI.',
-                'foto' => null,
-                'tanggal' => '2024-09-05 14:30:00',
-                'penulis' => 'Ketua HIMA'
-            ],
-            [
-                'id_berita' => 3,
-                'judul' => 'Prestasi Mahasiswa TI dalam Kompetisi Nasional',
-                'isi' => 'Mahasiswa Teknik Informatika berhasil meraih juara 1 dalam kompetisi programming nasional yang diselenggarakan di Jakarta.',
-                'foto' => 'berita/berita3.jpg',
-                'tanggal' => '2024-09-10 09:15:00',
-                'penulis' => 'Admin HIMA'
-            ]
-        ];
+        $berita = Berita::orderByDesc('Tanggal_berita')
+                        ->orderByDesc('Id_berita')
+                        ->get();
 
-        return view('admin.berita', compact('berita'));
+        return view('admin.berita.index', compact('berita'));
     }
 
-    /**
-     * Store new berita
-     */
+    public function create()
+    {
+        return view('admin.berita.create');
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'judul' => 'required|string|max:200',
-            'isi' => 'required|string',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+            'judul'        => 'required|string|max:200',
+            'isi'          => 'required|string',
+            'nama_penulis' => 'nullable|string|max:100',
+            'tanggal'      => 'nullable|date',
+            'foto'         => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        try {
-            // Handle file upload
-            if ($request->hasFile('foto')) {
-                $fotoPath = $request->file('foto')->store('berita', 'public');
-                $validated['foto'] = $fotoPath;
-            }
-
-            // Simpan ke database (gunakan model Berita ketika sudah ada)
-            // Berita::create($validated);
-
-            return redirect()->route('admin.berita.index')
-                ->with('success', 'Berita berhasil ditambahkan.');
-
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Gagal menambahkan berita: ' . $e->getMessage())
-                ->withInput();
+        if ($request->hasFile('foto')) {
+            $validated['foto'] = $request->file('foto')->store('berita', 'public');
         }
+
+        Berita::create($validated);
+
+        return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil ditambahkan.');
     }
 
-    /**
-     * Update existing berita
-     */
+    public function show($id)
+    {
+        $berita = Berita::findOrFail($id);
+        return view('admin.berita.show', compact('berita'));
+    }
+
+    // Tambahan khusus tombol “Lihat” di admin (tidak ke halaman publik)
+    public function adminShow($id)
+    {
+        $berita = Berita::findOrFail($id);
+        return view('admin.berita.show', compact('berita'));
+    }
+
+    public function edit($id)
+    {
+        $berita = Berita::findOrFail($id);
+        return view('admin.berita.edit', compact('berita'));
+    }
+
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'judul' => 'required|string|max:200',
-            'isi' => 'required|string',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+            'judul'        => 'required|string|max:200',
+            'isi'          => 'required|string',
+            'nama_penulis' => 'nullable|string|max:100',
+            'tanggal'      => 'nullable|date',
+            'foto'         => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        try {
-            // $berita = Berita::findOrFail($id);
+        $berita = Berita::findOrFail($id);
 
-            // Handle file upload
-            if ($request->hasFile('foto')) {
-                // Hapus foto lama jika ada
-                // if ($berita->foto) {
-                //     Storage::disk('public')->delete($berita->foto);
-                // }
-                
-                $fotoPath = $request->file('foto')->store('berita', 'public');
-                $validated['foto'] = $fotoPath;
+        if ($request->hasFile('foto')) {
+            if (!empty($berita->foto)) {
+                Storage::disk('public')->delete($berita->foto);
             }
-
-            // Update berita
-            // $berita->update($validated);
-
-            return redirect()->route('admin.berita.index')
-                ->with('success', 'Berita berhasil diperbarui.');
-
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Gagal memperbarui berita: ' . $e->getMessage())
-                ->withInput();
+            $validated['foto'] = $request->file('foto')->store('berita', 'public');
         }
+
+        $berita->update($validated);
+
+        return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil diperbarui.');
     }
 
-    /**
-     * Delete berita
-     */
     public function destroy($id)
     {
-        try {
-            // $berita = Berita::findOrFail($id);
-            
-            // Hapus foto jika ada
-            // if ($berita->foto) {
-            //     Storage::disk('public')->delete($berita->foto);
-            // }
-            
-            // $berita->delete();
+        $berita = Berita::findOrFail($id);
 
-            return redirect()->route('admin.berita.index')
-                ->with('success', 'Berita berhasil dihapus.');
-
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Gagal menghapus berita: ' . $e->getMessage());
+        if (!empty($berita->foto)) {
+            Storage::disk('public')->delete($berita->foto);
         }
+
+        $berita->delete();
+
+        return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil dihapus.');
+    }
+
+    /* =========================================================
+     * FRONTEND / PUBLIK AREA
+     * ========================================================= */
+
+    // GET /berita → hanya 3 berita utama
+    public function publicIndex()
+    {
+        $highlight = Berita::orderByDesc('Tanggal_berita')
+                            ->orderByDesc('Id_berita')
+                            ->take(3)
+                            ->get();
+
+        return view('berita.index', compact('highlight'));
+    }
+
+    // GET /berita-lainnya → semua berita
+    public function lainnya()
+    {
+        $beritaLainnya = Berita::orderByDesc('Tanggal_berita')
+                                ->orderByDesc('Id_berita')
+                                ->get();
+
+        return view('berita.lainnya', compact('beritaLainnya'));
+    }
+
+    // GET /berita/{id} → halaman detail berita publik
+    public function publicShow($id)
+    {
+        $berita = Berita::with('komentar')->findOrFail($id);
+        return view('berita.show', compact('berita'));
+    }
+
+    /* =========================================================
+     * KOMENTAR PUBLIK
+     * ========================================================= */
+
+    public function publicCommentStore(Request $request, $id)
+    {
+        $request->validate([
+            'nama' => 'nullable|string|max:100',
+            'isi'  => 'required|string|max:2000',
+        ]);
+
+        $berita = Berita::findOrFail($id);
+
+        $berita->komentar()->create([
+            'nama' => $request->filled('nama') ? $request->nama : 'Anonim',
+            'isi'  => $request->isi,
+        ]);
+
+        return redirect()->to(route('berita.show', $id) . '#komentar')
+                         ->with('success', 'Komentar berhasil dikirim.');
+    }
+
+    public function publicCommentUpdate(Request $request, $id, $komentarId)
+    {
+        $request->validate([
+            'nama' => 'nullable|string|max:100',
+            'isi'  => 'required|string|max:2000',
+        ]);
+
+        $berita   = Berita::findOrFail($id);
+        $komentar = $berita->komentar()->where('id', $komentarId)->firstOrFail();
+
+        $komentar->update([
+            'nama' => $request->filled('nama') ? $request->nama : 'Anonim',
+            'isi'  => $request->isi,
+        ]);
+
+        return redirect()->to(route('berita.show', $id) . '#komentar')
+                         ->with('success', 'Komentar berhasil diperbarui.');
+    }
+
+    public function publicCommentDestroy($id, $komentarId)
+    {
+        $berita   = Berita::findOrFail($id);
+        $komentar = $berita->komentar()->where('id', $komentarId)->firstOrFail();
+
+        $komentar->delete();
+
+        return redirect()->to(route('berita.show', $id) . '#komentar')
+                         ->with('success', 'Komentar berhasil dihapus.');
     }
 }

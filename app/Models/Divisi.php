@@ -9,11 +9,17 @@ class Divisi extends Model
 {
     use HasFactory;
 
+<<<<<<< HEAD
     protected $table = 'divisis';
     protected $primaryKey = 'id_divisi';
     public $incrementing = true;
     protected $keyType = 'int';
     public $timestamps = false; 
+=======
+    protected $table = 'divisi';
+    protected $primaryKey = 'id_divisi'; // ✅ sesuai DB
+    public $timestamps = false;          // ✅ karena tabel tidak ada kolom created_at & updated_at
+>>>>>>> a71095d5ee2fe0a68106f6d8451d0822c6670154
 
     protected $fillable = [
         'nama_divisi',
@@ -21,6 +27,7 @@ class Divisi extends Model
         'deskripsi',
         'status'
     ];
+<<<<<<< HEAD
 
     protected $casts = [
         'status' => 'boolean'
@@ -44,3 +51,6 @@ class Divisi extends Model
         return $query->withCount('anggotaHima');
     }
 }
+=======
+}
+>>>>>>> a71095d5ee2fe0a68106f6d8451d0822c6670154

@@ -101,3 +101,24 @@
     </div>
 </div>
 @endsection
+
+<form action="{{ route('berita.store') }}" method="POST" enctype="multipart/form-data">
+    @csrf
+
+    <div class="mb-3">
+        <label>Judul Berita</label>
+        <input type="text" name="judul_berita" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Isi Berita</label>
+        <textarea name="isi_berita" class="form-control" required></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label>Foto Berita</label>
+        <input type="file" name="foto" class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Simpan</button>
+</form>
