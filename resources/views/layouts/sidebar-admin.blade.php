@@ -1,39 +1,43 @@
-<nav id="sidebar" class="sidebar">
+<nav id="sidebar" class="sidebar bg-white shadow-sm">
     <div class="sidebar-header bg-primary text-white text-center py-4">
         <h4 class="mb-0 fw-bold">HIMA Dashboard</h4>
         <small class="opacity-75">Sistem Manajemen</small>
     </div>
     
-    <ul class="sidebar-nav">
-        <!-- Dashboard -->
-        <li class="nav-item">
-            <a href="{{ route('admin.dashboard') }}" class="nav-link {{ Request::routeIs('admin.dashboard') ? 'active' : '' }}">
+
+    <ul class="sidebar-nav list-unstyled px-3 py-3">
+        {{-- Dashboard --}}
+        <li class="nav-item mb-1">
+            <a href="{{ route('admin.dashboard') }}" class="nav-link d-flex align-items-center {{ Request::routeIs('admin.dashboard') ? 'active' : '' }}">
+
                 <i class="fas fa-home me-3"></i>
                 <span>Dashboard</span>
             </a>
         </li>
-        
-        <!-- Data Master -->
-        <li class="nav-header">DATA MASTER</li>
-        
-        <li class="nav-item">
-            <a href="{{ route('admin.mahasiswa.index') }}" class="nav-link {{ Request::routeIs('admin.mahasiswa.*') ? 'active' : '' }}">
-                <i class="fas fa-user-graduate me-3"></i>
-                <span>Data Mahasiswa</span>
-            </a>
-        </li>
-        
-        <li class="nav-item">
-            <a href="{{ route('admin.anggota.index') }}" class="nav-link {{ Request::routeIs('admin.anggota.*') ? 'active' : '' }}">
+
+
+        {{-- Anggota --}}
+        <li class="nav-item mb-1">
+            <a href="{{ route('admin.anggota.index') }}" class="nav-link d-flex align-items-center {{ Request::routeIs('admin.anggota.*') ? 'active' : '' }}">
+
                 <i class="fas fa-users me-3"></i>
                 <span>Kelola Anggota</span>
             </a>
         </li>
-        
-        <li class="nav-item">
-            <a href="{{ route('admin.divisi.index') }}" class="nav-link {{ Request::routeIs('admin.divisi.*') ? 'active' : '' }}">
+
+        {{-- Divisi --}}
+        <li class="nav-item mb-1">
+            <a href="{{ route('admin.divisi.index') }}" class="nav-link d-flex align-items-center {{ Request::routeIs('admin.divisi.*') ? 'active' : '' }}">
                 <i class="fas fa-building me-3"></i>
                 <span>Kelola Divisi</span>
+            </a>
+        </li>
+
+
+        <li class="nav-item">
+            <a href="{{ route('admin.jabatan.index') }}" class="nav-link {{ Request::routeIs('admin.jabatan.*') ? 'active' : '' }}">
+                <i class="fas fa-user-tie me-3"></i>
+                <span>Kelola Jabatan</span>
             </a>
         </li>
         
@@ -42,37 +46,57 @@
         
         <li class="nav-item">
             <a href="{{ route('admin.prestasi.index') }}" class="nav-link {{ Request::routeIs('admin.prestasi.*') ? 'active' : '' }}">
+
+        {{-- Prestasi --}}
+        <li class="nav-item mb-1">
+            <a href="{{ route('admin.prestasi.index') }}" class="nav-link d-flex align-items-center {{ Request::routeIs('admin.prestasi.*') ? 'active' : '' }}">
                 <i class="fas fa-trophy me-3"></i>
                 <span>Kelola Prestasi</span>
             </a>
         </li>
-        
+
+
+        {{-- Mahasiswa Bermasalah --}}
+        <li class="nav-item mb-1">
+            <a href="{{ route('admin.mahasiswa-bermasalah.index') }}" class="nav-link d-flex align-items-center {{ Request::routeIs('admin.mahasiswa-bermasalah.*') ? 'active' : '' }}">
+
+        <!-- Tambahkan Data Mahasiswa di sini -->
         <li class="nav-item">
-            <a href="{{ route('admin.mahasiswa-bermasalah.index') }}" class="nav-link {{ Request::routeIs('admin.mahasiswa-bermasalah.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.mahasiswa.index') }}" class="nav-link {{ Request::routeIs('admin.mahasiswa.*') ? 'active' : '' }}">
+                <i class="fas fa-user-graduate me-3"></i>
+                <span>Data Mahasiswa</span>
+            </a>
+        </li>
+        
+        <!-- Tambahkan Mahasiswa Bermasalah di sini -->
+        <li class="nav-item">
+            <a href="{{ route('admin.mahasiswa-bermasalah.index') }}" class="nav-link {{ Request::routeIs('admin.mahasiswa-bermasalah.*') ? 'active' : '' }}">)
                 <i class="fas fa-exclamation-triangle me-3"></i>
                 <span>Mahasiswa Bermasalah</span>
             </a>
         </li>
-        
-        <li class="nav-item">
-            <a href="{{ route('admin.pelanggaran-sanksi.index') }}" class="nav-link {{ Request::routeIs('admin.pelanggaran-sanksi.*') ? 'active' : '' }}">
-                <i class="fas fa-balance-scale me-3"></i>
-                <span>Pelanggaran & Sanksi</span>
-            </a>
-        </li>
-        
-        <!-- Konten & Informasi -->
-        <li class="nav-header">KONTEN & INFORMASI</li>
-        
+
+
+
+        {{-- Berita --}}
+        <li class="nav-item mb-1">
+            <a href="{{ route('admin.berita.index') }}" class="nav-link d-flex align-items-center {{ Request::routeIs('admin.berita.*') ? 'active' : '' }}">
+           
         <li class="nav-item">
             <a href="{{ route('admin.berita.index') }}" class="nav-link {{ Request::routeIs('admin.berita.*') ? 'active' : '' }}">
+
+
                 <i class="fas fa-newspaper me-3"></i>
                 <span>Kelola Berita</span>
             </a>
         </li>
-        
-        <!-- Pendaftaran & Keanggotaan -->
-        <li class="nav-header">PENDAFTARAN</li>
+
+
+
+        {{-- Pendaftaran --}}
+        <li class="nav-item mb-1">
+            <a href="{{ route('admin.pendaftaran.index') }}" class="nav-link d-flex align-items-center {{ Request::routeIs('admin.pendaftaran.*') ? 'active' : '' }}">
+
         
         <li class="nav-item">
             <a href="{{ route('admin.pendaftaran.index') }}" class="nav-link {{ Request::routeIs('admin.pendaftaran.*') ? 'active' : '' }}">
@@ -80,11 +104,28 @@
                 <span>Kelola Pendaftaran</span>
             </a>
         </li>
+
+        <li class="nav-divider my-3 border-top"></li>
+
+        {{-- Pengaturan --}}
+        <li class="nav-item mb-1">
+            <a href="#" class="nav-link d-flex align-items-center">
         
+
+        <!-- Tambahkan Data Pelanggaran di sini -->
         <li class="nav-item">
-            <a href="{{ route('admin.pendaftaran-settings') }}" class="nav-link {{ Request::routeIs('admin.pendaftaran-settings') ? 'active' : '' }}">
-                <i class="fas fa-cogs me-3"></i>
-                <span>Settings Pendaftaran</span>
+            <a href="{{ route('admin.pelanggaran.index') }}" class="nav-link {{ Request::routeIs('admin.pelanggaran.*') ? 'active' : '' }}">
+                <i class="fas fa-exclamation-circle me-3"></i>
+                <span>Data Pelanggaran</span>
+            </a>
+        </li>
+        
+        <!-- Tambahkan Data Master Sanksi di sini -->
+        <li class="nav-item">
+            <a href="{{ route('admin.sanksi.index') }}" class="nav-link {{ Request::routeIs('admin.sanksi.*') ? 'active' : '' }}">
+                <i class="fas fa-balance-scale me-3"></i>
+                <span>Data Sanksi</span>
+
             </a>
         </li>
         
@@ -129,11 +170,14 @@
                 <span>Pengaturan Sistem</span>
             </a>
         </li>
-        
+
+        {{-- Logout --}}
         <li class="nav-item">
-            <form method="POST" action="{{ route('logout') }}" class="d-inline">
+
+            <form action="{{ route('logout') }}" method="POST" class="m-0">
                 @csrf
-                <button type="submit" class="nav-link text-danger border-0 bg-transparent w-100 text-start">
+                <button type="submit" class="nav-link d-flex align-items-center text-danger border-0 bg-transparent w-100 text-start">
+
                     <i class="fas fa-sign-out-alt me-3"></i>
                     <span>Logout</span>
                 </button>
@@ -142,104 +186,54 @@
     </ul>
 </nav>
 
+{{-- === Styling Sidebar === --}}
 <style>
 .sidebar {
-    background: #f8f9fa;
-    border-right: 1px solid #dee2e6;
+    width: 250px;
     min-height: 100vh;
-}
-
-.sidebar-header {
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-.sidebar-nav {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.nav-header {
-    padding: 1rem 1.5rem 0.5rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: #6c757d;
-    letter-spacing: 0.5px;
-}
-
-.nav-item {
-    margin: 0;
-}
-
-.nav-link {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 1.5rem;
-    color: #495057;
-    text-decoration: none;
-    border: none;
-    background: transparent;
-    width: 100%;
-    text-align: left;
+    position: fixed;
+    top: 0; left: 0;
+    background: #fff;
+    border-right: 1px solid #e5e7eb;
     transition: all 0.3s ease;
 }
 
-.nav-link:hover {
-    background: #e9ecef;
-    color: #495057;
+.sidebar-header {
+    border-bottom: 1px solid rgba(255,255,255,.2);
 }
 
-.nav-link.active {
-    background: #4361ee;
-    color: white;
-    border-right: 3px solid #3a0ca3;
+.sidebar-nav .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: #374151;
+    font-weight: 500;
+    transition: all .2s ease;
 }
 
-.nav-link i {
-    width: 20px;
+.sidebar-nav .nav-link:hover {
+    background: rgba(0,123,255,0.08);
+    color: #007BFF;
+}
+
+.sidebar-nav .nav-link.active {
+    background: #007BFF;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+}
+
+.sidebar-nav i {
+    width: 22px;
+
     text-align: center;
 }
 
 .nav-divider {
-    height: 1px;
-    background: #dee2e6;
-    margin: 1rem 0;
-}
 
-.dropdown-menu {
-    border: none;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    border-radius: 8px;
-}
-
-.dropdown-item {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-}
-
-.dropdown-item:hover {
-    background: #f8f9fa;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .sidebar {
-        min-height: auto;
-    }
-    
-    .nav-link {
-        padding: 1rem 1.5rem;
-    }
+    border-top: 1px solid #e5e7eb;
+    margin: 10px 0;
 }
 </style>
 
-<script>
-// Initialize dropdowns
-document.addEventListener('DOMContentLoaded', function() {
-    var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
-    var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
-        return new bootstrap.Dropdown(dropdownToggleEl)
-    });
-});
-</script>

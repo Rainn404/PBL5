@@ -6,18 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
-        Schema::create('divisi', function (Blueprint $table) {
+        Schema::create('divisis', function (Blueprint $table) {
             $table->id('id_divisi');
-            $table->string('nama', 100);
+            $table->string('ketua_divisi');
+            $table->string('nama_divisi', 100);
             $table->text('deskripsi')->nullable();
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }
 
-    public function down()
+    public function down(): void
     {
-        Schema::dropIfExists('divisi');
+        Schema::dropIfExists('divisis');
     }
 };

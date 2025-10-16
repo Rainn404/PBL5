@@ -9,11 +9,25 @@ class Jabatan extends Model
 {
     use HasFactory;
 
-    protected $table = 'jabatan';
     protected $primaryKey = 'id_jabatan';
     
     protected $fillable = [
         'nama_jabatan',
-        'deskripsi'
+        'deskripsi',
+        'level',
+        'status'
     ];
+
+    protected $casts = [
+        'status' => 'boolean',
+        'level' => 'integer'
+    ];
+
+    protected $table = 'jabatans';
+
+    // Scope untuk jabatan aktif
+    public function scopeAktif($query)
+    {
+        return $query->where('status', true);
+    }
 }

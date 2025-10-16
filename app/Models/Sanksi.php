@@ -1,4 +1,5 @@
 <?php
+// app/Models/Sanksi.php
 
 namespace App\Models;
 
@@ -10,17 +11,10 @@ class Sanksi extends Model
     use HasFactory;
 
     protected $table = 'sanksi';
-    protected $primaryKey = 'id_sanksi';
     
-    protected $fillable = ['id_masalah', 'nama_sanksi', 'deskripsi'];
-
-    public function pelanggaran()
-    {
-        return $this->belongsTo(Pelanggaran::class, 'id_masalah');
-    }
-
-    public function mahasiswaBermasalah()
-    {
-        return $this->hasMany(MahasiswaBermasalah::class, 'id_sanksi');
-    }
+    protected $fillable = [
+        'id_sanksi',
+        'nama_sanksi',
+        'jenis_sanksi'
+    ];
 }

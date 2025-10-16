@@ -13,28 +13,36 @@ class AnggotaHima extends Model
     protected $primaryKey = 'id_anggota_hima';
     
     protected $fillable = [
-        'id_user',
-        'id_divisi',
-        'id_jabatan',
-        'nim',
-        'nama',
-        'semester',
-        'foto',
-        'status'
+        'user_id', // TAMBAHKAN INI
+        'nama', 
+        'nim', 
+        'id_divisi', 
+        'id_jabatan', 
+        'semester', 
+        'status', 
+        'foto'
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'id_user');
-    }
+    protected $casts = [
+        'status' => 'boolean',
+        'semester' => 'integer'
+    ];
 
+    // Relasi ke divisi
     public function divisi()
     {
-        return $this->belongsTo(Divisi::class, 'id_divisi');
+        return $this->belongsTo(Divisi::class, 'id_divisi', 'id_divisi');
     }
 
+    // Relasi ke jabatan
     public function jabatan()
     {
-        return $this->belongsTo(Jabatan::class, 'id_jabatan');
+        return $this->belongsTo(Jabatan::class, 'id_jabatan', 'id_jabatan');
+    }
+
+    // Relasi ke user (jika ada)
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
