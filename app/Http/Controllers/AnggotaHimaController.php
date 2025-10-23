@@ -12,11 +12,13 @@ class AnggotaHimaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $anggota = AnggotaHima::with(['divisi', 'jabatan'])->get();
-        return view('anggota.index', compact('anggota'));
-    }
+ public function index()
+{
+    $anggota = AnggotaHima::with(['divisi', 'jabatan'])->get();
+    $divisiList = Divisi::pluck('nama_divisi'); // ambil nama divisi dari tabel Divisi
+    return view('anggota', compact('anggota', 'divisiList'));
+}
+
 
     /**
      * Show the form for creating a new resource.

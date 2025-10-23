@@ -1,4 +1,4 @@
-@extends('layouts.app_admin')
+@extends('layouts.admin.app')
 
 @section('title', 'Tambah Berita')
 
@@ -26,10 +26,10 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="nama_penulis" class="form-label">Nama Penulis</label>
-                    <input type="text" class="form-control @error('nama_penulis') is-invalid @enderror"
-                           id="nama_penulis" name="nama_penulis" value="{{ old('nama_penulis') }}">
-                    @error('nama_penulis') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <label for="penulis" class="form-label">Nama Penulis</label>
+                    <input type="text" class="form-control @error('penulis') is-invalid @enderror"
+                           id="penulis" name="penulis" value="{{ old('penulis') }}">
+                    @error('penulis') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="mb-3">

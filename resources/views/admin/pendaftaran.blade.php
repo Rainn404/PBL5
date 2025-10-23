@@ -1,4 +1,4 @@
-@extends('layouts.app_admin')
+@extends('layouts.admin.app')
 
 @section('title', 'Kelola Pendaftaran - HIMA Sistem Manajemen')
 

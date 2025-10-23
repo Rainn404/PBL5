@@ -1,4 +1,4 @@
-@extends('layouts.app_admin')
+@extends('layouts.admin.app')
 
 @section('title', 'Kelola Prestasi - Admin HIMA-TI')
 
@@ -99,7 +99,7 @@
         <!-- Filter Section -->
         <div class="filter-section mb-4">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="filter-label">Filter Status</div>
                     <select class="form-select" id="statusFilter">
                         <option value="all">Semua Status</option>
@@ -108,7 +108,7 @@
                         <option value="Ditolak" {{ request('status') == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="filter-label">Filter Kategori</div>
                     <select class="form-select" id="categoryFilter">
                         <option value="all">Semua Kategori</option>
@@ -120,7 +120,7 @@
                         <option value="Lainnya" {{ request('kategori') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="filter-label">Cari Prestasi</div>
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="Cari prestasi..." id="searchInput" value="{{ request('search') }}">
@@ -129,42 +129,17 @@
                         </button>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="filter-label">Aksi</div>
-                    <div class="d-grid">
-                        <a href="{{ route('admin.prestasi.create') }}" class="btn btn-success">
-                            <i class="fas fa-plus me-2"></i>Tambah Prestasi
-                        </a>
-                    </div>
-                </div>
             </div>
-        </div>
-
-        <!-- Bulk Actions -->
-        <div class="bulk-actions-section mb-3">
-            <div class="card">
-                <div class="card-body py-3">
-                    <div class="row align-items-center">
-                        <div class="col-md-6">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="selectAll">
-                                <label class="form-check-label fw-semibold" for="selectAll">
-                                    Pilih Semua
-                                </label>
-                            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <a href="{{ route('admin.prestasi.create') }}" class="btn btn-success">
+                                <i class="fas fa-plus me-2"></i>Tambah Prestasi
+                            </a>
                         </div>
-                        <div class="col-md-6 text-end">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-success btn-sm" id="bulkApproveBtn" disabled>
-                                    <i class="fas fa-check-circle me-1"></i>Validasi Massal
-                                </button>
-                                <button type="button" class="btn btn-danger btn-sm" id="bulkRejectBtn" disabled>
-                                    <i class="fas fa-times-circle me-1"></i>Tolak Massal
-                                </button>
-                                <button type="button" class="btn btn-outline-danger btn-sm" id="bulkDeleteBtn" disabled>
-                                    <i class="fas fa-trash me-1"></i>Hapus Massal
-                                </button>
-                            </div>
+                        <div class="text-muted">
+                            Total: <strong>{{ $prestasi->total() }}</strong> prestasi
                         </div>
                     </div>
                 </div>
@@ -209,9 +184,6 @@
                     <table class="table table-hover mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th class="ps-4" width="50">
-                                    <input type="checkbox" class="form-check-input" id="selectAllHeader">
-                                </th>
                                 <th>#</th>
                                 <th>Mahasiswa</th>
                                 <th>Prestasi</th>
@@ -226,9 +198,6 @@
                         <tbody>
                             @foreach($prestasi as $item)
                             <tr class="prestasi-item" data-id="{{ $item->id_prestasi ?? $item->id }}">
-                                <td class="ps-4">
-                                    <input type="checkbox" class="form-check-input prestasi-checkbox" value="{{ $item->id_prestasi ?? $item->id }}">
-                                </td>
                                 <td>{{ $loop->iteration + ($prestasi->currentPage() - 1) * $prestasi->perPage() }}</td>
                                 <td>
                                     <div class="d-flex align-items-center">
@@ -238,8 +207,8 @@
                                             </div>
                                         </div>
                                         <div class="flex-grow-1">
-                                            <strong class="d-block">{{ $item->user->name ?? 'N/A' }}</strong>
-                                            <small class="text-muted">{{ $item->user->nim ?? 'N/A' }}</small>
+                                            <strong class="d-block">{{ $item->user->name ?? $item->nama ?? 'N/A' }}</strong>
+                                            <small class="text-muted">{{ $item->user->nim ?? $item->nim ?? 'N/A' }}</small>
                                         </div>
                                     </div>
                                 </td>
@@ -274,11 +243,70 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <span class="badge status-badge 
-                                        {{ $item->status == 'Tervalidasi' ? 'bg-success' : 
-                                           ($item->status == 'Ditolak' ? 'bg-danger' : 'bg-warning') }}">
-                                        {{ $item->status }}
-                                    </span>
+                                    <div class="d-flex flex-column gap-1">
+                                        <!-- Badge Status -->
+                                        @if($item->status)
+                                            <span class="badge status-badge 
+                                                {{ $item->status == 'Tervalidasi' ? 'bg-success' : 
+                                                   ($item->status == 'Ditolak' ? 'bg-danger' : 'bg-warning') }}">
+                                                {{ $item->status }}
+                                            </span>
+                                        @else
+                                            <span class="badge bg-secondary">Belum Ada Status</span>
+                                        @endif
+                                        
+                                        <!-- Tombol Validasi Cepat -->
+                                        @if(!$item->status || $item->status == 'Menunggu Validasi')
+                                        <div class="d-flex gap-1 mt-1">
+                                            <form action="{{ route('admin.prestasi.validasi', $item->id_prestasi ?? $item->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="status" value="Tervalidasi">
+                                                <button type="submit" class="btn btn-success btn-sm w-100" 
+                                                        title="Validasi Prestasi"
+                                                        onclick="return confirm('Validasi prestasi ini?')">
+                                                    <i class="fas fa-check me-1"></i> Validasi
+                                                </button>
+                                            </form>
+                                            <form action="{{ route('admin.prestasi.validasi', $item->id_prestasi ?? $item->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="status" value="Ditolak">
+                                                <button type="submit" class="btn btn-danger btn-sm w-100" 
+                                                        title="Tolak Prestasi"
+                                                        onclick="return confirm('Tolak prestasi ini?')">
+                                                    <i class="fas fa-times me-1"></i> Tolak
+                                                </button>
+                                            </form>
+                                        </div>
+                                        @elseif($item->status == 'Tervalidasi')
+                                        <div class="d-flex gap-1 mt-1">
+                                            <form action="{{ route('admin.prestasi.validasi', $item->id_prestasi ?? $item->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="status" value="Menunggu Validasi">
+                                                <button type="submit" class="btn btn-warning btn-sm w-100" 
+                                                        title="Batalkan Validasi"
+                                                        onclick="return confirm('Batalkan validasi prestasi ini?')">
+                                                    <i class="fas fa-undo me-1"></i> Batal
+                                                </button>
+                                            </form>
+                                        </div>
+                                        @elseif($item->status == 'Ditolak')
+                                        <div class="d-flex gap-1 mt-1">
+                                            <form action="{{ route('admin.prestasi.validasi', $item->id_prestasi ?? $item->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="status" value="Tervalidasi">
+                                                <button type="submit" class="btn btn-success btn-sm w-100" 
+                                                        title="Setujui Kembali"
+                                                        onclick="return confirm('Setujui kembali prestasi ini?')">
+                                                    <i class="fas fa-check me-1"></i> Setujui
+                                                </button>
+                                            </form>
+                                        </div>
+                                        @endif
+                                    </div>
                                 </td>
                                 <td class="text-center pe-4">
                                     <div class="action-buttons d-flex justify-content-center">
@@ -294,47 +322,15 @@
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         
-                                        <!-- Button Validasi -->
-                                        @if($item->status == 'Menunggu Validasi')
-                                        <button type="button" class="btn btn-sm btn-success mx-1 approve-btn" 
-                                                title="Validasi Prestasi"
-                                                data-id="{{ $item->id_prestasi ?? $item->id }}"
-                                                data-name="{{ $item->nama_prestasi ?? $item->nama }}">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                        
-                                        <!-- Button Tolak -->
-                                        <button type="button" class="btn btn-sm btn-danger mx-1 reject-btn" 
-                                                title="Tolak Prestasi"
-                                                data-id="{{ $item->id_prestasi ?? $item->id }}"
-                                                data-name="{{ $item->nama_prestasi ?? $item->nama }}">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                        @elseif($item->status == 'Tervalidasi')
-                                        <!-- Button Batalkan Validasi -->
-                                        <button type="button" class="btn btn-sm btn-warning mx-1 unapprove-btn" 
-                                                title="Batalkan Validasi"
-                                                data-id="{{ $item->id_prestasi ?? $item->id }}"
-                                                data-name="{{ $item->nama_prestasi ?? $item->nama }}">
-                                            <i class="fas fa-undo"></i>
-                                        </button>
-                                        @elseif($item->status == 'Ditolak')
-                                        <!-- Button Setujui Kembali -->
-                                        <button type="button" class="btn btn-sm btn-success mx-1 approve-btn" 
-                                                title="Setujui Kembali"
-                                                data-id="{{ $item->id_prestasi ?? $item->id }}"
-                                                data-name="{{ $item->nama_prestasi ?? $item->nama }}">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                        @endif
-                                        
                                         <!-- Button Hapus -->
+                                        @if($item->status == 'Tervalidasi' || $item->status == 'Ditolak' || !$item->status)
                                         <button type="button" class="btn btn-sm btn-outline-danger mx-1 delete-btn" 
                                                 title="Hapus Prestasi"
                                                 data-id="{{ $item->id_prestasi ?? $item->id }}"
                                                 data-name="{{ $item->nama_prestasi ?? $item->nama }}">
                                             <i class="fas fa-trash"></i>
                                         </button>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -357,77 +353,6 @@
             </nav>
         </div>
         @endif
-    </div>
-</div>
-
-<!-- Modal Konfirmasi Validasi -->
-<div class="modal fade" id="approveModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-check-circle text-success me-2"></i>
-                    Validasi Prestasi
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p>Apakah Anda yakin ingin memvalidasi prestasi <strong id="approvePrestasiName"></strong>?</p>
-                <p class="text-success mb-0">
-                    <i class="fas fa-info-circle me-1"></i>
-                    Prestasi akan ditandai sebagai "Tervalidasi"
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <form id="approveForm" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <input type="hidden" name="status" value="Tervalidasi">
-                    <button type="submit" class="btn btn-success">
-                        <i class="fas fa-check me-1"></i>Ya, Validasi
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Konfirmasi Penolakan -->
-<div class="modal fade" id="rejectModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-times-circle text-danger me-2"></i>
-                    Tolak Prestasi
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p>Apakah Anda yakin ingin menolak prestasi <strong id="rejectPrestasiName"></strong>?</p>
-                <div class="mb-3">
-                    <label for="rejectReason" class="form-label">Alasan Penolakan (Opsional):</label>
-                    <textarea class="form-control" id="rejectReason" rows="3" placeholder="Masukkan alasan penolakan..."></textarea>
-                </div>
-                <p class="text-danger mb-0">
-                    <i class="fas fa-exclamation-triangle me-1"></i>
-                    Prestasi akan ditandai sebagai "Ditolak"
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <form id="rejectForm" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <input type="hidden" name="status" value="Ditolak">
-                    <input type="hidden" name="alasan_penolakan" id="alasanPenolakan" value="">
-                    <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-times me-1"></i>Ya, Tolak
-                    </button>
-                </form>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -456,45 +381,6 @@
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">
                         <i class="fas fa-trash me-1"></i>Ya, Hapus
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Bulk Actions -->
-<div class="modal fade" id="bulkActionModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="bulkModalTitle">
-                    <i class="fas fa-users text-primary me-2"></i>
-                    Aksi Massal
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p id="bulkModalMessage">Apakah Anda yakin ingin melakukan aksi ini?</p>
-                <div id="bulkRejectReason" class="mb-3 d-none">
-                    <label for="bulkRejectReasonText" class="form-label">Alasan Penolakan (Opsional):</label>
-                    <textarea class="form-control" id="bulkRejectReasonText" rows="3" placeholder="Masukkan alasan penolakan..."></textarea>
-                </div>
-                <p class="text-info mb-0">
-                    <i class="fas fa-info-circle me-1"></i>
-                    Aksi ini akan diterapkan pada <span id="selectedCount" class="fw-bold">0</span> prestasi
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <form id="bulkActionForm" method="POST">
-                    @csrf
-                    <input type="hidden" name="_method" id="bulkMethod" value="PUT">
-                    <input type="hidden" name="status" id="bulkStatus" value="">
-                    <input type="hidden" name="alasan_penolakan" id="bulkAlasanPenolakan" value="">
-                    <input type="hidden" name="selected_ids" id="selectedIds" value="">
-                    <button type="submit" class="btn" id="bulkActionButton">
-                        <i class="fas fa-check me-1"></i>Ya, Lanjutkan
                     </button>
                 </form>
             </div>
@@ -588,17 +474,6 @@
     margin-bottom: 0.5rem;
     color: #495057;
     font-size: 0.9rem;
-}
-
-/* Bulk Actions */
-.bulk-actions-section .card {
-    border: 2px solid #e9ecef;
-    border-radius: var(--radius);
-}
-
-.bulk-actions-section .btn {
-    border-radius: 6px;
-    margin-left: 0.25rem;
 }
 
 /* Card Styles */
@@ -717,16 +592,15 @@
     padding: 1rem 1.5rem;
 }
 
-/* Checkbox Styles */
-.form-check-input {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
+/* Status Column Styles */
+.table td:nth-child(8) {
+    min-width: 160px;
 }
 
-.form-check-input:checked {
-    background-color: var(--primary);
-    border-color: var(--primary);
+/* Quick Action Buttons */
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
 }
 
 /* Responsive */
@@ -753,17 +627,6 @@
         padding: 1rem;
     }
     
-    .bulk-actions-section .btn-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    
-    .bulk-actions-section .btn {
-        margin-left: 0;
-        width: 100%;
-    }
-    
     .action-buttons {
         flex-direction: column;
         gap: 0.25rem;
@@ -773,6 +636,10 @@
         margin: 0;
         width: 100%;
         justify-content: center;
+    }
+    
+    .table td:nth-child(8) {
+        min-width: 140px;
     }
 }
 </style>
@@ -832,198 +699,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Checkbox functionality
-    const selectAllHeader = document.getElementById('selectAllHeader');
-    const selectAll = document.getElementById('selectAll');
-    const prestasiCheckboxes = document.querySelectorAll('.prestasi-checkbox');
-    const bulkApproveBtn = document.getElementById('bulkApproveBtn');
-    const bulkRejectBtn = document.getElementById('bulkRejectBtn');
-    const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
-
-    function updateBulkButtons() {
-        const checkedBoxes = document.querySelectorAll('.prestasi-checkbox:checked');
-        const hasChecked = checkedBoxes.length > 0;
-        
-        if (bulkApproveBtn) bulkApproveBtn.disabled = !hasChecked;
-        if (bulkRejectBtn) bulkRejectBtn.disabled = !hasChecked;
-        if (bulkDeleteBtn) bulkDeleteBtn.disabled = !hasChecked;
-    }
-
-    function getSelectedIds() {
-        return Array.from(document.querySelectorAll('.prestasi-checkbox:checked'))
-            .map(checkbox => checkbox.value);
-    }
-
-    if (selectAllHeader) {
-        selectAllHeader.addEventListener('change', function() {
-            prestasiCheckboxes.forEach(checkbox => {
-                checkbox.checked = selectAllHeader.checked;
-            });
-            if (selectAll) selectAll.checked = selectAllHeader.checked;
-            updateBulkButtons();
-        });
-    }
-
-    if (selectAll) {
-        selectAll.addEventListener('change', function() {
-            prestasiCheckboxes.forEach(checkbox => {
-                checkbox.checked = selectAll.checked;
-            });
-            if (selectAllHeader) selectAllHeader.checked = selectAll.checked;
-            updateBulkButtons();
-        });
-    }
-
-    prestasiCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', updateBulkButtons);
-    });
-
-    // Bulk actions modal
-    const bulkActionModalEl = document.getElementById('bulkActionModal');
-    let bulkActionModal = null;
-    
-    if (bulkActionModalEl && typeof bootstrap !== 'undefined') {
-        bulkActionModal = new bootstrap.Modal(bulkActionModalEl);
-    }
-    
-    const bulkModalTitle = document.getElementById('bulkModalTitle');
-    const bulkModalMessage = document.getElementById('bulkModalMessage');
-    const bulkRejectReason = document.getElementById('bulkRejectReason');
-    const selectedCount = document.getElementById('selectedCount');
-    const bulkActionForm = document.getElementById('bulkActionForm');
-    const bulkMethod = document.getElementById('bulkMethod');
-    const bulkStatus = document.getElementById('bulkStatus');
-    const bulkAlasanPenolakan = document.getElementById('bulkAlasanPenolakan');
-    const selectedIds = document.getElementById('selectedIds');
-    const bulkActionButton = document.getElementById('bulkActionButton');
-
-    // Bulk approve
-    if (bulkApproveBtn) {
-        bulkApproveBtn.addEventListener('click', function() {
-            const selectedIdsArray = getSelectedIds();
-            if (selectedIdsArray.length > 0 && bulkActionModal) {
-                bulkModalTitle.innerHTML = '<i class="fas fa-check-circle text-success me-2"></i>Validasi Massal';
-                bulkModalMessage.textContent = `Apakah Anda yakin ingin memvalidasi ${selectedIdsArray.length} prestasi?`;
-                bulkRejectReason.classList.add('d-none');
-                selectedCount.textContent = selectedIdsArray.length;
-                
-                bulkActionForm.action = '{{ route("admin.prestasi.bulk-action") }}';
-                bulkMethod.value = 'PUT';
-                bulkStatus.value = 'Tervalidasi';
-                selectedIds.value = JSON.stringify(selectedIdsArray);
-                
-                bulkActionButton.className = 'btn btn-success';
-                bulkActionButton.innerHTML = '<i class="fas fa-check me-1"></i>Ya, Validasi';
-                
-                bulkActionModal.show();
-            }
-        });
-    }
-
-    // Bulk reject
-    if (bulkRejectBtn) {
-        bulkRejectBtn.addEventListener('click', function() {
-            const selectedIdsArray = getSelectedIds();
-            if (selectedIdsArray.length > 0 && bulkActionModal) {
-                bulkModalTitle.innerHTML = '<i class="fas fa-times-circle text-danger me-2"></i>Tolak Massal';
-                bulkModalMessage.textContent = `Apakah Anda yakin ingin menolak ${selectedIdsArray.length} prestasi?`;
-                bulkRejectReason.classList.remove('d-none');
-                selectedCount.textContent = selectedIdsArray.length;
-                
-                bulkActionForm.action = '{{ route("admin.prestasi.bulk-action") }}';
-                bulkMethod.value = 'PUT';
-                bulkStatus.value = 'Ditolak';
-                selectedIds.value = JSON.stringify(selectedIdsArray);
-                
-                bulkActionButton.className = 'btn btn-danger';
-                bulkActionButton.innerHTML = '<i class="fas fa-times me-1"></i>Ya, Tolak';
-                
-                bulkActionModal.show();
-            }
-        });
-    }
-
-    // Bulk delete
-    if (bulkDeleteBtn) {
-        bulkDeleteBtn.addEventListener('click', function() {
-            const selectedIdsArray = getSelectedIds();
-            if (selectedIdsArray.length > 0 && bulkActionModal) {
-                bulkModalTitle.innerHTML = '<i class="fas fa-trash text-danger me-2"></i>Hapus Massal';
-                bulkModalMessage.textContent = `Apakah Anda yakin ingin menghapus ${selectedIdsArray.length} prestasi?`;
-                bulkRejectReason.classList.add('d-none');
-                selectedCount.textContent = selectedIdsArray.length;
-                
-                bulkActionForm.action = '{{ route("admin.prestasi.bulk-action") }}';
-                bulkMethod.value = 'DELETE';
-                bulkStatus.value = '';
-                selectedIds.value = JSON.stringify(selectedIdsArray);
-                
-                bulkActionButton.className = 'btn btn-danger';
-                bulkActionButton.innerHTML = '<i class="fas fa-trash me-1"></i>Ya, Hapus';
-                
-                bulkActionModal.show();
-            }
-        });
-    }
-
-    // Handle bulk reject reason
-    const bulkRejectReasonText = document.getElementById('bulkRejectReasonText');
-    if (bulkRejectReasonText && bulkAlasanPenolakan) {
-        bulkRejectReasonText.addEventListener('input', function() {
-            bulkAlasanPenolakan.value = this.value;
-        });
-    }
-
-    // Modal functionality for individual actions
-    let approveModal = null;
-    let rejectModal = null;
+    // Modal functionality for delete
     let deleteModal = null;
-    
-    const approveModalEl = document.getElementById('approveModal');
-    const rejectModalEl = document.getElementById('rejectModal');
     const deleteModalEl = document.getElementById('deleteModal');
     
-    if (typeof bootstrap !== 'undefined') {
-        if (approveModalEl) approveModal = new bootstrap.Modal(approveModalEl);
-        if (rejectModalEl) rejectModal = new bootstrap.Modal(rejectModalEl);
-        if (deleteModalEl) deleteModal = new bootstrap.Modal(deleteModalEl);
+    if (typeof bootstrap !== 'undefined' && deleteModalEl) {
+        deleteModal = new bootstrap.Modal(deleteModalEl);
     }
 
-    // Approve buttons (Individual)
-    document.querySelectorAll('.approve-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const id = this.getAttribute('data-id');
-            const name = this.getAttribute('data-name');
-            
-            const approvePrestasiName = document.getElementById('approvePrestasiName');
-            const approveForm = document.getElementById('approveForm');
-            
-            if (approvePrestasiName) approvePrestasiName.textContent = name;
-            if (approveForm) approveForm.action = `/admin/prestasi/${id}/validasi`;
-            
-            if (approveModal) approveModal.show();
-        });
-    });
-
-    // Reject buttons (Individual)
-    document.querySelectorAll('.reject-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const id = this.getAttribute('data-id');
-            const name = this.getAttribute('data-name');
-            
-            const rejectPrestasiName = document.getElementById('rejectPrestasiName');
-            const rejectForm = document.getElementById('rejectForm');
-            const rejectReason = document.getElementById('rejectReason');
-            
-            if (rejectPrestasiName) rejectPrestasiName.textContent = name;
-            if (rejectForm) rejectForm.action = `/admin/prestasi/${id}/validasi`;
-            if (rejectReason) rejectReason.value = '';
-            
-            if (rejectModal) rejectModal.show();
-        });
-    });
-
-    // Delete buttons (Individual)
+    // Delete buttons
     document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', function() {
             const id = this.getAttribute('data-id');
@@ -1039,48 +723,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Handle reject reason (Individual)
-    const rejectReason = document.getElementById('rejectReason');
-    const alasanPenolakan = document.getElementById('alasanPenolakan');
-    
-    if (rejectReason && alasanPenolakan) {
-        rejectReason.addEventListener('input', function() {
-            alasanPenolakan.value = this.value;
-        });
-    }
-
-    // Unapprove buttons
-    document.querySelectorAll('.unapprove-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const id = this.getAttribute('data-id');
-            const name = this.getAttribute('data-name');
+    // Quick validation feedback
+    document.querySelectorAll('form[action*="validasi"]').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const button = this.querySelector('button[type="submit"]');
+            const originalText = button.innerHTML;
             
-            if (confirm(`Apakah Anda yakin ingin membatalkan validasi prestasi "${name}"?`)) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = `/admin/prestasi/${id}/validasi`;
-                
-                const csrfToken = document.createElement('input');
-                csrfToken.type = 'hidden';
-                csrfToken.name = '_token';
-                csrfToken.value = '{{ csrf_token() }}';
-                
-                const methodField = document.createElement('input');
-                methodField.type = 'hidden';
-                methodField.name = '_method';
-                methodField.value = 'PUT';
-                
-                const statusField = document.createElement('input');
-                statusField.type = 'hidden';
-                statusField.name = 'status';
-                statusField.value = 'Menunggu Validasi';
-                
-                form.appendChild(csrfToken);
-                form.appendChild(methodField);
-                form.appendChild(statusField);
-                document.body.appendChild(form);
-                form.submit();
-            }
+            // Show loading state
+            button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Loading...';
+            button.disabled = true;
+            
+            // Re-enable after 3 seconds if still processing
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }, 3000);
         });
     });
 });

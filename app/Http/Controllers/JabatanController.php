@@ -7,11 +7,13 @@ use App\Models\Jabatan;
 
 class JabatanController extends Controller
 {
+
+    
     public function index()
-    {
-        $jabatans = Jabatan::all();
-        return view('admin.jabatan.index', compact('jabatans'));
-    }
+{
+    $jabatans = \App\Models\Jabatan::all();
+    return view('admin.jabatan.index', compact('jabatans'));
+}
 
     public function create()
     {

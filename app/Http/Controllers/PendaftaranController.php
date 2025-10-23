@@ -9,29 +9,22 @@ use Illuminate\Support\Facades\Storage;
 
 class PendaftaranController extends Controller
 {
-
+    public function index()
+    {
+        return $this->checkPendaftaranStatus();
+    }
 
     public function checkPendaftaranStatus()
     {
         $settings = SystemSetting::getSettings();
-        
-        // Cek jika pendaftaran tidak aktif
-        if (!SystemSetting::isRegistrationActive()) {
-            return view('users.pendaftaran.closed', compact('settings'));
-        }
-        
-        // Cek jika kuota sudah penuh
-        if (SystemSetting::isQuotaFull()) {
-            return view('users.pendaftaran.quota-full', compact('settings'));
-        }
-        
-        // Jika semua kondisi terpenuhi, tampilkan form pendaftaran
+
+        // 🚀 SELALU AKTIF — lewati semua pengecekan
         return view('users.pendaftaran.create', compact('settings'));
     }
 
     public function create()
     {
-        // Redirect ke method checkPendaftaranStatus untuk konsistensi
+        // Langsung tampilkan form
         return $this->checkPendaftaranStatus();
     }
 
@@ -50,14 +43,8 @@ class PendaftaranController extends Controller
             'agree' => 'required|accepted'
         ]);
 
-        // Cek status pendaftaran sebelum menyimpan
-        if (!SystemSetting::isRegistrationActive()) {
-            return redirect()->route('pendaftaran.closed');
-        }
-
-        if (SystemSetting::isQuotaFull()) {
-            return redirect()->route('pendaftaran.quota-full');
-        }
+        // 🚀 Skip semua logika "tertutup" atau "kuota penuh"
+        // Pendaftaran dianggap selalu terbuka
 
         // Handle file upload
         if ($request->hasFile('dokumen')) {
@@ -65,24 +52,32 @@ class PendaftaranController extends Controller
             $validated['dokumen'] = $dokumenPath;
         }
 
-        // Tambahkan submitted_at
+        // Tambahkan submitted_at dan status
         $validated['submitted_at'] = now();
         $validated['status_pendaftaran'] = 'pending';
 
-        // Simpan data pendaftaran
+        // Simpan data ke database
         $pendaftaran = Pendaftaran::create($validated);
+return redirect()->route('pendaftaran.success');
 
-        return redirect()->route('pendaftaran.success', ['id' => $pendaftaran->id_pendaftaran]);
+    }
+
+    public function show($id)
+    {
+        $pendaftaran = Pendaftaran::findOrFail($id);
+        return view('users.pendaftaran.status', compact('pendaftaran'));
     }
 
     public function closed()
     {
+        // Tidak akan pernah dipakai, tapi tetap disediakan
         $settings = SystemSetting::getSettings();
         return view('users.pendaftaran.closed', compact('settings'));
     }
 
     public function quotaFull()
     {
+        // Tidak akan pernah dipakai, tapi tetap disediakan
         $settings = SystemSetting::getSettings();
         return view('users.pendaftaran.quota-full', compact('settings'));
     }
@@ -115,7 +110,7 @@ class PendaftaranController extends Controller
             return back()->with('error', 'Data pendaftaran tidak ditemukan');
         }
 
-        return redirect()->route('pendaftaran.status', $pendaftaran->id_pendaftaran);
+        return redirect()->route('pendaftaran.show', $pendaftaran->id_pendaftaran);
     }
 
     public function showApi($id)
@@ -128,9 +123,9 @@ class PendaftaranController extends Controller
     {
         $settings = SystemSetting::getSettings();
         return response()->json([
-            'pendaftaran_aktif' => $settings->pendaftaran_aktif,
-            'is_active' => SystemSetting::isRegistrationActive(),
-            'is_quota_full' => SystemSetting::isQuotaFull(),
+            'pendaftaran_aktif' => true, // 🚀 Selalu aktif
+            'is_active' => true,
+            'is_quota_full' => false,
             'tanggal_mulai' => $settings->tanggal_mulai,
             'tanggal_selesai' => $settings->tanggal_selesai,
             'kuota' => $settings->kuota,

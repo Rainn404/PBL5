@@ -4,15 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Pendaftaran;
 
 class SystemSetting extends Model
 {
     use HasFactory;
 
     protected $table = 'system_settings';
-    protected $primaryKey = 'id';
-
+    
     protected $fillable = [
         'pendaftaran_aktif',
         'tanggal_mulai',
@@ -20,7 +18,7 @@ class SystemSetting extends Model
         'kuota',
         'auto_close'
     ];
-
+    
     protected $casts = [
         'pendaftaran_aktif' => 'boolean',
         'auto_close' => 'boolean',
@@ -29,31 +27,21 @@ class SystemSetting extends Model
     ];
 
     /**
-     * Get system settings with caching
+     * Get system settings
      */
     public static function getSettings()
     {
-        return cache()->remember('system_settings', 3600, function () {
-            return self::firstOrCreate([], [
-                'pendaftaran_aktif' => false,
-                'tanggal_mulai' => now()->format('Y-m-d'),
-                'tanggal_selesai' => now()->addDays(30)->format('Y-m-d'),
-                'kuota' => 30,
-                'auto_close' => true
-            ]);
-        });
+        return self::first() ?? new self([
+            'pendaftaran_aktif' => false,
+            'tanggal_mulai' => now()->format('Y-m-d'),
+            'tanggal_selesai' => now()->addMonth()->format('Y-m-d'),
+            'kuota' => 50,
+            'auto_close' => true
+        ]);
     }
 
     /**
-     * Clear settings cache
-     */
-    public static function clearCache()
-    {
-        cache()->forget('system_settings');
-    }
-
-    /**
-     * Check if registration is currently active
+     * Check if registration is active
      */
     public static function isRegistrationActive()
     {
@@ -64,11 +52,10 @@ class SystemSetting extends Model
         }
 
         $now = now();
-        if ($now->lt($settings->tanggal_mulai) || $now->gt($settings->tanggal_selesai)) {
-            return false;
-        }
+        $start = \Carbon\Carbon::parse($settings->tanggal_mulai);
+        $end = \Carbon\Carbon::parse($settings->tanggal_selesai)->endOfDay();
 
-        return true;
+        return $now->between($start, $end);
     }
 
     /**
@@ -77,8 +64,8 @@ class SystemSetting extends Model
     public static function isQuotaFull()
     {
         $settings = self::getSettings();
-        $totalAccepted = Pendaftaran::where('status_pendaftaran', 'diterima')->count();
+        $totalDiterima = \App\Models\Pendaftaran::where('status_pendaftaran', 'diterima')->count();
         
-        return $totalAccepted >= $settings->kuota;
+        return $totalDiterima >= $settings->kuota;
     }
 }

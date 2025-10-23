@@ -143,7 +143,7 @@
             Posted by <strong>{{ $b->nama_penulis ?? 'Anonim' }}</strong> — {{ $b->created_at?->format('d M Y') }}
           </p>
           <p>{{ Str::limit(strip_tags($b->isi), 180, '...') }}</p>
-          <a href="{{ route('berita.show', $b->Id_berita) }}" class="btn btn-warning px-3 py-2">
+          <a href="{{ route('berita.show', $b->id_berita) }}" class="btn btn-warning px-3 py-2">
             READ MORE
           </a>
         </div>

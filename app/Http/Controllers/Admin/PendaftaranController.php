@@ -61,123 +61,22 @@ class PendaftaranController extends Controller
         $pendaftaran = $query->orderBy('created_at', 'desc')->paginate(10);
 
         // Ambil data divisi dan jabatan untuk form validasi
-      $divisi = Divisi::all();
-$jabatan = Jabatan::all();
-
+        $divisi = Divisi::all();
+        $jabatan = Jabatan::all();
 
         return view('admin.pendaftaran.index', compact('settings', 'stats', 'pendaftaran', 'divisi', 'jabatan'));
     }
 
-    public function bukaSesi(Request $request)
+    public function create()
     {
-        try {
-            DB::beginTransaction();
-
-            $settings = PendaftaranSetting::firstOrNew();
-            
-            // Validasi tanggal
-            if (!$settings->tanggal_mulai || !$settings->tanggal_selesai) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Harap setting tanggal mulai dan selesai terlebih dahulu'
-                ], 400);
-            }
-
-            // Validasi kuota
-            if (!$settings->kuota || $settings->kuota <= 0) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Harap setting kuota penerimaan terlebih dahulu'
-                ], 400);
-            }
-
-            $settings->pendaftaran_aktif = true;
-            $settings->save();
-
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Sesi pendaftaran berhasil dibuka'
-            ]);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
-        }
+        // Biasanya untuk admin tidak perlu create form, redirect ke index
+        return redirect()->route('admin.pendaftaran.index');
     }
 
-    public function tutupSesi(Request $request)
+    public function store(Request $request)
     {
-        try {
-            DB::beginTransaction();
-
-            $settings = PendaftaranSetting::first();
-            if ($settings) {
-                $settings->pendaftaran_aktif = false;
-                $settings->save();
-            }
-
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Sesi pendaftaran berhasil ditutup'
-            ]);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function updateSettings(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'tanggal_mulai' => 'required|date',
-            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
-            'kuota' => 'required|integer|min:1',
-            'auto_close' => 'sometimes|boolean'
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        try {
-            DB::beginTransaction();
-
-            $settings = PendaftaranSetting::firstOrNew();
-            $settings->tanggal_mulai = $request->tanggal_mulai;
-            $settings->tanggal_selesai = $request->tanggal_selesai;
-            $settings->kuota = $request->kuota;
-            $settings->auto_close = $request->boolean('auto_close');
-            $settings->save();
-
-            DB::commit();
-
-           if ($request->ajax()) {
-    return response()->json([
-        'success' => true,
-        'message' => 'Pengaturan periode berhasil disimpan'
-    ]);
-}
-
-return redirect()->back()->with('success', 'Pengaturan periode berhasil disimpan');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
+        // Biasanya untuk admin tidak perlu store, redirect ke index
+        return redirect()->route('admin.pendaftaran.index');
     }
 
     public function show($id)
@@ -186,73 +85,6 @@ return redirect()->back()->with('success', 'Pengaturan periode berhasil disimpan
             ->findOrFail($id);
 
         return response()->json($pendaftaran);
-    }
-
-    public function updateStatus(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(), [
-            'status_pendaftaran' => 'required|in:diterima,ditolak',
-            'id_divisi' => 'required_if:status_pendaftaran,diterima|exists:divisi,id_divisi',
-            'id_jabatan' => 'required_if:status_pendaftaran,diterima|exists:jabatan,id_jabatan',
-            'alasan_penolakan' => 'nullable|string|max:500'
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->with('error', 'Validasi gagal: ' . $validator->errors()->first());
-        }
-
-        try {
-            DB::beginTransaction();
-
-            $pendaftaran = Pendaftaran::findOrFail($id);
-            
-            // Validasi kuota jika status diterima
-            if ($request->status_pendaftaran == 'diterima') {
-                $totalDiterima = Pendaftaran::where('status_pendaftaran', 'diterima')->count();
-                $settings = PendaftaranSetting::first();
-                
-                if ($settings && $totalDiterima >= $settings->kuota) {
-                    return redirect()->back()
-                        ->with('error', 'Kuota penerimaan sudah penuh. Tidak dapat menerima pendaftar lagi.');
-                }
-
-                // Update user role menjadi anggota
-                $user = User::find($pendaftaran->user_id);
-                if ($user) {
-                    $user->role = 'anggota';
-                    $user->save();
-                }
-            }
-
-            $pendaftaran->status_pendaftaran = $request->status_pendaftaran;
-            $pendaftaran->validator_id = auth('super_admin')->id();
-            $pendaftaran->validated_at = now();
-
-            if ($request->status_pendaftaran == 'diterima') {
-                $pendaftaran->id_divisi = $request->id_divisi;
-                $pendaftaran->id_jabatan = $request->id_jabatan;
-                $pendaftaran->alasan_penolakan = null;
-            } else {
-                $pendaftaran->alasan_penolakan = $request->alasan_penolakan;
-                $pendaftaran->id_divisi = null;
-                $pendaftaran->id_jabatan = null;
-            }
-
-            $pendaftaran->save();
-
-            DB::commit();
-
-            $statusText = $request->status_pendaftaran == 'diterima' ? 'diterima' : 'ditolak';
-            return redirect()->back()
-                ->with('success', "Pendaftaran berhasil di{$statusText}");
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
     }
 
     public function edit($id)
@@ -362,6 +194,194 @@ return redirect()->back()->with('success', 'Pengaturan periode berhasil disimpan
 
             return redirect()->back()
                 ->with('success', 'Data pendaftaran berhasil dihapus.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    // Additional methods untuk buka/tutup sesi
+   public function bukaSesi(Request $request)
+{
+    try {
+        DB::beginTransaction();
+
+        $settings = PendaftaranSetting::first();
+        
+        if (!$settings) {
+            $settings = new PendaftaranSetting([
+                'pendaftaran_aktif' => true,
+                'tanggal_mulai' => now()->format('Y-m-d'),
+                'tanggal_selesai' => now()->addMonth()->format('Y-m-d'),
+                'kuota' => 50,
+                'auto_close' => true
+            ]);
+        } else {
+            // Validasi
+            if (!$settings->tanggal_mulai || !$settings->tanggal_selesai) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Harap setting tanggal mulai dan selesai terlebih dahulu'
+                ], 400);
+            }
+
+            if (!$settings->kuota || $settings->kuota <= 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Harap setting kuota penerimaan terlebih dahulu'
+                ], 400);
+            }
+
+            $settings->pendaftaran_aktif = true;
+        }
+
+        $settings->save();
+        DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Sesi pendaftaran berhasil dibuka'
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ], 500);
+    }
+}
+    public function tutupSesi(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $settings = PendaftaranSetting::first();
+            if ($settings) {
+                $settings->pendaftaran_aktif = false;
+                $settings->save();
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Sesi pendaftaran berhasil ditutup'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateSettings(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
+            'kuota' => 'required|integer|min:1',
+            'auto_close' => 'sometimes|boolean'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $settings = PendaftaranSetting::firstOrNew();
+            $settings->tanggal_mulai = $request->tanggal_mulai;
+            $settings->tanggal_selesai = $request->tanggal_selesai;
+            $settings->kuota = $request->kuota;
+            $settings->auto_close = $request->boolean('auto_close');
+            $settings->save();
+
+            DB::commit();
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Pengaturan periode berhasil disimpan'
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Pengaturan periode berhasil disimpan');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status_pendaftaran' => 'required|in:diterima,ditolak',
+            'id_divisi' => 'required_if:status_pendaftaran,diterima|exists:divisi,id_divisi',
+            'id_jabatan' => 'required_if:status_pendaftaran,diterima|exists:jabatan,id_jabatan',
+            'alasan_penolakan' => 'nullable|string|max:500'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->with('error', 'Validasi gagal: ' . $validator->errors()->first());
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $pendaftaran = Pendaftaran::findOrFail($id);
+            
+            // Validasi kuota jika status diterima
+            if ($request->status_pendaftaran == 'diterima') {
+                $totalDiterima = Pendaftaran::where('status_pendaftaran', 'diterima')->count();
+                $settings = PendaftaranSetting::first();
+                
+                if ($settings && $totalDiterima >= $settings->kuota) {
+                    return redirect()->back()
+                        ->with('error', 'Kuota penerimaan sudah penuh. Tidak dapat menerima pendaftar lagi.');
+                }
+
+                // Update user role menjadi anggota
+                $user = User::find($pendaftaran->user_id);
+                if ($user) {
+                    $user->role = 'anggota';
+                    $user->save();
+                }
+            }
+
+            $pendaftaran->status_pendaftaran = $request->status_pendaftaran;
+            $pendaftaran->validator_id = auth('super_admin')->id();
+            $pendaftaran->validated_at = now();
+
+            if ($request->status_pendaftaran == 'diterima') {
+                $pendaftaran->id_divisi = $request->id_divisi;
+                $pendaftaran->id_jabatan = $request->id_jabatan;
+                $pendaftaran->alasan_penolakan = null;
+            } else {
+                $pendaftaran->alasan_penolakan = $request->alasan_penolakan;
+                $pendaftaran->id_divisi = null;
+                $pendaftaran->id_jabatan = null;
+            }
+
+            $pendaftaran->save();
+
+            DB::commit();
+
+            $statusText = $request->status_pendaftaran == 'diterima' ? 'diterima' : 'ditolak';
+            return redirect()->back()
+                ->with('success', "Pendaftaran berhasil di{$statusText}");
 
         } catch (\Exception $e) {
             DB::rollBack();

@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.admin.app')
 
 @section('title', 'Tambah Divisi - Admin HIMA-TI')
 
@@ -20,20 +20,31 @@
         <div class="card-body">
             <form action="{{ route('admin.divisi.store') }}" method="POST">
                 @csrf
+
                 <div class="form-group">
-                    <label for="nama">Nama Divisi <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control @error('nama') is-invalid @enderror" 
-                           id="nama" name="nama" value="{{ old('nama') }}" 
-                           placeholder="Masukkan nama divisi" required>
-                    @error('nama')
+                    <label for="nama_divisi">Nama Divisi <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control @error('nama_divisi') is-invalid @enderror"
+                           id="nama_divisi" name="nama_divisi"
+                           value="{{ old('nama_divisi') }}" placeholder="Masukkan nama divisi" required>
+                    @error('nama_divisi')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="ketua_divisi">Ketua Divisi <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control @error('ketua_divisi') is-invalid @enderror"
+                           id="ketua_divisi" name="ketua_divisi"
+                           value="{{ old('ketua_divisi') }}" placeholder="Masukkan nama ketua divisi" required>
+                    @error('ketua_divisi')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <div class="form-group">
                     <label for="deskripsi">Deskripsi</label>
-                    <textarea class="form-control @error('deskripsi') is-invalid @enderror" 
-                              id="deskripsi" name="deskripsi" rows="4" 
+                    <textarea class="form-control @error('deskripsi') is-invalid @enderror"
+                              id="deskripsi" name="deskripsi" rows="4"
                               placeholder="Masukkan deskripsi divisi">{{ old('deskripsi') }}</textarea>
                     @error('deskripsi')
                         <div class="invalid-feedback">{{ $message }}</div>

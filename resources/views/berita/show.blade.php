@@ -99,7 +99,7 @@
         <div class="card" style="margin-bottom:16px">
           <div class="card-header">Tulis Komentar</div>
           <div class="card-body">
-            <form action="{{ route('berita.komentar.store', $berita->Id_berita) }}" method="POST">
+            <form action="{{ route('berita.komentar.store', $berita->id_berita) }}" method="POST">
               @csrf
               <div class="form-group">
                 <input type="text" name="nama" class="form-control" placeholder="Nama (opsional)" value="{{ old('nama') }}">
@@ -130,7 +130,7 @@
 
                       <div class="row-actions">
                         <button class="btn-icon" type="button" onclick="toggleEdit({{ $c->id }})">Edit</button>
-                        <form action="{{ route('berita.komentar.destroy', [$berita->Id_berita, $c->id]) }}" method="POST" onsubmit="return confirm('Hapus komentar ini?')">
+                        <form action="{{ route('berita.komentar.destroy', [$berita->id_berita, $c->id]) }}" method="POST" onsubmit="return confirm('Hapus komentar ini?')">
                           @csrf @method('DELETE')
                           <button class="btn-icon btn-danger" type="submit">Hapus</button>
                         </form>
@@ -141,7 +141,7 @@
                     <div id="view-text-{{ $c->id }}" class="text">{{ e($c->isi) }}</div>
 
                     {{-- Mode edit --}}
-                    <form id="edit-form-{{ $c->id }}" class="hidden" action="{{ route('berita.komentar.update', [$berita->Id_berita, $c->id]) }}" method="POST" style="margin-top:8px">
+                    <form id="edit-form-{{ $c->id }}" class="hidden" action="{{ route('berita.komentar.update', [$berita->id_berita, $c->id]) }}" method="POST" style="margin-top:8px">
                       @csrf @method('PUT')
                       <div class="form-group">
                         <input type="text" name="nama" class="form-control" value="{{ $c->nama }}" placeholder="Nama">

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,16 +13,16 @@ class Pendaftaran extends Model
     protected $primaryKey = 'id_pendaftaran';
 
     protected $fillable = [
-    'id_user',
-    'nim', 
-    'nama',
-    'semester',
-    'alasan_mendaftar',
-    'dokumen',
-    'no_hp',
-    'status_pendaftaran',
-    'submitted_at'
-];
+        'id_user',
+        'nim', 
+        'nama',
+        'semester',
+        'alasan_mendaftar',
+        'dokumen',
+        'no_hp',
+        'status_pendaftaran',
+        'submitted_at'
+    ];
 
     protected $casts = [
         'submitted_at' => 'datetime',

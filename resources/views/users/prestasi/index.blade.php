@@ -19,7 +19,7 @@
         padding: 3rem 0;
         position: relative;
         overflow: hidden;
-        margin-top: 50px;
+        margin-top: 0px;
     }
 
     .hero-content {
@@ -406,7 +406,7 @@
         <div class="content-card">
             <div class="d-flex justify-content-between align-items-center">
                 <h2 class="section-title">Daftar Prestasi</h2>
-                <a href="{{ route('users.prestasi.create') }}" class="btn-custom btn-primary-custom">
+                <a href="{{ route('prestasi.create') }}" class="btn-custom btn-primary-custom">
                     <i class="fas fa-plus-circle"></i>
                     Ajukan Prestasi
                 </a>
@@ -415,7 +415,7 @@
 
         <!-- Filter Section -->
         <div class="filter-section">
-            <form method="GET" action="{{ route('users.prestasi.index') }}">
+            <form method="GET" action="{{ route('prestasi.index') }}">
                 <div class="filter-row">
                     <div class="filter-group">
                         <label class="form-label">Tahun</label>
@@ -517,7 +517,7 @@
                             
                             <div class="card-actions">
                                 @if(Auth::user()->role === 'admin' || $item->id_user === Auth::id())
-                            <a href="{{ route('users.prestasi.edit', $item->id_prestasi) }}" class="btn-icon btn-edit" title="Edit">
+                            <a href="{{ route('prestasi.edit', $item->id_prestasi) }}" class="btn-icon btn-edit" title="Edit">
 
                                     <i class="fas fa-edit"></i>
                                 </a>

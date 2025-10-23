@@ -16,6 +16,7 @@ return new class extends Migration
 
             // Relasi ke tabel users
             $table->foreignId('id_user')
+            ->nullable() 
                 ->constrained('users')
                 ->onDelete('cascade');
 

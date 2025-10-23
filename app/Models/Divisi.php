@@ -9,55 +9,22 @@ class Divisi extends Model
 {
     use HasFactory;
 
-
+    // Nama tabel di database
     protected $table = 'divisis';
-    protected $primaryKey = 'id_divisi';
-    public $incrementing = true;
-    protected $keyType = 'int';
-    public $timestamps = false; 
 
-    protected $table = 'divisi';
-    protected $primaryKey = 'id_divisi'; // ✅ sesuai DB
-    public $timestamps = false;          // ✅ karena tabel tidak ada kolom created_at & updated_at
+    protected $primaryKey = 'id_divisi';
 
     protected $fillable = [
-        'nama_divisi',
         'ketua_divisi',
+        'nama_divisi',
         'deskripsi',
-        'status'
+        'status',
     ];
 
-
-    /**
-     * Get the anggota_hima for the divisi.
-     */
-
-
-    protected $casts = [
-        'status' => 'boolean'
-    ];
-
-
+    // 🔹 Tambahkan relasi ke AnggotaHima
     public function anggotaHima()
-    {
-        return $this->hasMany(AnggotaHima::class, 'id_divisi', 'id_divisi');
-    }
-
-
-
-
-    // Accessor untuk jumlah anggota (optional)
-    public function getJumlahAnggotaAttribute()
-    {
-        return $this->anggotaHima()->count();
-    }
-
-    // Scope untuk withCount
-    public function scopeWithAnggotaCount($query)
-    {
-        return $query->withCount('anggotaHima');
-    }
+{
+    return $this->hasMany(\App\Models\AnggotaHima::class, 'id_divisi', 'id_divisi');
 }
 
-
-
+}

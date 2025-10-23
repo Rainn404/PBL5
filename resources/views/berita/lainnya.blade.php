@@ -136,7 +136,7 @@
           {{ $berita->created_at?->format('d M Y') }}
         </p>
         <p>{{ Str::limit(strip_tags($berita->isi), 220, '...') }}</p>
-        <a href="{{ route('berita.show', $berita->Id_berita) }}" class="btn btn-read mt-2">READ MORE</a>
+        <a href="{{ route('berita.show', $berita->id_berita) }}" class="btn btn-read mt-2">READ MORE</a>
       </div>
     </div>
   </div>

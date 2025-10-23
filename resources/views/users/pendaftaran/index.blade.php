@@ -4,44 +4,54 @@
 
 @section('content')
     <!-- Page Header -->
-    <section class="page-header">
-        <div class="container">
-            <h1>Pendaftaran Anggota HIMA-TI</h1>
-            <p>Bergabunglah dengan kami untuk mengembangkan potensi dan berkontribusi dalam dunia teknologi informasi</p>
+    <section class="pendaftaran-header">
+        <div class="pendaftaran-container">
+            <div class="header-content">
+                <h1 class="header-title">Pendaftaran Anggota HIMA-TI</h1>
+                <p class="header-description">Bergabunglah dengan kami untuk mengembangkan potensi dan berkontribusi dalam dunia teknologi informasi</p>
+            </div>
         </div>
     </section>
 
     <!-- Pendaftaran Process -->
     <section class="pendaftaran-process">
-        <div class="container">
+        <div class="pendaftaran-container">
             <h2 class="section-title">Proses Pendaftaran</h2>
-            <div class="process-steps">
-                <div class="process-step">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h3>Isi Formulir</h3>
-                        <p>Lengkapi formulir pendaftaran dengan data diri yang valid</p>
+            <div class="process-grid">
+                <div class="process-card">
+                    <div class="process-icon">
+                        <div class="step-number">1</div>
+                    </div>
+                    <div class="process-content">
+                        <h3 class="process-title">Isi Formulir</h3>
+                        <p class="process-description">Lengkapi formulir pendaftaran dengan data diri yang valid</p>
                     </div>
                 </div>
-                <div class="process-step">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h3>Verifikasi Data</h3>
-                        <p>Tim kami akan memverifikasi data yang Anda submit</p>
+                <div class="process-card">
+                    <div class="process-icon">
+                        <div class="step-number">2</div>
+                    </div>
+                    <div class="process-content">
+                        <h3 class="process-title">Verifikasi Data</h3>
+                        <p class="process-description">Tim kami akan memverifikasi data yang Anda submit</p>
                     </div>
                 </div>
-                <div class="process-step">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h3>Interview</h3>
-                        <p>Proses wawancara untuk mengenal minat dan bakat Anda</p>
+                <div class="process-card">
+                    <div class="process-icon">
+                        <div class="step-number">3</div>
+                    </div>
+                    <div class="process-content">
+                        <h3 class="process-title">Interview</h3>
+                        <p class="process-description">Proses wawancara untuk mengenal minat dan bakat Anda</p>
                     </div>
                 </div>
-                <div class="process-step">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                        <h3>Pengumuman</h3>
-                        <p>Hasil seleksi akan diumumkan melalui email dan website</p>
+                <div class="process-card">
+                    <div class="process-icon">
+                        <div class="step-number">4</div>
+                    </div>
+                    <div class="process-content">
+                        <h3 class="process-title">Pengumuman</h3>
+                        <p class="process-description">Hasil seleksi akan diumumkan melalui email dan website</p>
                     </div>
                 </div>
             </div>
@@ -50,158 +60,193 @@
 
     <!-- Form Pendaftaran -->
     <section class="pendaftaran-form-section">
-        <div class="container">
-            <div class="form-container">
-                <h2>Formulir Pendaftaran</h2>
-                <form action="{{ route('pendaftaran.store') }}" method="POST" class="pendaftaran-form" enctype="multipart/form-data">
-                    @csrf
-                    
-                    <div class="form-group">
-                        <label for="nama">Nama Lengkap *</label>
-                        <input type="text" id="nama" name="nama" value="{{ old('nama') }}" required>
-                        @error('nama')
-                            <span class="error-message">{{ $message }}</span>
-                        @enderror
-                    </div>
+        <div class="pendaftaran-container">
+            <div class="form-layout">
+                <div class="form-main">
+                    <div class="form-card">
+                        <h2 class="form-title">Formulir Pendaftaran</h2>
+                        <form action="{{ route('pendaftaran.store') }}" method="POST" class="pendaftaran-form" enctype="multipart/form-data">
+                            @csrf
+                            
+                            <div class="form-field">
+                                <label for="nama" class="field-label">Nama Lengkap *</label>
+                                <input type="text" id="nama" name="nama" value="{{ old('nama') }}" class="field-input" required>
+                                @error('nama')
+                                    <span class="field-error">{{ $message }}</span>
+                                @enderror
+                            </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="nim">NIM *</label>
-                            <input type="text" id="nim" name="nim" value="{{ old('nim') }}" required>
-                            @error('nim')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="semester">Semester *</label>
-                            <select id="semester" name="semester" required>
-                                <option value="">Pilih Semester</option>
-                                <option value="1" {{ old('semester') == '1' ? 'selected' : '' }}>Semester 1</option>
-                                <option value="2" {{ old('semester') == '2' ? 'selected' : '' }}>Semester 2</option>
-                                <option value="3" {{ old('semester') == '3' ? 'selected' : '' }}>Semester 3</option>
-                                <option value="4" {{ old('semester') == '4' ? 'selected' : '' }}>Semester 4</option>
-                                <option value="5" {{ old('semester') == '5' ? 'selected' : '' }}>Semester 5</option>
-                                <option value="6" {{ old('semester') == '6' ? 'selected' : '' }}>Semester 6</option>
-                                <option value="7" {{ old('semester') == '7' ? 'selected' : '' }}>Semester 7</option>
-                                <option value="8" {{ old('semester') == '8' ? 'selected' : '' }}>Semester 8</option>
-                            </select>
-                            @error('semester')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
+                            <div class="form-row">
+                                <div class="form-field">
+                                    <label for="nim" class="field-label">NIM *</label>
+                                    <input type="text" id="nim" name="nim" value="{{ old('nim') }}" class="field-input" required>
+                                    @error('nim')
+                                        <span class="field-error">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="form-field">
+                                    <label for="semester" class="field-label">Semester *</label>
+                                    <select id="semester" name="semester" class="field-select" required>
+                                        <option value="">Pilih Semester</option>
+                                        @for($i = 1; $i <= 8; $i++)
+                                            <option value="{{ $i }}" {{ old('semester') == $i ? 'selected' : '' }}>Semester {{ $i }}</option>
+                                        @endfor
+                                    </select>
+                                    @error('semester')
+                                        <span class="field-error">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="email">Email *</label>
-                            <input type="email" id="email" name="email" value="{{ old('email') }}" required>
-                            @error('email')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="no_hp">No. HP *</label>
-                            <input type="tel" id="no_hp" name="no_hp" value="{{ old('no_hp') }}" required>
-                            @error('no_hp')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
+                            <div class="form-row">
+                                <div class="form-field">
+                                    <label for="email" class="field-label">Email *</label>
+                                    <input type="email" id="email" name="email" value="{{ old('email') }}" class="field-input" required>
+                                    @error('email')
+                                        <span class="field-error">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="form-field">
+                                    <label for="no_hp" class="field-label">No. HP *</label>
+                                    <input type="tel" id="no_hp" name="no_hp" value="{{ old('no_hp') }}" class="field-input" required>
+                                    @error('no_hp')
+                                        <span class="field-error">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
 
-                    <div class="form-group">
-                        <label for="divisi">Divisi yang Diminati *</label>
-                        <select id="divisi" name="divisi" required>
-                            <option value="">Pilih Divisi</option>
-                            <option value="1" {{ old('divisi') == '1' ? 'selected' : '' }}>Divisi Teknologi</option>
-                            <option value="2" {{ old('divisi') == '2' ? 'selected' : '' }}>Divisi Keanggotaan</option>
-                            <option value="3" {{ old('divisi') == '3' ? 'selected' : '' }}>Divisi Media & Komunikasi</option>
-                            <option value="4" {{ old('divisi') == '4' ? 'selected' : '' }}>Divisi Kewirausahaan</option>
-                        </select>
-                        @error('divisi')
-                            <span class="error-message">{{ $message }}</span>
-                        @enderror
-                    </div>
+                            <div class="form-field">
+                                <label for="divisi" class="field-label">Divisi yang Diminati *</label>
+                                <select id="divisi" name="divisi" class="field-select" required>
+                                    <option value="">Pilih Divisi</option>
+                                    <option value="1" {{ old('divisi') == '1' ? 'selected' : '' }}>Divisi Teknologi</option>
+                                    <option value="2" {{ old('divisi') == '2' ? 'selected' : '' }}>Divisi Keanggotaan</option>
+                                    <option value="3" {{ old('divisi') == '3' ? 'selected' : '' }}>Divisi Media & Komunikasi</option>
+                                    <option value="4" {{ old('divisi') == '4' ? 'selected' : '' }}>Divisi Kewirausahaan</option>
+                                </select>
+                                @error('divisi')
+                                    <span class="field-error">{{ $message }}</span>
+                                @enderror
+                            </div>
 
-                    <div class="form-group">
-                        <label for="pengalaman">Pengalaman Organisasi/Kepanitiaan</label>
-                        <textarea id="pengalaman" name="pengalaman" rows="3" placeholder="Jelaskan pengalaman organisasi atau kepanitiaan yang pernah diikuti">{{ old('pengalaman') }}</textarea>
-                        @error('pengalaman')
-                            <span class="error-message">{{ $message }}</span>
-                        @enderror
-                    </div>
+                            <div class="form-field">
+                                <label for="pengalaman" class="field-label">Pengalaman Organisasi/Kepanitiaan</label>
+                                <textarea id="pengalaman" name="pengalaman" class="field-textarea" rows="3" placeholder="Jelaskan pengalaman organisasi atau kepanitiaan yang pernah diikuti">{{ old('pengalaman') }}</textarea>
+                                @error('pengalaman')
+                                    <span class="field-error">{{ $message }}</span>
+                                @enderror
+                            </div>
 
-                    <div class="form-group">
-                        <label for="alasan_mendaftar">Alasan Bergabung dengan HIMA-TI *</label>
-                        <textarea id="alasan_mendaftar" name="alasan_mendaftar" rows="4" required placeholder="Jelaskan alasan Anda ingin bergabung dengan HIMA-TI">{{ old('alasan_mendaftar') }}</textarea>
-                        @error('alasan_mendaftar')
-                            <span class="error-message">{{ $message }}</span>
-                        @enderror
-                    </div>
+                            <div class="form-field">
+                                <label for="alasan_mendaftar" class="field-label">Alasan Bergabung dengan HIMA-TI *</label>
+                                <textarea id="alasan_mendaftar" name="alasan_mendaftar" class="field-textarea" rows="4" required placeholder="Jelaskan alasan Anda ingin bergabung dengan HIMA-TI">{{ old('alasan_mendaftar') }}</textarea>
+                                @error('alasan_mendaftar')
+                                    <span class="field-error">{{ $message }}</span>
+                                @enderror
+                            </div>
 
-                    <div class="form-group">
-                        <label for="skill">Kemampuan/Keterampilan</label>
-                        <textarea id="skill" name="skill" rows="3" placeholder="Sebutkan kemampuan atau keterampilan yang Anda miliki">{{ old('skill') }}</textarea>
-                        @error('skill')
-                            <span class="error-message">{{ $message }}</span>
-                        @enderror
-                    </div>
+                            <div class="form-field">
+                                <label for="skill" class="field-label">Kemampuan/Keterampilan</label>
+                                <textarea id="skill" name="skill" class="field-textarea" rows="3" placeholder="Sebutkan kemampuan atau keterampilan yang Anda miliki">{{ old('skill') }}</textarea>
+                                @error('skill')
+                                    <span class="field-error">{{ $message }}</span>
+                                @enderror
+                            </div>
 
-                    <div class="form-group">
-                        <label for="dokumen">Upload CV/Portofolio (Opsional)</label>
-                        <input type="file" id="dokumen" name="dokumen" accept=".pdf,.doc,.docx">
-                        <small>Format: PDF, DOC, DOCX (Maks. 2MB)</small>
-                        @error('dokumen')
-                            <span class="error-message">{{ $message }}</span>
-                        @enderror
-                    </div>
+                            <div class="form-field">
+                                <label for="dokumen" class="field-label">Upload CV/Portofolio (Opsional)</label>
+                                <div class="file-upload">
+                                    <input type="file" id="dokumen" name="dokumen" class="file-input" accept=".pdf,.doc,.docx">
+                                    <label for="dokumen" class="file-label">
+                                        <i class="fas fa-cloud-upload-alt file-icon"></i>
+                                        <span class="file-text">Pilih File</span>
+                                    </label>
+                                </div>
+                                <small class="file-hint">Format: PDF, DOC, DOCX (Maks. 2MB)</small>
+                                @error('dokumen')
+                                    <span class="field-error">{{ $message }}</span>
+                                @enderror
+                            </div>
 
-                    <div class="form-agreement">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="agree" name="agree" required>
-                            <span class="checkmark"></span>
-                            Saya menyetujui bahwa data yang saya berikan adalah benar dan siap mengikuti proses seleksi
-                        </label>
-                        @error('agree')
-                            <span class="error-message">{{ $message }}</span>
-                        @enderror
-                    </div>
+                            <div class="form-agreement">
+                                <label class="agreement-label">
+                                    <input type="checkbox" id="agree" name="agree" class="agreement-checkbox" required>
+                                    <span class="checkmark"></span>
+                                    <span class="agreement-text">Saya menyetujui bahwa data yang saya berikan adalah benar dan siap mengikuti proses seleksi</span>
+                                </label>
+                                @error('agree')
+                                    <span class="field-error">{{ $message }}</span>
+                                @enderror
+                            </div>
 
-                    <button type="submit" class="btn btn-primary btn-submit">Daftar Sekarang</button>
-                </form>
-            </div>
-
-            <div class="pendaftaran-info">
-                <h3>Informasi Penting</h3>
-                <div class="info-cards">
-                    <div class="info-card">
-                        <i class="fas fa-calendar-alt"></i>
-                        <h4>Periode Pendaftaran</h4>
-                        <p>1 - 30 November 2024</p>
-                    </div>
-                    <div class="info-card">
-                        <i class="fas fa-users"></i>
-                        <h4>Kuota Penerimaan</h4>
-                        <p>30 Anggota Baru</p>
-                    </div>
-                    <div class="info-card">
-                        <i class="fas fa-clock"></i>
-                        <h4>Proses Seleksi</h4>
-                        <p>1-2 Minggu setelah pendaftaran</p>
-                    </div>
-                    <div class="info-card">
-                        <i class="fas fa-envelope"></i>
-                        <h4>Pengumuman</h4>
-                        <p>Via Email dan Website</p>
+                            <button type="submit" class="submit-button">
+                                <span class="button-text">Daftar Sekarang</span>
+                                <i class="fas fa-arrow-right button-icon"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
 
-                <div class="contact-info">
-                    <h4>Butuh Bantuan?</h4>
-                    <p>Hubungi kami melalui:</p>
-                    <div class="contact-methods">
-                        <p><i class="fas fa-envelope"></i> pendaftaran@himati.ac.id</p>
-                        <p><i class="fas fa-phone"></i> +62 812 3456 7890 (Admin)</p>
-                        <p><i class="fas fa-clock"></i> Senin - Jumat, 08:00 - 16:00 WIB</p>
+                <div class="form-sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Informasi Penting</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                                <div class="info-content">
+                                    <h4 class="info-title">Periode Pendaftaran</h4>
+                                    <p class="info-description">1 - 30 November 2024</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="info-content">
+                                    <h4 class="info-title">Kuota Penerimaan</h4>
+                                    <p class="info-description">30 Anggota Baru</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="info-content">
+                                    <h4 class="info-title">Proses Seleksi</h4>
+                                    <p class="info-description">1-2 Minggu setelah pendaftaran</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="info-content">
+                                    <h4 class="info-title">Pengumuman</h4>
+                                    <p class="info-description">Via Email dan Website</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="contact-card">
+                            <h4 class="contact-title">Butuh Bantuan?</h4>
+                            <p class="contact-description">Hubungi kami melalui:</p>
+                            <div class="contact-list">
+                                <div class="contact-item">
+                                    <i class="fas fa-envelope contact-icon"></i>
+                                    <span class="contact-text">pendaftaran@himati.ac.id</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-phone contact-icon"></i>
+                                    <span class="contact-text">+62 812 3456 7890 (Admin)</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-clock contact-icon"></i>
+                                    <span class="contact-text">Senin - Jumat, 08:00 - 16:00 WIB</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -210,43 +255,43 @@
 
     <!-- FAQ Section -->
     <section class="faq-section">
-        <div class="container">
+        <div class="pendaftaran-container">
             <h2 class="section-title">Pertanyaan Umum</h2>
             <div class="faq-list">
                 <div class="faq-item">
-                    <div class="faq-question">
-                        <h3>Apa syarat untuk bergabung dengan HIMA-TI?</h3>
-                        <i class="fas fa-chevron-down"></i>
+                    <div class="faq-header">
+                        <h3 class="faq-question">Apa syarat untuk bergabung dengan HIMA-TI?</h3>
+                        <i class="fas fa-chevron-down faq-icon"></i>
                     </div>
-                    <div class="faq-answer">
-                        <p>Syarat utama adalah mahasiswa aktif Program Studi Teknik Informatika dengan semangat belajar dan berkontribusi. Tidak ada batasan IPK minimum.</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <h3>Apakah ada biaya pendaftaran?</h3>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Tidak ada biaya pendaftaran. Proses seleksi dan pendaftaran sepenuhnya gratis.</p>
+                    <div class="faq-content">
+                        <p class="faq-answer">Syarat utama adalah mahasiswa aktif Program Studi Teknik Informatika dengan semangat belajar dan berkontribusi. Tidak ada batasan IPK minimum.</p>
                     </div>
                 </div>
                 <div class="faq-item">
-                    <div class="faq-question">
-                        <h3>Berapa lama proses seleksi berlangsung?</h3>
-                        <i class="fas fa-chevron-down"></i>
+                    <div class="faq-header">
+                        <h3 class="faq-question">Apakah ada biaya pendaftaran?</h3>
+                        <i class="fas fa-chevron-down faq-icon"></i>
                     </div>
-                    <div class="faq-answer">
-                        <p>Proses seleksi membutuhkan waktu 1-2 minggu setelah periode pendaftaran ditutup.</p>
+                    <div class="faq-content">
+                        <p class="faq-answer">Tidak ada biaya pendaftaran. Proses seleksi dan pendaftaran sepenuhnya gratis.</p>
                     </div>
                 </div>
                 <div class="faq-item">
-                    <div class="faq-question">
-                        <h3>Bolehkah memilih lebih dari satu divisi?</h3>
-                        <i class="fas fa-chevron-down"></i>
+                    <div class="faq-header">
+                        <h3 class="faq-question">Berapa lama proses seleksi berlangsung?</h3>
+                        <i class="fas fa-chevron-down faq-icon"></i>
                     </div>
-                    <div class="faq-answer">
-                        <p>Anda hanya boleh memilih satu divisi utama. Namun, Anda dapat menyebutkan minat lainnya dalam kolom alasan bergabung.</p>
+                    <div class="faq-content">
+                        <p class="faq-answer">Proses seleksi membutuhkan waktu 1-2 minggu setelah periode pendaftaran ditutup.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-header">
+                        <h3 class="faq-question">Bolehkah memilih lebih dari satu divisi?</h3>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-content">
+                        <p class="faq-answer">Anda hanya boleh memilih satu divisi utama. Namun, Anda dapat menyebutkan minat lainnya dalam kolom alasan bergabung.</p>
                     </div>
                 </div>
             </div>
@@ -254,267 +299,469 @@
     </section>
 
     <style>
-    /* Pendaftaran Process Styles */
+    /* Variables */
+    :root {
+        --primary-color: #3B82F6;
+        --primary-dark: #1D4ED8;
+        --primary-light: #EFF6FF;
+        --secondary-color: #10B981;
+        --accent-color: #F59E0B;
+        --text-dark: #1F2937;
+        --text-light: #6B7280;
+        --text-lighter: #9CA3AF;
+        --white: #FFFFFF;
+        --gray-light: #F3F4F6;
+        --gray-medium: #E5E7EB;
+        --border-color: #D1D5DB;
+        --error-color: #DC2626;
+        --success-color: #059669;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        --border-radius: 12px;
+        --border-radius-lg: 16px;
+        --transition: all 0.3s ease;
+    }
+
+    /* Base Styles */
+    .pendaftaran-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .section-title {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 3rem;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Header Styles */
+    .pendaftaran-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        padding: 4rem 0;
+        text-align: center;
+        color: var(--white);
+    }
+
+    .header-title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    .header-description {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    /* Process Section */
     .pendaftaran-process {
-        padding: 60px 0;
+        padding: 5rem 0;
         background-color: var(--white);
     }
 
-    .process-steps {
+    .process-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 30px;
-        margin-top: 40px;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
     }
 
-    .process-step {
+    .process-card {
+        background: var(--white);
+        padding: 2.5rem 1.5rem;
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow);
         text-align: center;
-        padding: 30px 20px;
-        background: var(--gray-light);
-        border-radius: 12px;
         transition: var(--transition);
         position: relative;
+        overflow: hidden;
     }
 
-    .process-step:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow);
+    .process-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    }
+
+    .process-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .process-icon {
+        margin-bottom: 1.5rem;
     }
 
     .step-number {
-        width: 60px;
-        height: 60px;
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
         color: var(--white);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0 auto;
+        box-shadow: var(--shadow-lg);
+    }
+
+    .process-title {
         font-size: 1.5rem;
-        font-weight: bold;
-        margin: 0 auto 20px;
-    }
-
-    .process-step h3 {
-        color: var(--primary-color);
-        margin-bottom: 10px;
-        font-size: 1.2rem;
-    }
-
-    .process-step p {
-        color: var(--text-light);
-        font-size: 0.9rem;
-        line-height: 1.5;
-    }
-
-    /* Form Section Styles */
-    .pendaftaran-form-section {
-        padding: 80px 0;
-        background-color: var(--gray-light);
-    }
-
-    .pendaftaran-form-section .container {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 50px;
-    }
-
-    .form-container {
-        background: var(--white);
-        padding: 40px;
-        border-radius: 12px;
-        box-shadow: var(--shadow);
-    }
-
-    .form-container h2 {
-        color: var(--primary-color);
-        margin-bottom: 30px;
-        text-align: center;
-        font-size: 1.8rem;
-    }
-
-    .pendaftaran-form .form-group {
-        margin-bottom: 25px;
-    }
-
-    .pendaftaran-form label {
-        display: block;
-        margin-bottom: 8px;
         font-weight: 600;
         color: var(--text-dark);
+        margin-bottom: 1rem;
     }
 
-    .pendaftaran-form input,
-    .pendaftaran-form select,
-    .pendaftaran-form textarea {
-        width: 100%;
-        padding: 12px 15px;
-        border: 1px solid #ddd;
-        border-radius: 6px;
+    .process-description {
+        color: var(--text-light);
+        line-height: 1.6;
         font-size: 1rem;
-        transition: var(--transition);
-        background-color: var(--white);
     }
 
-    .pendaftaran-form input:focus,
-    .pendaftaran-form select:focus,
-    .pendaftaran-form textarea:focus {
-        outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+    /* Form Section */
+    .pendaftaran-form-section {
+        padding: 5rem 0;
+        background: linear-gradient(135deg, var(--primary-light) 0%, var(--gray-light) 100%);
+    }
+
+    .form-layout {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 3rem;
+        align-items: start;
+    }
+
+    .form-card {
+        background: var(--white);
+        padding: 3rem;
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .form-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        text-align: center;
+        margin-bottom: 2.5rem;
+        position: relative;
+    }
+
+    .form-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        border-radius: 2px;
+    }
+
+    .pendaftaran-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
     }
 
     .form-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 20px;
+        gap: 1.5rem;
     }
 
-    textarea {
+    .form-field {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .field-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .field-input,
+    .field-select,
+    .field-textarea {
+        padding: 1rem 1.25rem;
+        border: 2px solid var(--gray-medium);
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+        transition: var(--transition);
+        background-color: var(--white);
+    }
+
+    .field-input:focus,
+    .field-select:focus,
+    .field-textarea:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .field-textarea {
         resize: vertical;
-        min-height: 100px;
+        min-height: 120px;
+        line-height: 1.5;
     }
 
+    .field-error {
+        color: var(--error-color);
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        font-weight: 500;
+    }
+
+    /* File Upload */
+    .file-upload {
+        position: relative;
+        margin-bottom: 0.5rem;
+    }
+
+    .file-input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .file-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 1.5rem;
+        background: var(--primary-light);
+        border: 2px dashed var(--primary-color);
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: var(--transition);
+        color: var(--primary-color);
+        font-weight: 500;
+    }
+
+    .file-label:hover {
+        background: var(--primary-color);
+        color: var(--white);
+    }
+
+    .file-icon {
+        font-size: 1.25rem;
+    }
+
+    .file-hint {
+        color: var(--text-light);
+        font-size: 0.875rem;
+    }
+
+    /* Agreement */
     .form-agreement {
-        margin: 30px 0;
+        margin: 1rem 0;
     }
 
-    .checkbox-label {
+    .agreement-label {
         display: flex;
         align-items: flex-start;
-        gap: 12px;
+        gap: 1rem;
         cursor: pointer;
-        font-size: 0.9rem;
-        line-height: 1.4;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: var(--text-dark);
     }
 
-    .checkbox-label input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-}
+    .agreement-checkbox {
+        position: absolute;
+        opacity: 0;
+    }
 
+    .checkmark {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--border-color);
+        border-radius: 4px;
+        position: relative;
+        flex-shrink: 0;
+        margin-top: 0.125rem;
+        transition: var(--transition);
+    }
 
-  .checkmark {
-    width: 20px;
-    height: 20px;
-    min-width: 20px; /* biar nggak gepeng kalau flex */
-    display: inline-block;
-    border: 2px solid #ddd;
-    border-radius: 4px;
-    position: relative;
-    flex-shrink: 0; /* jangan mengecil saat dalam flexbox */
-    margin-top: 2px;
-}
-
-
-    .checkbox-label input:checked + .checkmark {
-        background-color: var(--primary-color);
+    .agreement-checkbox:checked + .checkmark {
+        background: var(--primary-color);
         border-color: var(--primary-color);
     }
 
-    .checkbox-label input:checked + .checkmark::after {
+    .agreement-checkbox:checked + .checkmark::after {
         content: '✓';
         position: absolute;
-        color: white;
+        color: var(--white);
         font-size: 14px;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
     }
 
-    .btn-submit {
-        width: 100%;
-        padding: 15px;
+    .agreement-text {
+        flex: 1;
+    }
+
+    /* Submit Button */
+    .submit-button {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: var(--white);
+        border: none;
+        padding: 1.25rem 2rem;
+        border-radius: var(--border-radius);
         font-size: 1.1rem;
         font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 1rem;
     }
 
-    /* Error Messages */
-    .error-message {
-        color: #dc3545;
-        font-size: 0.8rem;
-        margin-top: 5px;
-        display: block;
+    .submit-button:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
     }
 
-    /* Info Sidebar */
-    .pendaftaran-info h3 {
-        color: var(--primary-color);
-        margin-bottom: 30px;
-        font-size: 1.5rem;
-    }
-
-    .info-cards {
-        display: grid;
-        gap: 20px;
-        margin-bottom: 40px;
-    }
-
-    .info-card {
-        background: var(--white);
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: var(--shadow);
-        text-align: center;
+    .button-icon {
         transition: var(--transition);
     }
 
-    .info-card:hover {
-        transform: translateY(-3px);
+    .submit-button:hover .button-icon {
+        transform: translateX(4px);
     }
 
-    .info-card i {
-        font-size: 2rem;
-        color: var(--primary-color);
-        margin-bottom: 10px;
+    /* Sidebar */
+    .sidebar-card {
+        background: var(--white);
+        padding: 2rem;
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow-xl);
+        position: sticky;
+        top: 2rem;
     }
 
-    .info-card h4 {
-        margin-bottom: 5px;
+    .sidebar-title {
+        font-size: 1.5rem;
+        font-weight: 700;
         color: var(--text-dark);
+        margin-bottom: 2rem;
+        text-align: center;
     }
 
-    .info-card p {
+    .info-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: var(--primary-light);
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+    }
+
+    .info-item:hover {
+        transform: translateX(8px);
+    }
+
+    .info-icon {
+        width: 50px;
+        height: 50px;
+        background: var(--primary-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    .info-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.25rem;
+    }
+
+    .info-description {
+        font-size: 0.875rem;
         color: var(--text-light);
         margin: 0;
+    }
+
+    .contact-card {
+        background: var(--gray-light);
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+    }
+
+    .contact-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.75rem;
+    }
+
+    .contact-description {
+        color: var(--text-light);
+        margin-bottom: 1rem;
         font-size: 0.9rem;
     }
 
-    .contact-info {
-        background: var(--white);
-        padding: 25px;
-        border-radius: 8px;
-        box-shadow: var(--shadow);
+    .contact-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
     }
 
-    .contact-info h4 {
-        color: var(--primary-color);
-        margin-bottom: 15px;
-    }
-
-    .contact-info > p {
-        color: var(--text-light);
-        margin-bottom: 15px;
-    }
-
-    .contact-methods p {
+    .contact-item {
         display: flex;
         align-items: center;
-        gap: 10px;
-        margin-bottom: 10px;
+        gap: 0.75rem;
         color: var(--text-dark);
+        font-size: 0.9rem;
     }
 
-    .contact-methods i {
+    .contact-icon {
         color: var(--primary-color);
-        width: 20px;
+        width: 16px;
     }
 
     /* FAQ Section */
     .faq-section {
-        padding: 80px 0;
-        background-color: var(--white);
+        padding: 5rem 0;
+        background: var(--white);
     }
 
     .faq-list {
@@ -524,15 +771,15 @@
 
     .faq-item {
         background: var(--white);
-        border-radius: 8px;
+        border-radius: var(--border-radius);
         box-shadow: var(--shadow);
-        margin-bottom: 15px;
+        margin-bottom: 1rem;
         overflow: hidden;
-        border: 1px solid #eee;
+        border: 1px solid var(--gray-medium);
     }
 
-    .faq-question {
-        padding: 20px;
+    .faq-header {
+        padding: 1.5rem 2rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -540,46 +787,71 @@
         transition: var(--transition);
     }
 
-    .faq-question:hover {
-        background-color: var(--gray-light);
+    .faq-header:hover {
+        background: var(--primary-light);
     }
 
-    .faq-question h3 {
+    .faq-question {
         margin: 0;
         font-size: 1.1rem;
+        font-weight: 600;
         color: var(--text-dark);
     }
 
-    .faq-question i {
+    .faq-icon {
         transition: var(--transition);
         color: var(--primary-color);
     }
 
-    .faq-item.active .faq-question i {
+    .faq-item.active .faq-icon {
         transform: rotate(180deg);
     }
 
-    .faq-answer {
-        padding: 0 20px;
+    .faq-content {
+        padding: 0 2rem;
         max-height: 0;
         overflow: hidden;
         transition: var(--transition);
     }
 
-    .faq-item.active .faq-answer {
-        padding: 0 20px 20px;
+    .faq-item.active .faq-content {
+        padding: 0 2rem 1.5rem;
         max-height: 200px;
     }
 
-    .faq-answer p {
+    .faq-answer {
         margin: 0;
         color: var(--text-light);
         line-height: 1.6;
+        font-size: 0.95rem;
     }
 
     /* Responsive Design */
+    @media (max-width: 1024px) {
+        .form-layout {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        .sidebar-card {
+            position: static;
+        }
+    }
+
     @media (max-width: 768px) {
-        .pendaftaran-form-section .container {
+        .pendaftaran-container {
+            padding: 0 1rem;
+        }
+        
+        .header-title {
+            font-size: 2.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.75rem;
+        }
+        
+        .process-grid {
             grid-template-columns: 1fr;
         }
         
@@ -587,24 +859,48 @@
             grid-template-columns: 1fr;
         }
         
-        .process-steps {
-            grid-template-columns: 1fr;
+        .form-card {
+            padding: 2rem;
         }
         
-        .form-container {
-            padding: 25px;
+        .faq-header {
+            padding: 1.25rem 1.5rem;
+        }
+        
+        .faq-content {
+            padding: 0 1.5rem;
+        }
+        
+        .faq-item.active .faq-content {
+            padding: 0 1.5rem 1.25rem;
         }
     }
 
-    @media (max-width: 576px) {
+    @media (max-width: 480px) {
+        .pendaftaran-header {
+            padding: 3rem 0;
+        }
+        
+        .header-title {
+            font-size: 2rem;
+        }
+        
+        .header-description {
+            font-size: 1rem;
+        }
+        
         .pendaftaran-process,
         .pendaftaran-form-section,
         .faq-section {
-            padding: 40px 0;
+            padding: 3rem 0;
         }
         
-        .form-container h2 {
-            font-size: 1.5rem;
+        .form-card {
+            padding: 1.5rem;
+        }
+        
+        .sidebar-card {
+            padding: 1.5rem;
         }
     }
     </style>
@@ -612,10 +908,20 @@
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         // FAQ Toggle
-        document.querySelectorAll('.faq-question').forEach(question => {
-            question.addEventListener('click', () => {
-                const faqItem = question.parentElement;
-                faqItem.classList.toggle('active');
+        document.querySelectorAll('.faq-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const faqItem = header.parentElement;
+                const isActive = faqItem.classList.contains('active');
+                
+                // Close all FAQ items
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Open clicked item if it wasn't active
+                if (!isActive) {
+                    faqItem.classList.add('active');
+                }
             });
         });
 
@@ -628,7 +934,13 @@
             requiredFields.forEach(field => {
                 if (!field.value.trim()) {
                     valid = false;
-                    field.style.borderColor = '#dc3545';
+                    field.style.borderColor = 'var(--error-color)';
+                    
+                    // Add error animation
+                    field.style.animation = 'shake 0.5s ease-in-out';
+                    setTimeout(() => {
+                        field.style.animation = '';
+                    }, 500);
                 } else {
                     field.style.borderColor = '';
                 }
@@ -637,19 +949,29 @@
             const agreeCheckbox = document.getElementById('agree');
             if (!agreeCheckbox.checked) {
                 valid = false;
-                agreeCheckbox.parentElement.style.color = '#dc3545';
+                agreeCheckbox.parentElement.style.color = 'var(--error-color)';
             } else {
                 agreeCheckbox.parentElement.style.color = '';
             }
 
             if (!valid) {
                 e.preventDefault();
-                alert('Harap lengkapi semua field yang wajib diisi dan setujui persyaratan!');
+                // Smooth scroll to first error
+                const firstError = form.querySelector('[required]:invalid');
+                if (firstError) {
+                    firstError.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' 
+                    });
+                }
             }
         });
 
-        // File input validation
+        // File input validation and styling
         const fileInput = document.getElementById('dokumen');
+        const fileLabel = document.querySelector('.file-label');
+        const fileText = document.querySelector('.file-text');
+
         if (fileInput) {
             fileInput.addEventListener('change', function() {
                 const file = this.files[0];
@@ -660,13 +982,54 @@
                     if (!allowedTypes.includes(file.type)) {
                         alert('Format file tidak didukung. Harap upload file PDF, DOC, atau DOCX.');
                         this.value = '';
+                        fileText.textContent = 'Pilih File';
                     } else if (fileSize > 2) {
                         alert('Ukuran file terlalu besar. Maksimal 2MB.');
                         this.value = '';
+                        fileText.textContent = 'Pilih File';
+                    } else {
+                        fileText.textContent = file.name;
+                        fileLabel.style.background = 'var(--success-color)';
+                        fileLabel.style.borderColor = 'var(--success-color)';
+                        fileLabel.style.color = 'var(--white)';
                     }
+                } else {
+                    fileText.textContent = 'Pilih File';
+                    fileLabel.style.background = '';
+                    fileLabel.style.borderColor = '';
+                    fileLabel.style.color = '';
                 }
             });
         }
+
+        // Add shake animation for errors
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Real-time validation
+        const inputs = form.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.hasAttribute('required') && !this.value.trim()) {
+                    this.style.borderColor = 'var(--error-color)';
+                } else {
+                    this.style.borderColor = '';
+                }
+            });
+            
+            input.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    this.style.borderColor = 'var(--success-color)';
+                }
+            });
+        });
     });
     </script>
 @endsection

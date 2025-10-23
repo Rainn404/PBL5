@@ -3,116 +3,333 @@
 @section('title', 'Divisi HIMA-TI')
 
 @section('content')
-<div class="container py-4">
+<div class="container">
     <div class="text-center mb-5">
         <h1 class="fw-bold gradient-text">Divisi HIMA-TI</h1>
-        <p class="lead text-muted">
+        <p class="lead text-light">
             Struktur organisasi dan deskripsi divisi-divisi dalam Himpunan Mahasiswa<br>
             Teknik Informatika
         </p>
     </div>
 
-    <div class="row g-4">
-        @foreach($divisis as $divisi)
-        <div class="col-lg-6 col-xl-4">
-            <div class="card divisi-card h-100 shadow-sm">
-                <div class="card-header bg-primary text-white py-3">
-                    <h5 class="card-title mb-0 fw-bold">{{ $divisi->nama_divisi }}</h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="badge bg-info fs-6">
-                            <i class="fas fa-users me-1"></i>
-                            {{ $divisi->anggotas_count }} Anggota
-                        </span>
-                        <span class="badge bg-success">
-                            {{ $divisi->status ? 'Aktif' : 'Tidak Aktif' }}
-                        </span>
+    <div class="divisi-grid">
+        <!-- Divisi 1: Teknologi & Pengembangan -->
+        <div class="divisi-card">
+            <div class="divisi-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">Teknologi & Pengembangan</h3>
+                    <div class="divisi-icon">
+                        <i class="fas fa-code"></i>
                     </div>
-                    
-                    <p class="card-text divisi-desc">
-                        {{ Str::limit($divisi->deskripsi, 120) }}
-                    </p>
-
-                    <div class="divisi-detail d-none">
-                        <div class="mb-3">
-                            <strong><i class="fas fa-user me-2"></i>Ketua Divisi:</strong>
-                            <span class="ms-2">{{ $divisi->ketua_divisi ?? 'Belum ditentukan' }}</span>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <strong><i class="fas fa-info-circle me-2"></i>Deskripsi Lengkap:</strong>
-                            <p class="mt-2 mb-0">{{ $divisi->deskripsi }}</p>
-                        </div>
-
-                        @if($divisi->anggotas_count > 0)
-                        <div class="anggota-list">
-                            <strong><i class="fas fa-list me-2"></i>Daftar Anggota:</strong>
-                            <div class="mt-2">
-                                @foreach($divisi->anggotas->take(5) as $anggota)
-                                <span class="badge bg-light text-dark me-1 mb-1">
-                                    {{ $anggota->nama }}
-                                </span>
-                                @endforeach
-                                @if($divisi->anggotas_count > 5)
-                                <span class="badge bg-secondary">
-                                    +{{ $divisi->anggotas_count - 5 }} lainnya
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                        @endif
-                    </div>
-                </div>
-                <div class="card-footer bg-transparent">
-                    <button class="btn btn-outline-primary btn-sm toggle-detail" 
-                            data-divisi="{{ $divisi->id_divisi }}">
-                        <span class="show-text">Selengkapnya</span>
-                        <span class="hide-text d-none">Sembunyikan</span>
-                        <i class="fas fa-chevron-down ms-1"></i>
-                    </button>
                 </div>
             </div>
+            <div class="divisi-content">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="status-badge status-active">
+                        <i class="fas fa-users me-1"></i>
+                        15 Anggota
+                    </span>
+                    <span class="status-badge status-diterima">
+                        Aktif
+                    </span>
+                </div>
+                
+                <p class="divisi-desc mb-3">
+                    Bertanggung jawab dalam pengembangan sistem, website, dan aplikasi HIMA-TI. 
+                    Divisi ini fokus pada inovasi teknologi dan pemecahan masalah digital.
+                </p>
+
+                <div class="divisi-detail d-none">
+                    <div class="mb-3">
+                        <strong><i class="fas fa-user me-2 text-primary"></i>Ketua Divisi:</strong>
+                        <span class="ms-2">Ahmad Rizki</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong><i class="fas fa-tasks me-2 text-primary"></i>Program Kerja:</strong>
+                        <ul class="mt-2 mb-0 ps-3">
+                            <li>Pengembangan Website HIMA-TI</li>
+                            <li>Workshop Programming</li>
+                            <li>Tech Support untuk Kegiatan</li>
+                        </ul>
+                    </div>
+
+                    <div class="anggota-list">
+                        <strong><i class="fas fa-list me-2 text-primary"></i>Anggota Inti:</strong>
+                        <div class="d-flex flex-wrap gap-2 mt-2">
+                            @foreach(['Siti', 'Budi', 'Dewi', 'Rudi'] as $anggota)
+                            <div class="anggota-avatar" title="{{ $anggota }}">
+                                {{ substr($anggota, 0, 1) }}
+                            </div>
+                            @endforeach
+                            <div class="anggota-avatar" title="+10 lainnya">+10</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="divisi-footer">
+                <button class="btn btn-outline btn-sm toggle-detail w-100">
+                    <span class="show-text">Selengkapnya</span>
+                    <span class="hide-text d-none">Sembunyikan</span>
+                    <i class="fas fa-chevron-down ms-1"></i>
+                </button>
+            </div>
         </div>
-        @endforeach
+
+        <!-- Divisi 2: Humas & Kemitraan -->
+        <div class="divisi-card">
+            <div class="divisi-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">Humas & Kemitraan</h3>
+                    <div class="divisi-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="divisi-content">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="status-badge status-active">
+                        <i class="fas fa-users me-1"></i>
+                        12 Anggota
+                    </span>
+                    <span class="status-badge status-diterima">
+                        Aktif
+                    </span>
+                </div>
+                
+                <p class="divisi-desc mb-3">
+                    Menjaga hubungan baik dengan internal dan eksternal kampus. 
+                    Bertugas membangun jaringan kemitraan dan publikasi kegiatan.
+                </p>
+
+                <div class="divisi-detail d-none">
+                    <div class="mb-3">
+                        <strong><i class="fas fa-user me-2 text-primary"></i>Ketua Divisi:</strong>
+                        <span class="ms-2">Siti Nurhaliza</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong><i class="fas fa-tasks me-2 text-primary"></i>Program Kerja:</strong>
+                        <ul class="mt-2 mb-0 ps-3">
+                            <li>Public Relations</li>
+                            <li>Sponsorship & Partnership</li>
+                            <li>Media Sosial Management</li>
+                        </ul>
+                    </div>
+
+                    <div class="anggota-list">
+                        <strong><i class="fas fa-list me-2 text-primary"></i>Anggota Inti:</strong>
+                        <div class="d-flex flex-wrap gap-2 mt-2">
+                            @foreach(['Rina', 'Fajar', 'Maya', 'Hendra'] as $anggota)
+                            <div class="anggota-avatar" title="{{ $anggota }}">
+                                {{ substr($anggota, 0, 1) }}
+                            </div>
+                            @endforeach
+                            <div class="anggota-avatar" title="+8 lainnya">+8</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="divisi-footer">
+                <button class="btn btn-outline btn-sm toggle-detail w-100">
+                    <span class="show-text">Selengkapnya</span>
+                    <span class="hide-text d-none">Sembunyikan</span>
+                    <i class="fas fa-chevron-down ms-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Divisi 3: Akademik & Penelitian -->
+        <div class="divisi-card">
+            <div class="divisi-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">Akademik & Penelitian</h3>
+                    <div class="divisi-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="divisi-content">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="status-badge status-active">
+                        <i class="fas fa-users me-1"></i>
+                        10 Anggota
+                    </span>
+                    <span class="status-badge status-diterima">
+                        Aktif
+                    </span>
+                </div>
+                
+                <p class="divisi-desc mb-3">
+                    Fokus pada pengembangan akademik mahasiswa, penelitian, 
+                    dan peningkatan kualitas pembelajaran di jurusan Teknik Informatika.
+                </p>
+
+                <div class="divisi-detail d-none">
+                    <div class="mb-3">
+                        <strong><i class="fas fa-user me-2 text-primary"></i>Ketua Divisi:</strong>
+                        <span class="ms-2">Budi Santoso</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong><i class="fas fa-tasks me-2 text-primary"></i>Program Kerja:</strong>
+                        <ul class="mt-2 mb-0 ps-3">
+                            <li>Study Group & Tutoring</li>
+                            <li>Seminar & Workshop Akademik</li>
+                            <li>Research Development</li>
+                        </ul>
+                    </div>
+
+                    <div class="anggota-list">
+                        <strong><i class="fas fa-list me-2 text-primary"></i>Anggota Inti:</strong>
+                        <div class="d-flex flex-wrap gap-2 mt-2">
+                            @foreach(['Dina', 'Rizky', 'Lina'] as $anggota)
+                            <div class="anggota-avatar" title="{{ $anggota }}">
+                                {{ substr($anggota, 0, 1) }}
+                            </div>
+                            @endforeach
+                            <div class="anggota-avatar" title="+7 lainnya">+7</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="divisi-footer">
+                <button class="btn btn-outline btn-sm toggle-detail w-100">
+                    <span class="show-text">Selengkapnya</span>
+                    <span class="hide-text d-none">Sembunyikan</span>
+                    <i class="fas fa-chevron-down ms-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Divisi 4: Minat & Bakat -->
+        <div class="divisi-card">
+            <div class="divisi-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">Minat & Bakat</h3>
+                    <div class="divisi-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="divisi-content">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="status-badge status-active">
+                        <i class="fas fa-users me-1"></i>
+                        8 Anggota
+                    </span>
+                    <span class="status-badge status-diterima">
+                        Aktif
+                    </span>
+                </div>
+                
+                <p class="divisi-desc mb-3">
+                    Mengembangkan bakat non-akademik mahasiswa melalui berbagai 
+                    kegiatan olahraga, seni, dan pengembangan soft skills.
+                </p>
+
+                <div class="divisi-detail d-none">
+                    <div class="mb-3">
+                        <strong><i class="fas fa-user me-2 text-primary"></i>Ketua Divisi:</strong>
+                        <span class="ms-2">Dewi Anggraini</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong><i class="fas fa-tasks me-2 text-primary"></i>Program Kerja:</strong>
+                        <ul class="mt-2 mb-0 ps-3">
+                            <li>Olahraga & E-sports</li>
+                            <li>Seni & Kreativitas</li>
+                            <li>Leadership Training</li>
+                        </ul>
+                    </div>
+
+                    <div class="anggota-list">
+                        <strong><i class="fas fa-list me-2 text-primary"></i>Anggota Inti:</strong>
+                        <div class="d-flex flex-wrap gap-2 mt-2">
+                            @foreach(['Andi', 'Sari', 'Rama'] as $anggota)
+                            <div class="anggota-avatar" title="{{ $anggota }}">
+                                {{ substr($anggota, 0, 1) }}
+                            </div>
+                            @endforeach
+                            <div class="anggota-avatar" title="+5 lainnya">+5</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="divisi-footer">
+                <button class="btn btn-outline btn-sm toggle-detail w-100">
+                    <span class="show-text">Selengkapnya</span>
+                    <span class="hide-text d-none">Sembunyikan</span>
+                    <i class="fas fa-chevron-down ms-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Divisi 5: Kewirausahaan -->
+        <div class="divisi-card">
+            <div class="divisi-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">Kewirausahaan</h3>
+                    <div class="divisi-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="divisi-content">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="status-badge status-active">
+                        <i class="fas fa-users me-1"></i>
+                        9 Anggota
+                    </span>
+                    <span class="status-badge status-diterima">
+                        Aktif
+                    </span>
+                </div>
+                
+                <p class="divisi-desc mb-3">
+                    Mengembangkan jiwa kewirausahaan mahasiswa melalui berbagai 
+                    program bisnis, startup, dan pengembangan UKM.
+                </p>
+
+                <div class="divisi-detail d-none">
+                    <div class="mb-3">
+                        <strong><i class="fas fa-user me-2 text-primary"></i>Ketua Divisi:</strong>
+                        <span class="ms-2">Rizky Pratama</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong><i class="fas fa-tasks me-2 text-primary"></i>Program Kerja:</strong>
+                        <ul class="mt-2 mb-0 ps-3">
+                            <li>Startup Development</li>
+                            <li>Business Plan Competition</li>
+                            <li>Entrepreneurship Workshop</li>
+                        </ul>
+                    </div>
+
+                    <div class="anggota-list">
+                        <strong><i class="fas fa-list me-2 text-primary"></i>Anggota Inti:</strong>
+                        <div class="d-flex flex-wrap gap-2 mt-2">
+                            @foreach(['Feri', 'Nina', 'Doni', 'Salsa'] as $anggota)
+                            <div class="anggota-avatar" title="{{ $anggota }}">
+                                {{ substr($anggota, 0, 1) }}
+                            </div>
+                            @endforeach
+                            <div class="anggota-avatar" title="+5 lainnya">+5</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="divisi-footer">
+                <button class="btn btn-outline btn-sm toggle-detail w-100">
+                    <span class="show-text">Selengkapnya</span>
+                    <span class="hide-text d-none">Sembunyikan</span>
+                    <i class="fas fa-chevron-down ms-1"></i>
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
-<style>
-.divisi-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: none;
-    border-radius: 15px;
-}
-
-.divisi-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
-}
-
-.card-header {
-    border-radius: 15px 15px 0 0 !important;
-}
-
-.divisi-desc {
-    color: #6c757d;
-    line-height: 1.6;
-}
-
-.toggle-detail {
-    transition: all 0.3s ease;
-    border-radius: 20px;
-}
-
-.toggle-detail:hover {
-    transform: scale(1.05);
-}
-
-.anggota-list .badge {
-    font-size: 0.75rem;
-    padding: 0.35em 0.65em;
-}
-</style>
 @endsection
 
 @push('scripts')

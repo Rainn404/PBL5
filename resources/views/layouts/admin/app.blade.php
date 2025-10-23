@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin - HIMA Dashboard')</title>
     
     <!-- Bootstrap CSS -->
@@ -246,102 +247,109 @@
     <div id="wrapper">
         <!-- Sidebar -->
         <nav id="sidebar" class="sidebar">
-    <div class="sidebar-header bg-primary text-white text-center py-4">
-        <h4 class="mb-0 fw-bold">HIMA Dashboard</h4>
-        <small class="opacity-75">Sistem Manajemen</small>
-    </div>
-    
-    <ul class="sidebar-nav">
-        <li class="nav-item">
-            <a href="{{ route('admin.dashboard') }}" class="nav-link {{ Request::routeIs('admin.dashboard') ? 'active' : '' }}">
-                <i class="fas fa-home me-3"></i>
-                <span>Dashboard</span>
-            </a>
-        </li>
-        
-        <li class="nav-item">
-            <a href="{{ route('admin.anggota.index') }}" class="nav-link {{ Request::routeIs('admin.anggota.*') ? 'active' : '' }}">
-                <i class="fas fa-users me-3"></i>
-                <span>Kelola Anggota</span>
-            </a>
-        </li>
-        
-        <li class="nav-item">
-            <a href="{{ route('admin.divisi.index') }}" class="nav-link {{ Request::routeIs('admin.divisi.*') ? 'active' : '' }}">
-                <i class="fas fa-building me-3"></i>
-                <span>Kelola Divisi</span>
-            </a>
-        </li>
-        
-        <li class="nav-item">
-            <a href="{{ route('admin.prestasi.index') }}" class="nav-link {{ Request::routeIs('admin.prestasi.*') ? 'active' : '' }}">
-                <i class="fas fa-trophy me-3"></i>
-                <span>Kelola Prestasi</span>
-            </a>
-        </li>
+            <div class="sidebar-header bg-primary text-white text-center py-4">
+                <h4 class="mb-0 fw-bold">HIMA Dashboard</h4>
+                <small class="opacity-75">Sistem Manajemen</small>
+            </div>
+            
+            <ul class="sidebar-nav">
+                <li class="nav-item">
+                    <a href="{{ route('admin.dashboard') }}" class="nav-link {{ Request::routeIs('admin.dashboard') ? 'active' : '' }}">
+                        <i class="fas fa-home me-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="{{ route('admin.anggota.index') }}" class="nav-link {{ Request::routeIs('admin.anggota.*') ? 'active' : '' }}">
+                        <i class="fas fa-users me-3"></i>
+                        <span>Kelola Anggota</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="{{ route('admin.jabatan.index') }}" class="nav-link {{ Request::routeIs('admin.jabatan.*') ? 'active' : '' }}">
+                        <i class="fas fa-briefcase me-3"></i>
+                        <span>Kelola Jabatan</span>
+                    </a>
+                </li>
 
-         <!-- Tambahkan Data Mahasiswa di sini -->
-        <li class="nav-item">
-            <a href="{{ route('admin.mahasiswa.index') }}" class="nav-link {{ Request::routeIs('admin.mahasiswa.*') ? 'active' : '' }}">
-                <i class="fas fa-user-graduate me-3"></i>
-                <span>Data Mahasiswa</span>
-            </a>
-        </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.divisi.index') }}" class="nav-link {{ Request::routeIs('admin.divisi.*') ? 'active' : '' }}">
+                        <i class="fas fa-building me-3"></i>
+                        <span>Kelola Divisi</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="{{ route('admin.prestasi.index') }}" class="nav-link {{ Request::routeIs('admin.prestasi.*') ? 'active' : '' }}">
+                        <i class="fas fa-trophy me-3"></i>
+                        <span>Kelola Prestasi</span>
+                    </a>
+                </li>
 
-        <!-- Tambahkan Mahasiswa Bermasalah di sini -->
-        <li class="nav-item">
-            <a href="{{ route('admin.mahasiswa-bermasalah.index') }}" class="nav-link {{ Request::routeIs('admin.mahasiswa-bermasalah.*') ? 'active' : '' }}">
-                <i class="fas fa-exclamation-triangle me-3"></i>
-                <span>Mahasiswa Bermasalah</span>
-            </a>
-        </li>
-        
-        <li class="nav-item">
-            <a href="{{ route('admin.berita.index') }}" class="nav-link {{ Request::routeIs('admin.berita.*') ? 'active' : '' }}">
-                <i class="fas fa-newspaper me-3"></i>
-                <span>Berita</span>
-            </a>
-        </li>
-        
-        <li class="nav-item">
-            <a href="{{ route('admin.pendaftaran.index') }}" class="nav-link {{ Request::routeIs('admin.pendaftaran.*') ? 'active' : '' }}">
-                <i class="fas fa-user-check me-3"></i>
-                <span>Pendaftaran</span>
-            </a>
-        </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.mahasiswa.index') }}" class="nav-link {{ Request::routeIs('admin.mahasiswa.*') ? 'active' : '' }}">
+                        <i class="fas fa-user-graduate me-3"></i>
+                        <span>Data Mahasiswa</span>
+                    </a>
+                </li>
 
-         <!-- Tambahkan Data Pelanggaran di sini -->
-        <li class="nav-item">
-            <a href="{{ route('admin.pelanggaran.index') }}" class="nav-link {{ Request::routeIs('admin.pelanggaran.*') ? 'active' : '' }}">
-                <i class="fas fa-exclamation-circle me-3"></i>
-                <span>Data Pelanggaran</span>
-            </a>
-        </li>
-          <!-- Tambahkan Data Master Sanksi di sini -->
-        <li class="nav-item">
-            <a href="{{ route('admin.sanksi.index') }}" class="nav-link {{ Request::routeIs('admin.sanksi.*') ? 'active' : '' }}">
-                <i class="fas fa-balance-scale me-3"></i>
-                <span>Data  Sanksi</span>
-            </a>
-        </li>
-        
-        <li class="nav-divider"></li>
-        
-        <li class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="fas fa-cog me-3"></i>
-                <span>Pengaturan</span>
-            </a>
-        </li>
-        
-        <li class="nav-item">
-            <a href="#" class="nav-link text-danger">
-                <i class="fas fa-sign-out-alt me-3"></i>
-                <span>Logout</span>
-            </a>
-        </li>
-    </ul>
-</nav>
+                <li class="nav-item">
+                    <a href="{{ route('admin.mahasiswa-bermasalah.index') }}" class="nav-link {{ Request::routeIs('admin.mahasiswa-bermasalah.*') ? 'active' : '' }}">
+                        <i class="fas fa-exclamation-triangle me-3"></i>
+                        <span>Mahasiswa Bermasalah</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="{{ route('admin.berita.index') }}" class="nav-link {{ Request::routeIs('admin.berita.*') ? 'active' : '' }}">
+                        <i class="fas fa-newspaper me-3"></i>
+                        <span>Berita</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="{{ route('admin.pendaftaran.index') }}" class="nav-link {{ Request::routeIs('admin.pendaftaran.*') ? 'active' : '' }}">
+                        <i class="fas fa-user-check me-3"></i>
+                        <span>Pendaftaran</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.pelanggaran.index') }}" class="nav-link {{ Request::routeIs('admin.pelanggaran.*') ? 'active' : '' }}">
+                        <i class="fas fa-exclamation-circle me-3"></i>
+                        <span>Data Pelanggaran</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="{{ route('admin.sanksi.index') }}" class="nav-link {{ Request::routeIs('admin.sanksi.*') ? 'active' : '' }}">
+                        <i class="fas fa-balance-scale me-3"></i>
+                        <span>Data Sanksi</span>
+                    </a>
+                </li>
+                
+                <li class="nav-divider"></li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-cog me-3"></i>
+                        <span>Pengaturan</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="{{ route('logout') }}" class="nav-link text-danger" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <i class="fas fa-sign-out-alt me-3"></i>
+                        <span>Logout</span>
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                </li>
+            </ul>
+        </nav>
 
         <!-- Content -->
         <div id="content">
@@ -363,12 +371,9 @@
                                 <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <form method="POST" action="{{ route('admin.logout') }}">
-                                        @csrf
-                                        <button type="submit" class="dropdown-item text-danger">
-                                            <i class="fas fa-sign-out-alt me-2"></i>Logout
-                                        </button>
-                                    </form>
+                                    <a class="dropdown-item text-danger" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                    </a>
                                 </li>
                             </ul>
                         </li>
@@ -427,8 +432,34 @@
             });
             
             // Auto-hide alerts after 5 seconds
-            $('.alert').delay(5000).fadeOut(300);
+            setTimeout(function() {
+                $('.alert').fadeOut(300);
+            }, 5000);
         });
+
+        // CSRF Token setup for AJAX
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        // Global alert function
+        function showAlert(type, message) {
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+            const alertHtml = `
+                <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            $('main').prepend(alertHtml);
+            
+            setTimeout(() => {
+                $('.alert').alert('close');
+            }, 5000);
+        }
     </script>
     
     @stack('scripts')

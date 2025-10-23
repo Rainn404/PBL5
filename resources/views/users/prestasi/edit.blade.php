@@ -3,7 +3,7 @@
 @section('title', 'Edit Prestasi - HIMA Sistem Manajemen')
 
 @section('content')
-    @include('users.prestasi.form', [
+    @include('prestasi.form', [
         'title' => 'Edit Prestasi',
         'action' => route('prestasi.update', $prestasi->id_prestasi),
         'prestasi' => $prestasi

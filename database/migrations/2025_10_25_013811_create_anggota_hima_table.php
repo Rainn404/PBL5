@@ -11,12 +11,12 @@ return new class extends Migration
         Schema::create('anggota_hima', function (Blueprint $table) {
             $table->id('id_anggota_hima');
             $table->foreignId('id_user')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreignId('id_divisi')->nullable()
-                ->constrained(
-                    table: 'divisis',
-                    column: 'id_divisi'
-                )
-                ->onDelete('set null');
+           $table->unsignedBigInteger('id_divisi')->nullable();
+$table->foreign('id_divisi')
+    ->references('id_divisi')
+    ->on('divisis')
+    ->onDelete('set null');
+
             $table->foreignId('id_jabatan')
                 ->nullable()
                 ->constrained(table: 'jabatans', column: 'id_jabatan')

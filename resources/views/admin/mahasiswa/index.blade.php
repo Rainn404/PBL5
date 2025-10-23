@@ -50,39 +50,38 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($mahasiswas as $mahasiswa)
+                                @forelse($mahasiswa as $mahasiswas)
                                 <tr>
                                     <td class="text-center align-middle">
-                                        <strong>{{ $mahasiswa->nim }}</strong>
+                                        <strong>{{ $mahasiswas->nim }}</strong>
                                     </td>
                                     <td class="align-middle">
-                                        <strong>{{ $mahasiswa->nama }}</strong>
+                                        <strong>{{ $mahasiswas->nama }}</strong>
                                     </td>
                                     <td class="text-center align-middle">
-                                        @if($mahasiswa->status == 'Aktif')
+                                        @if($mahasiswas->status == 'Aktif')
                                             <span class="badge px-3 py-2" style="background-color: #e6f4ea; color: #137333; border: 1px solid #34a853;">
-                                                <strong>{{ $mahasiswa->status }}</strong>
+                                                <strong>{{ $mahasiswas->status }}</strong>
                                             </span>
-                                        @elseif($mahasiswa->status == 'Tidak Aktif')
+                                        @elseif($mahasiswas->status == 'Tidak Aktif')
                                             <span class="badge px-3 py-2" style="background-color: #fce8e6; color: #c5221f; border: 1px solid #ea4335;">
-                                                <strong>{{ $mahasiswa->status }}</strong>
+                                                <strong>{{ $mahasiswas->status }}</strong>
                                             </span>
                                         @else
                                             <span class="badge px-3 py-2" style="background-color: #fef7e0; color: #b06000; border: 1px solid #fbbc04;">
-                                                <strong>{{ $mahasiswa->status }}</strong>
+                                                <strong>{{ $mahasiswas->status }}</strong>
                                             </span>
                                         @endif
                                     </td>
                                     <td class="text-center align-middle">
                                         <div class="btn-group btn-group-sm">
-                                            <a href="{{ route('admin.mahasiswa.edit', $mahasiswa) }}" class="btn btn-warning btn-icon" title="Edit" style="background-color: #fdd663; border-color: #fdd663;">
+                                            <a href="{{ route('admin.mahasiswa.edit', $mahasiswas) }}" class="btn btn-warning btn-icon" title="Edit" style="background-color: #fdd663; border-color: #fdd663;">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <form action="{{ route('admin.mahasiswa.destroy', $mahasiswa) }}" method="POST" class="d-inline">
+                                            <form action="{{ route('admin.mahasiswa.destroy', $mahasiswas) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-icon" title="Hapus" style="background-color: #f28b82; border-color: #f28b82;" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
->>>>>>> 1d52fc143bace73a1e89abde13fde41160ae60a8
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
@@ -110,11 +109,11 @@
                         <div class="mb-3 mb-md-0">
                             <p class="mb-0 text-muted small">
                                 Menampilkan 
-                                <span class="font-weight-bold text-dark">{{ $mahasiswas->firstItem() ?? 0 }}</span> 
+                                <span class="font-weight-bold text-dark">{{ $mahasiswa->firstItem() ?? 0 }}</span> 
                                 - 
-                                <span class="font-weight-bold text-dark">{{ $mahasiswas->lastItem() ?? 0 }}</span> 
+                                <span class="font-weight-bold text-dark">{{ $mahasiswa->lastItem() ?? 0 }}</span> 
                                 dari 
-                                <span class="font-weight-bold text-dark">{{ $mahasiswas->total() }}</span> 
+                                <span class="font-weight-bold text-dark">{{ $mahasiswa->total() }}</span> 
                                 hasil
                             </p>
                         </div>
@@ -124,7 +123,7 @@
                             <nav aria-label="Page navigation">
                                 <ul class="pagination pagination-sm mb-0">
                                     <!-- Previous Page Link -->
-                                    @if ($mahasiswas->onFirstPage())
+                                    @if ($mahasiswa->onFirstPage())
                                         <li class="page-item disabled">
                                             <span class="page-link border-0">
                                                 <i class="fas fa-chevron-left fa-xs mr-1"></i> Previous
@@ -139,8 +138,8 @@
                                     @endif
 
                                     <!-- Page Numbers -->
-                                    @foreach ($mahasiswas->getUrlRange(1, $mahasiswas->lastPage()) as $page => $url)
-                                        @if ($page == $mahasiswas->currentPage())
+                                    @foreach ($mahasiswa->getUrlRange(1, $mahasiswa->lastPage()) as $page => $url)
+                                        @if ($page == $mahasiswa->currentPage())
                                             <li class="page-item active">
                                                 <span class="page-link border-0" style="background-color: #1a73e8; border-color: #1a73e8;">
                                                     {{ $page }}
@@ -156,9 +155,9 @@
                                     @endforeach
 
                                     <!-- Next Page Link -->
-                                    @if ($mahasiswas->hasMorePages())
+                                    @if ($mahasiswa->hasMorePages())
                                         <li class="page-item">
-                                            <a class="page-link border-0 text-primary" href="{{ $mahasiswas->nextPageUrl() }}" aria-label="Next">
+                                            <a class="page-link border-0 text-primary" href="{{ $mahasiswa->nextPageUrl() }}" aria-label="Next">
                                                 Next <i class="fas fa-chevron-right fa-xs ml-1"></i>
                                             </a>
                                         </li>

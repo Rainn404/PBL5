@@ -35,9 +35,10 @@
                 <a href="{{ url('/') }}" class="btn btn-primary">
                     <i class="fas fa-home"></i> Kembali ke Beranda
                 </a>
-                <a href="{{ route('pendaftaran.status', session('pendaftaran_id')) }}" class="btn btn-outline">
-                    <i class="fas fa-chart-line"></i> Lihat Status Pendaftaran
-                </a>
+              <a href="{{ route('pendaftaran.check-status') }}" class="btn btn-outline">
+    <i class="fas fa-chart-line"></i> Cek Status Pendaftaran
+</a>
+
             </div>
         </div>
     </div>

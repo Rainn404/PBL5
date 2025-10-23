@@ -16,7 +16,7 @@
                         <p class="mb-0">Isi form berikut untuk mengajukan prestasi Anda</p>
                     </div>
                     <div class="col-md-4 text-md-end">
-                        <a href="{{ route('users.prestasi.index') }}" class="btn btn-light">
+                        <a href="{{ route('prestasi.index') }}" class="btn btn-light">
                             <i class="fas fa-arrow-left me-2"></i>Kembali ke Daftar
                         </a>
                     </div>
@@ -69,7 +69,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('users.prestasi.store') }}" method="POST" enctype="multipart/form-data" id="prestasiForm">
+                    <form action="{{ route('prestasi.store') }}" method="POST" enctype="multipart/form-data" id="prestasiForm">
                         @csrf
                         
                         <!-- Step 1: Informasi Pribadi -->

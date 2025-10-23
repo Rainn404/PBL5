@@ -87,7 +87,7 @@ class PrestasiController extends Controller
 
         Prestasi::create($validated);
 
-        return redirect()->route('users.prestasi.index')
+        return redirect()->route('prestasi.index')
             ->with('success', 'Prestasi berhasil diajukan! Menunggu validasi admin.');
     }
 

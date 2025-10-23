@@ -1668,3 +1668,321 @@ section {
     }
 
 }
+/* ===== DIVISI CARD STRUCTURE ===== */
+.divisi-header {
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+    color: var(--white);
+    padding: 20px;
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+}
+
+.divisi-content {
+    padding: 25px;
+}
+
+.divisi-footer {
+    background-color: var(--gray-light);
+    padding: 15px 25px;
+    border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* ===== DIVISI CONTENT STYLES ===== */
+.divisi-desc {
+    color: var(--text-light);
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.divisi-detail {
+    transition: var(--transition);
+}
+
+.anggota-avatar {
+    width: 35px;
+    height: 35px;
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.anggota-avatar:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow);
+}
+
+/* ===== GRADIENT TEXT ===== */
+.gradient-text {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ===== LIST STYLES ===== */
+.divisi-detail ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.divisi-detail ul li {
+    padding: 5px 0;
+    padding-left: 20px;
+    position: relative;
+    color: var(--text-light);
+}
+
+.divisi-detail ul li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* ===== ANIMATIONS ===== */
+.divisi-detail {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+}
+
+.divisi-detail:not(.d-none) {
+    max-height: 500px;
+    opacity: 1;
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+@media (max-width: 768px) {
+    .divisi-content {
+        padding: 20px;
+    }
+    
+    .divisi-header {
+        padding: 15px 20px;
+    }
+    
+    .divisi-header h3 {
+        font-size: 1.1rem;
+    }
+    
+    .anggota-avatar {
+        width: 30px;
+        height: 30px;
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .divisi-content {
+        padding: 15px;
+    }
+    
+    .divisi-header {
+        padding: 15px;
+    }
+    
+    .status-badge {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+    }
+}
+/* ===== CONTAINER STYLES ===== */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Container variations */
+.container-fluid {
+    width: 100%;
+    padding: 0 20px;
+}
+
+.container-sm {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.container-md {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.container-lg {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Container dengan background */
+.container-bg {
+    background-color: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow);
+    padding: 30px;
+}
+
+.container-bg-light {
+    background-color: var(--gray-light);
+    border-radius: var(--border-radius-lg);
+    padding: 30px;
+}
+
+/* Container untuk section khusus */
+.hero-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 20px 50px;
+}
+
+.section-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 20px;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Container dengan gradient */
+.container-gradient {
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+    color: var(--white);
+    border-radius: var(--border-radius-lg);
+    padding: 40px;
+}
+
+/* Container untuk forms */
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+    background: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow);
+}
+
+/* Responsive container */
+@media (max-width: 1200px) {
+    .container {
+        max-width: 100%;
+        padding: 0 30px;
+    }
+}
+
+@media (max-width: 992px) {
+    .container {
+        padding: 0 25px;
+    }
+    
+    .container-bg,
+    .container-bg-light,
+    .form-container {
+        padding: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 20px;
+    }
+    
+    .hero-container {
+        padding: 120px 20px 50px;
+    }
+    
+    .section-container {
+        padding: 60px 20px;
+    }
+    
+    .container-bg,
+    .container-bg-light,
+    .form-container,
+    .container-gradient {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    .container-bg,
+    .container-bg-light,
+    .form-container,
+    .container-gradient {
+        padding: 15px;
+    }
+    
+    .hero-container {
+        padding: 100px 15px 30px;
+    }
+    
+    .section-container {
+        padding: 50px 15px;
+    }
+}
+
+/* Utility classes untuk container */
+.container-full {
+    width: 100%;
+    padding: 0;
+}
+
+.container-padded {
+    padding: 40px;
+}
+
+.container-padded-sm {
+    padding: 20px;
+}
+
+.container-padded-lg {
+    padding: 60px;
+}
+
+/* Container dengan border */
+.container-bordered {
+    border: 2px solid var(--primary-light);
+    border-radius: var(--border-radius-lg);
+    padding: 30px;
+}
+
+/* Container untuk cards grid */
+.cards-container {
+    display: grid;
+    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+/* Container untuk sidebar layout */
+.sidebar-container {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+@media (max-width: 768px) {
+    .sidebar-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}

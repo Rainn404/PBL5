@@ -7,9 +7,7 @@
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
     <style>
         /* === Navbar Fix === */
@@ -199,6 +197,7 @@
                 <a href="{{ url('/home') }}" class="nav-link">Home</a>
                 <a href="{{ url('/divisi') }}" class="nav-link">Divisi</a>
                 <a href="{{ url('/anggota') }}" class="nav-link">Profil Anggota</a>
+                <a href="{{ url('/mahasiswa') }}" class="nav-link">Data Mahasiswa</a>
                 <a href="{{ url('/berita') }}" class="nav-link">Berita</a>
                 <a href="{{ url('/pendaftaran') }}" class="nav-link">Pendaftaran</a>
                 <a href="{{ url('/prestasi') }}" class="nav-link">Prestasi</a>

@@ -12,18 +12,18 @@ class DivisiController extends Controller
     // Halaman publik divisi
     public function publicIndex()
     {
-        $divisi = Divisi::where('status', 1)
+        $divisis = Divisi::where('status', 1)
             ->withCount('anggotaHima') // TAMBAHKAN INI
             ->orderBy('nama_divisi')
             ->get();
 
-        return view('divisi', compact('divisi'));
+        return view('divisi', compact('divisis'));
     }
 
     // Menampilkan detail divisi publik
     public function publicShow(string $id)
     {
-        $divisi = Divisi::where('status', 1)
+        $divisis = Divisi::where('status', 1)
             ->withCount('anggotaHima') // TAMBAHKAN INI
             ->with(['anggotaHima' => function($query) {
                 $query->where('status', true)
@@ -31,7 +31,7 @@ class DivisiController extends Controller
             }])
             ->find($id);
 
-        if (!$divisi) {
+        if (!$divisis) {
             return redirect()->route('divisi')
                 ->with('error', 'Data divisi tidak ditemukan.');
         }
@@ -42,7 +42,7 @@ class DivisiController extends Controller
     // Menampilkan daftar divisi di admin
     public function index()
     {
-        $divisi = Divisi::withCount('anggotaHima') // TAMBAHKAN INI
+        $divisis = Divisi::withCount('anggotaHima') // TAMBAHKAN INI
             ->orderBy('nama_divisi')
             ->get();
             

@@ -13,7 +13,7 @@ class Berita extends Model
 
     protected $table = 'berita';
 
-    protected $primaryKey = 'Id_berita';
+    protected $primaryKey = 'id_berita';
     public $incrementing = true;
     protected $keyType = 'int';
 
@@ -22,11 +22,11 @@ class Berita extends Model
 
     // Field yang bisa diisi
     protected $fillable = [
-        'Judul_berita',
-        'Isi_berita',
-        'Nama_penulis',
+        'judul',
+        'isi',
+        'penulis',
         'foto',
-        'Tanggal_berita',
+        'tanggal',
     ];
 
     /* =======================
@@ -36,24 +36,24 @@ class Berita extends Model
     protected function judul(): Attribute
     {
         return Attribute::make(
-            get: fn($v, $attr) => $attr['Judul_berita'] ?? null,
-            set: fn($v) => ['Judul_berita' => $v]
+            get: fn($v, $attr) => $attr['judul'] ?? null,
+            set: fn($v) => ['judul' => $v]
         );
     }
 
     protected function isi(): Attribute
     {
         return Attribute::make(
-            get: fn($v, $attr) => $attr['Isi_berita'] ?? null,
-            set: fn($v) => ['Isi_berita' => $v]
+            get: fn($v, $attr) => $attr['isi'] ?? null,
+            set: fn($v) => ['isi' => $v]
         );
     }
 
     protected function namaPenulis(): Attribute
     {
         return Attribute::make(
-            get: fn($v, $attr) => $attr['Nama_penulis'] ?? null,
-            set: fn($v) => ['Nama_penulis' => $v]
+            get: fn($v, $attr) => $attr['penulis'] ?? null,
+            set: fn($v) => ['penulis' => $v]
         );
     }
 
@@ -72,14 +72,14 @@ class Berita extends Model
     protected function tanggalBerita(): Attribute
     {
         return Attribute::make(
-            get: fn($v, $attr) => isset($attr['Tanggal_berita'])
-                ? Carbon::parse($attr['Tanggal_berita'])
+            get: fn($v, $attr) => isset($attr['tanggal'])
+                ? Carbon::parse($attr['tanggal'])
                 : null,
             set: function ($v) {
                 if ($v instanceof \DateTimeInterface) {
                     $v = $v->format('Y-m-d');
                 }
-                return ['Tanggal_berita' => $v ?: null];
+                return ['tanggal' => $v ?: null];
             }
         );
     }
@@ -87,14 +87,14 @@ class Berita extends Model
     protected function tanggal(): Attribute
     {
         return Attribute::make(
-            get: fn($v, $attr) => isset($attr['Tanggal_berita'])
-                ? Carbon::parse($attr['Tanggal_berita'])
+            get: fn($v, $attr) => isset($attr['tanggal'])
+                ? Carbon::parse($attr['tanggal'])
                 : null,
             set: function ($v) {
                 if ($v instanceof \DateTimeInterface) {
                     $v = $v->format('Y-m-d');
                 }
-                return ['Tanggal_berita' => $v ?: null];
+                return ['tanggal' => $v ?: null];
             }
         );
     }
@@ -113,13 +113,13 @@ class Berita extends Model
 
     public function scopeLatestById($q)
     {
-        return $q->orderByDesc('Id_berita');
+        return $q->orderByDesc('id_berita');
     }
 
     public function scopeLatestByDate($q)
     {
         // Urutkan berdasarkan tanggal jika ada, lalu fallback ke id
-        return $q->orderByDesc('Tanggal_berita')->orderByDesc('Id_berita');
+        return $q->orderByDesc('tanggal')->orderByDesc('id_berita');
     }
 
     /* =======================
@@ -129,7 +129,7 @@ class Berita extends Model
     // Satu berita punya banyak komentar
     public function komentar()
     {
-        return $this->hasMany(\App\Models\Komentar::class, 'berita_id', 'Id_berita')
+        return $this->hasMany(\App\Models\Komentar::class, 'berita_id', 'id_berita')
                     ->latest('created_at');
     }
 }

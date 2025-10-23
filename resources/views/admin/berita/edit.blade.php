@@ -1,4 +1,4 @@
-@extends('layouts.app_admin')
+@extends('layouts.admin.app')
 
 @section('title', 'Edit Berita')
 
@@ -8,7 +8,7 @@
 
     <div class="card shadow-sm">
         <div class="card-body">
-            <form action="{{ route('admin.berita.update', $berita->Id_berita) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.berita.update', $berita->id_berita) }}" method="POST" enctype="multipart/form-data">
                 @csrf @method('PUT')
 
                 <div class="mb-3">
@@ -29,12 +29,12 @@
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="nama_penulis" class="form-label">Nama Penulis</label>
+                        <label for="penulis" class="form-label">Nama Penulis</label>
                         <input type="text"
-                               class="form-control @error('nama_penulis') is-invalid @enderror"
-                               id="nama_penulis" name="nama_penulis"
-                               value="{{ old('nama_penulis', $berita->nama_penulis) }}">
-                        @error('nama_penulis') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                               class="form-control @error('penulis') is-invalid @enderror"
+                               id="penulis" name="penulis"
+                               value="{{ old('penulis', $berita->penulis) }}">
+                        @error('penulis') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
 
                     <div class="col-md-6 mb-3">

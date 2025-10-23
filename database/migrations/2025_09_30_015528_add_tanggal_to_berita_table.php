@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::table('berita', function (Blueprint $table) {
             // Sesuaikan posisi kolom kalau mau (after('Nama_penulis') opsional)
-            $table->date('Tanggal_berita')->nullable()->after('Nama_penulis');
+            $table->date('Tanggal_berita')->nullable()->after('penulis');
         });
     }
 

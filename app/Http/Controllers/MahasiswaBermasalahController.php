@@ -38,20 +38,37 @@ class MahasiswaBermasalahController extends Controller
 ]);
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nim' => 'required|exists:mahasiswas,nim',
-            'pelanggaran_id' => 'required|exists:pelanggaran,id',
-            'sanksi_id' => 'required|exists:sanksi,id',
-            'deskripsi' => 'required'
-        ]);
+   public function store(Request $request)
+{
+    $request->validate([
+        'nim' => 'required|exists:mahasiswas,nim',
+        'pelanggaran_id' => 'required|exists:pelanggaran,id',
+        'sanksi_id' => 'required|exists:sanksi,id',
+        'deskripsi' => 'required'
+    ]);
 
-        MahasiswaBermasalah::create($request->all());
+    // Ambil data mahasiswa berdasarkan NIM
+    $mahasiswa = Mahasiswa::where('nim', $request->nim)->first();
 
-        return redirect()->route('admin.mahasiswa-bermasalah.index')
-            ->with('success', 'Data mahasiswa bermasalah berhasil ditambahkan');
+    // Cek jika tidak ditemukan (harusnya sudah aman karena ada exists)
+    if (!$mahasiswa) {
+        return back()->withErrors(['nim' => 'Mahasiswa tidak ditemukan']);
     }
+
+    // Simpan ke tabel mahasiswa_bermasalah
+    MahasiswaBermasalah::create([
+        'nim' => $mahasiswa->nim,
+        'nama' => $mahasiswa->nama, // ambil dari tabel mahasiswa
+        'semester' => $mahasiswa->semester_aktif ?? $request->semester, // fallback kalau kolomnya beda
+        'nama_orang_tua' => $mahasiswa->nama_ortu ?? $request->nama_orang_tua,
+        'pelanggaran_id' => $request->pelanggaran_id,
+        'sanksi_id' => $request->sanksi_id,
+        'deskripsi' => $request->deskripsi,
+    ]);
+
+    return redirect()->route('admin.mahasiswa-bermasalah.index')
+        ->with('success', 'Data mahasiswa bermasalah berhasil ditambahkan');
+}
 
     public function edit($id)
     {

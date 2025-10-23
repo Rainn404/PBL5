@@ -34,7 +34,7 @@ class MahasiswaController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nim' => 'required|string|max:20|unique:mahasiswa',
+            'nim' => 'required|string|max:20|unique:mahasiswas',
             'nama' => 'required|string|max:255',
             'email' => 'nullable|email',
             'prodi' => 'nullable|string|max:100',
@@ -63,7 +63,7 @@ class MahasiswaController extends Controller
     public function update(Request $request, Mahasiswa $mahasiswa)
     {
         $validated = $request->validate([
-            'nim' => 'required|string|max:20|unique:mahasiswa,nim,' . $mahasiswa->id,
+            'nim' => 'required|string|max:20|unique:mahasiswas,nim,' . $mahasiswa->id,
             'nama' => 'required|string|max:255',
             'email' => 'nullable|email',
             'prodi' => 'nullable|string|max:100',
