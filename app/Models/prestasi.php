@@ -10,23 +10,17 @@ class Prestasi extends Model
     use HasFactory;
 
     /**
-     * Nama tabel yang terhubung dengan model.
-     *
-     * @var string
+     * Nama tabel yang digunakan oleh model ini
      */
-    protected $table = 'prestasi';
+    protected $table = 'prestasi'; // ✅ Tambahkan ini agar tidak dicari 'prestasis'
 
     /**
-     * Primary key untuk model.
-     *
-     * @var string
+     * Primary key dari tabel
      */
     protected $primaryKey = 'id_prestasi';
 
     /**
-     * Atribut yang dapat diisi secara massal (mass assignable).
-     *
-     * @var array<int, string>
+     * Kolom yang bisa diisi (mass assignable)
      */
     protected $fillable = [
         'id_user',
@@ -44,51 +38,60 @@ class Prestasi extends Model
         'status_validasi',
         'alasan_penolakan',
         'tanggal_validasi',
-        'validator_id',
+        'validator_id'
     ];
 
     /**
-     * Tipe data native yang harus di-cast.
-     *
-     * @var array
+     * Konversi otomatis tipe data kolom tertentu
      */
     protected $casts = [
         'tanggal_mulai' => 'date',
         'tanggal_selesai' => 'date',
-        'ipk' => 'decimal:2',
+        'tanggal_validasi' => 'datetime',
+        'ipk' => 'decimal:2'
     ];
 
     /**
-     * Mendapatkan data user yang memiliki prestasi ini.
+     * Relasi ke tabel users (user yang mengajukan prestasi)
      */
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');
     }
-    
+
     /**
-     * (Saran) Mendapatkan data admin yang melakukan validasi.
-     * Pastikan 'validator_id' merujuk ke tabel yang benar (misal: 'users' atau 'super_admins').
+     * Relasi ke validator (jika ada kolom validator_id)
      */
     public function validator()
     {
-        // Ganti User::class jika admin ada di tabel lain, misal SuperAdmin::class
         return $this->belongsTo(User::class, 'validator_id');
     }
 
     /**
-     * Scope query untuk memfilter prestasi yang sudah disetujui.
+     * Accessor: menampilkan status_validasi dalam bentuk label (untuk tampilan)
      */
-    public function scopeDisetujui($query)
+    public function getStatusAttribute()
     {
-        return $query->where('status_validasi', 'disetujui');
+        $mapping = [
+            'pending' => 'Menunggu Validasi',
+            'disetujui' => 'Tervalidasi',
+            'ditolak' => 'Ditolak',
+        ];
+
+        return $mapping[$this->status_validasi] ?? 'Tidak Diketahui';
     }
 
     /**
-     * Scope query untuk memfilter prestasi yang masih pending.
+     * Mutator: menerima input dari view dalam bentuk label dan ubah ke status_validasi
      */
-    public function scopePending($query)
+    public function setStatusAttribute($value)
     {
-        return $query->where('status_validasi', 'pending');
+        $mapping = [
+            'Menunggu Validasi' => 'pending',
+            'Tervalidasi' => 'disetujui',
+            'Ditolak' => 'ditolak',
+        ];
+
+        $this->attributes['status_validasi'] = $mapping[$value] ?? 'pending';
     }
 }

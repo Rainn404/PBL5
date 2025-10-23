@@ -36,6 +36,11 @@ class Pendaftaran extends Model
         return $this->belongsTo(User::class, 'id_user');
     }
 
+    public function divisi()
+{
+    return $this->belongsTo(Divisi::class, 'id_divisi', 'id');
+}
+
     /**
      * Get the validator user.
      */
@@ -70,5 +75,9 @@ class Pendaftaran extends Model
         ];
 
         return $labels[$this->status_pendaftaran] ?? 'Tidak Diketahui';
+    }
+    public function jabatan()
+    {
+        return $this->belongsTo(Jabatan::class, 'id_jabatan', 'id');
     }
 }

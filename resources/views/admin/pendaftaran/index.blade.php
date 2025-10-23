@@ -414,15 +414,17 @@
                                             data-bs-toggle="tooltip" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <form action="{{ route('admin.pendaftaran.destroy', $item->id) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger action-btn" 
-                                                data-bs-toggle="tooltip" title="Hapus"
-                                                onclick="return confirm('Apakah Anda yakin ingin menghapus pendaftaran ini?')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
+                       <form action="{{ route('admin.pendaftaran.destroy', ['pendaftaran' => $item->id_pendaftaran]) }}" method="POST" class="d-inline">
+
+
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="btn btn-sm btn-outline-danger action-btn" 
+            data-bs-toggle="tooltip" title="Hapus"
+            onclick="return confirm('Apakah Anda yakin ingin menghapus pendaftaran ini?')">
+        <i class="fas fa-trash"></i>
+    </button>
+</form>
                                 </div>
                             </td>
                         </tr>
