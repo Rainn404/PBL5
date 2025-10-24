@@ -15,7 +15,7 @@
                         <h1 class="page-title">
                             <i class="fas fa-users me-2"></i>Kelola Pendaftaran
                         </h1>
-                        <p class="page-subtitle">Validasi dan kelola pendaftaran anggota baru HIMA TI</p>
+                        <p class="page-subtitle">Validasi dan kelola pendaftaran anggota baru HIMA TI keren banget</p>
                     </div>
                     <div class="status-badge">
                         <span class="badge {{ $settings->pendaftaran_aktif ? 'bg-success' : 'bg-danger' }}">
