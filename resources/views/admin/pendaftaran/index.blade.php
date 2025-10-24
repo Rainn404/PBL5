@@ -578,11 +578,19 @@
 }
 
 /* Header Styles */
+/*ininiii coba cobaaa*/
+.body {
+    background:#3a0ca3;
+    margin top:100px;
+}
+
+
 .page-header {
     background: white;
     padding: 1.5rem;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
+    
 }
 
 .page-title {
