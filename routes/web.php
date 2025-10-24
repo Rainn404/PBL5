@@ -38,6 +38,10 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // Public Routes (Frontend)
 // ========================
 Route::get('/', [IndexController::class, 'index'])->name('home');
+// Redirect /home ke /
+Route::get('/home', function () {
+    return redirect()->route('home');
+});
 
 // Berita Routes (Public)
 Route::prefix('berita')->name('berita.')->group(function () {

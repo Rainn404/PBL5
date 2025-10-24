@@ -594,13 +594,38 @@
 
 /* Status Column Styles */
 .table td:nth-child(8) {
-    min-width: 160px;
+    min-width: 10px;
 }
 
 /* Quick Action Buttons */
 .btn-sm {
     padding: 0.25rem 0.5rem;
     font-size: 0.75rem;
+}
+
+.page-container {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    min-height: 10vh;
+    overflow-x: hidden;
+}
+.table-responsive {
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+.page-container {
+    overflow-x: hidden;
+    width: 100%; /* Ubah dari 10% ke 100% */
+}
+html, body {
+    overflow-x: hidden;
+}
+
+.container-fluid, .container, .row, .content {
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 /* Responsive */

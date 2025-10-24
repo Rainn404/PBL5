@@ -507,12 +507,13 @@
                         <div class="card-footer">
                             <div class="user-info">
                                 <div class="user-avatar">
-                                    {{ substr($item->user->name, 0, 2) }}
-                                </div>
-                                <div class="user-details">
-                                    <h6>{{ $item->user->name }}</h6>
-                                    <span>{{ $item->email }}</span>
-                                </div>
+    {{ substr($item->user->name ?? '??', 0, 2) }}
+</div>
+<div class="user-details">
+    <h6>{{ $item->user->name ?? 'Tidak diketahui' }}</h6>
+    <span>{{ $item->email ?? '-' }}</span>
+</div>
+
                             </div>
                             
                             <div class="card-actions">

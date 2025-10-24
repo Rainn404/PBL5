@@ -11,7 +11,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // Data statis untuk sementara - nanti diganti dengan query database
+        // Data statis sementara - nanti bisa diambil dari database
         $data = [
             'totalAnggota' => 150,
             'totalDivisi' => 8,
@@ -44,6 +44,33 @@ class DashboardController extends Controller
                     'time' => '1 hari lalu',
                     'type' => 'Divisi',
                     'color' => 'success'
+                ]
+            ],
+            // Tambahkan ini agar tidak error di Blade
+            'recentMembers' => [
+                [
+                    'name' => 'Ahmad Rizki',
+                    'divisi' => 'IT',
+                    'avatar' => asset('images/default-avatar.png'),
+                    'status' => 'online'
+                ],
+                [
+                    'name' => 'Siti Nurhaliza',
+                    'divisi' => 'Desain',
+                    'avatar' => asset('images/default-avatar.png'),
+                    'status' => 'offline'
+                ],
+                [
+                    'name' => 'Budi Santoso',
+                    'divisi' => 'Humas',
+                    'avatar' => asset('images/default-avatar.png'),
+                    'status' => 'online'
+                ],
+                [
+                    'name' => 'Dewi Lestari',
+                    'divisi' => 'Keuangan',
+                    'avatar' => asset('images/default-avatar.png'),
+                    'status' => 'offline'
                 ]
             ]
         ];
