@@ -6,7 +6,7 @@
     <div class="fade-in-up">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h1 class="h3 fw-bold gradient-text mb-1">Kelola Anggota</h1>
+                <h1 class="h3 fw-bold gradient-text mb-1">Kelola Anggota Satu</h1>
                 <p class="text-muted">Kelola data anggota HIMA</p>
             </div>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#anggotaModal">
