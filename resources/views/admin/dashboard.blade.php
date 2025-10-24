@@ -8,7 +8,7 @@
     <div class="dashboard-header">
         <div class="header-content">
             <div class="header-text">
-                <h1 class="header-title">Dashboard</h1>
+                <h1 class="header-title">Dashboard Kemahasiswaan</h1>
                 <p class="header-description">Selamat datang di Sistem Manajemen HIMA</p>
             </div>
             <div class="header-actions">

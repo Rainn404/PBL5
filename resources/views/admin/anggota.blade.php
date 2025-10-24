@@ -10,7 +10,7 @@
                 <p class="text-muted">Kelola data anggota HIMA</p>
             </div>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#anggotaModal">
-                <i class="fas fa-plus me-2"></i>Tambah Anggota Baru
+                <i class="fas fa-plus me-2"></i>Tambah Anggota Baru1 <div class=""></div>
             </button>
         </div>
 
