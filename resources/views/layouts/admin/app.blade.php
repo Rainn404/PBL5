@@ -15,7 +15,7 @@
 
     <style>
         :root {
-            --primary-color: #4e73df;
+            --primary-color: #0d6efd;
             --secondary-color: #030304;
             --success-color: #1cc88a;
             --info-color: #36b9cc;

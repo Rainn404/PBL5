@@ -16,8 +16,6 @@
     text-align: center;
     padding: 60px 20px;
     border-radius: 0 0 20px 20px;
-
-    /* posisi tengah vertikal & horizontal */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -119,15 +117,24 @@
 <main class="content">
   <!-- ===== HERO ===== -->
   <section class="hero">
-    <h1>HIMPUNAN MAHASISWA TEKNIK INFORMATIKA</h1>
-    <p>Wadah pengembangan potensi mahasiswa Teknik Informatika dalam bidang teknologi, kepemimpinan, dan sosial.</p>
+    @if(isset($mode) && $mode === 'utama')
+      <h1>HIMPUNAN MAHASISWA TEKNIK INFORMATIKA</h1>
+      <p>Wadah pengembangan potensi mahasiswa Teknik Informatika dalam bidang teknologi, kepemimpinan, dan sosial.</p>
+    @else
+      <h1>BERITA HIMA-TI</h1>
+      <p>Kumpulan berita, kegiatan, dan prestasi terkini dari Himpunan Mahasiswa Teknik Informatika Politeknik Negeri Tanah Laut.</p>
+    @endif
   </section>
 
-  <!-- ===== BERITA TERKINI ===== -->
+  <!-- ===== BERITA SECTION ===== -->
   <div class="container mt-5">
-    <h3 class="section-title">BERITA TERKINI</h3>
+    @if(isset($mode) && $mode === 'utama')
+      <h3 class="section-title">BERITA TERKINI</h3>
+    @else
+      <h3 class="section-title">BERITA LAINNYA</h3>
+    @endif
 
-    @foreach($highlight as $b)
+    @forelse($highlight as $b)
       <div class="card-news">
         <!-- Gambar di kiri -->
         @if($b->foto)
@@ -148,14 +155,18 @@
           </a>
         </div>
       </div>
-    @endforeach
+    @empty
+      <p class="text-center text-muted mt-4 mb-5">Belum ada berita yang tersedia.</p>
+    @endforelse
 
-    <!-- Tombol lihat semua -->
-    <div class="text-center mt-4 mb-5">
-      <a href="{{ route('berita.lainnya') }}" class="btn btn-outline-primary px-4 py-2">
-        <i class="fas fa-layer-group me-2"></i> Lihat Semua Berita
-      </a>
-    </div>
+    <!-- Tombol lihat semua (hanya muncul di halaman utama) -->
+    @if(isset($mode) && $mode === 'utama')
+      <div class="text-center mt-4 mb-5">
+        <a href="{{ route('berita.lainnya') }}" class="btn btn-outline-primary px-4 py-2">
+          <i class="fas fa-layer-group me-2"></i> Lihat Semua Berita
+        </a>
+      </div>
+    @endif
   </div>
 </main>
 @endsection

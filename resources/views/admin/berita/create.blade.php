@@ -52,7 +52,7 @@
                 <button type="submit" class="btn btn-success">
                     <i class="fas fa-save me-2"></i> Simpan
                 </button>
-                <a href="{{ route('admin.berita.index') }}" class="btn btn-secondary">
+                <a href="{{ route('admin.berita.index') }}" 
                     Batal
                 </a>
             </form>

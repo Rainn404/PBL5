@@ -72,13 +72,12 @@
                                 </td>
                                 <td>
                             <a href="{{ route('admin.berita.show', $row->id_berita) }}" class="btn btn-primary">Detail</a>
-                                       class="btn btn-sm btn-info text-white">
-                                        <i class="fas fa-eye"></i> Lihat
+                        
+                        
                                     </a>
 
                                             <a href="{{ route('admin.berita.edit', $row->id_berita) }}" class="btn btn-warning btn-sm">Edit</a>
-                                       class="btn btn-sm btn-warning text-white">
-                                        <i class="fas fa-edit"></i> Edit
+      
                                     </a>
 
                                     <form action="{{ route('admin.berita.destroy', $row->id_berita ?? $row->id) }}"
