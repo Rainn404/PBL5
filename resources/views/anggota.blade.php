@@ -160,7 +160,7 @@
 .anggota-title {
     font-size: 1.875rem;
     font-weight: 700;
-    background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+    background: linear-gradient(135deg, #ea3bf6, #d51dd8);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -206,7 +206,7 @@
 
 .search-input:focus {
     outline: none;
-    border-color: #3B82F6;
+    border-color: #f33bf6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -222,7 +222,7 @@
 
 .filter-select:focus {
     outline: none;
-    border-color: #3B82F6;
+    border-color: #ea3bf6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -293,7 +293,7 @@
 .anggota-card:hover {
     transform: translateY(-8px) rotateX(5deg);
     box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
-    border-color: #3B82F6;
+    border-color: #f63bda;
 }
 
 /* Card Status */
@@ -332,7 +332,7 @@
 }
 
 .anggota-card:hover .avatar-image {
-    border-color: #3B82F6;
+    border-color: #f33bf6;
     transform: scale(1.05);
 }
 
@@ -363,7 +363,7 @@
 }
 
 .divisi-tag {
-    background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+    background: linear-gradient(135deg, #f63bc7, #d81dc2);
     color: #FFFFFF;
     padding: 0.5rem 1rem;
     border-radius: 20px;

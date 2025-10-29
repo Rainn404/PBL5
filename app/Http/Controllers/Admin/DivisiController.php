@@ -10,15 +10,14 @@ use Illuminate\Support\Facades\DB;
 class DivisiController extends Controller
 {
     public function index()
-{
-    // Ambil semua divisi beserta relasi anggota
-    $divisis = Divisi::with('anggotaHima')
-        ->orderBy('nama_divisi')
-        ->get();
+    {
+        // Ambil semua divisi beserta jumlah anggota
+        $divisis = Divisi::withCount('anggotaHima')
+            ->orderBy('nama_divisi')
+            ->get();
 
-    return view('admin.divisi.index', compact('divisis'));
-}
-
+        return view('admin.divisi.index', compact('divisis'));
+    }
 
     public function create()
     {
@@ -26,33 +25,38 @@ class DivisiController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            // sesuaikan dengan kolom di migration
-            'nama_divisi' => 'required|string|max:100|unique:divisis,nama_divisi',
-            'ketua_divisi' => 'required|string|max:100',
-            'deskripsi' => 'nullable|string'
+{
+    $request->validate([
+        'nama_divisi' => 'required|string|max:100|unique:divisis,nama_divisi',
+        'ketua_divisi' => 'required|string|max:100',
+        'deskripsi' => 'nullable|string'
+    ]);
+
+    try {
+        DB::beginTransaction();
+
+        Divisi::create([
+            'nama_divisi' => $request->nama_divisi,
+            'ketua_divisi' => $request->ketua_divisi,
+            'deskripsi' => $request->deskripsi
         ]);
 
-        try {
-            DB::beginTransaction();
+        DB::commit();
 
-            Divisi::create($request->all());
-
-            DB::commit();
-
-            return redirect()->route('admin.divisi.index')
-                ->with('success', 'Divisi berhasil ditambahkan.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
-                ->withInput();
-        }
+        return redirect()->route('admin.divisi.index')
+            ->with('success', 'Divisi berhasil ditambahkan.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return redirect()->back()
+            ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
+            ->withInput();
     }
-
-    public function show(Divisi $divisi)
+}
+    public function show($id)
     {
+        // PERBAIKAN: Ambil divisi dengan jumlah anggota
+        $divisi = Divisi::withCount('anggotaHima')->findOrFail($id);
+        
         return view('admin.divisi.show', compact('divisi'));
     }
 
@@ -65,14 +69,16 @@ class DivisiController extends Controller
     {
         $request->validate([
             'nama_divisi' => 'required|string|max:100|unique:divisis,nama_divisi,' . $divisi->id_divisi . ',id_divisi',
-            'ketua_divisi' => 'required|string|max:100',
             'deskripsi' => 'nullable|string'
         ]);
 
         try {
             DB::beginTransaction();
 
-            $divisi->update($request->all());
+            $divisi->update([
+                'nama_divisi' => $request->nama_divisi,
+                'deskripsi' => $request->deskripsi
+            ]);
 
             DB::commit();
 
@@ -91,9 +97,8 @@ class DivisiController extends Controller
         try {
             DB::beginTransaction();
 
-            $usedInAnggota = DB::table('anggota_hima')->where('id_divisi', $divisi->id_divisi)->exists();
-            
-            if ($usedInAnggota) {
+            // Cek apakah divisi digunakan oleh anggota
+            if ($divisi->anggotaHima()->exists()) {
                 return redirect()->back()
                     ->with('error', 'Tidak dapat menghapus divisi karena masih digunakan oleh anggota.');
             }

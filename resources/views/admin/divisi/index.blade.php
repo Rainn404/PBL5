@@ -52,7 +52,7 @@
                         @forelse($divisis as $key => $divisi)
                         <tr>
                             <td>{{ $key + 1 }}</td>
-                            <td>{{ $divisi->nama }}</td>
+                            <td>{{ $divisi->nama_divisi }}</td> {{-- PERBAIKAN: ganti 'nama' jadi 'nama_divisi' --}}
                             <td>
                                 @if($divisi->deskripsi)
                                     {{ Str::limit($divisi->deskripsi, 100) }}
@@ -61,7 +61,7 @@
                                 @endif
                             </td>
                             <td>
-                                <span class="badge badge-primary">{{ $divisi->anggotaHima->count() }} Anggota</span>
+                                <span class="badge badge-primary">{{ $divisi->anggota_hima_count }} Anggota</span> {{-- PERBAIKAN: gunakan withCount --}}
                             </td>
                             <td>
                                 <div class="btn-group" role="group">
@@ -73,16 +73,16 @@
                                        class="btn btn-warning btn-sm" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                 <form action="{{ route('admin.divisi.destroy', $divisi->id_divisi) }}" 
-      method="POST" class="d-inline">
-    @csrf
-    @method('DELETE')
-    <button type="submit" class="btn btn-danger btn-sm"
-            onclick="return confirm('Apakah Anda yakin ingin menghapus divisi ini?')">
-        <i class="fas fa-trash"></i> Hapus
-    </button>
-</form>
-
+                                    <form action="{{ route('admin.divisi.destroy', $divisi->id_divisi) }}" 
+                                          method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm"
+                                                onclick="return confirm('Apakah Anda yakin ingin menghapus divisi ini?')"
+                                                title="Hapus">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -111,7 +111,8 @@
         $('#dataTable').DataTable({
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Indonesian.json"
-            }
+            },
+            "order": [[1, 'asc']] // Urutkan berdasarkan nama divisi
         });
     });
 </script>

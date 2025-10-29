@@ -52,7 +52,6 @@ class BeritaController extends Controller
         return view('admin.berita.show', compact('berita'));
     }
 
-    // Tambahan khusus tombol “Lihat” di admin (tidak ke halaman publik)
     public function adminShow($id)
     {
         $berita = Berita::findOrFail($id);
@@ -106,22 +105,24 @@ class BeritaController extends Controller
      * FRONTEND / PUBLIK AREA
      * ========================================================= */
 
-    // GET /berita → hanya 3 berita utama
+    // GET / → tampilkan 3 berita terbaru
     public function publicIndex()
     {
         $highlight = Berita::orderByDesc('Tanggal_berita')
                             ->orderByDesc('Id_berita')
                             ->take(3)
                             ->get();
+                            
 
-        return view('berita.index', compact('highlight'));
+        $mode = 'utama'; // penanda halaman utama
+        return view('berita.index', compact('highlight', 'mode'));
     }
 
-    // GET /berita-lainnya → semua berita
     public function lainnya()
     {
         $beritaLainnya = Berita::orderByDesc('Tanggal_berita')
                                 ->orderByDesc('Id_berita')
+                                ->take(PHP_INT_MAX)
                                 ->get();
 
         return view('berita.lainnya', compact('beritaLainnya'));
