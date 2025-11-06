@@ -138,7 +138,10 @@ Route::match(['put', 'patch'], '/{id}/validasi', [AdminPrestasiController::class
     
     // Mahasiswa Bermasalah Management
     Route::resource('mahasiswa-bermasalah', MahasiswaBermasalahController::class);
+    // TAMBAHKAN ROUTE INI UNTUK MULTIPLE MAHASISWA
+    Route::post('/mahasiswa-bermasalah/store-multiple', [MahasiswaBermasalahController::class, 'storeMultiple'])->name('mahasiswa-bermasalah.store-multiple');
     Route::get('/mahasiswa-bermasalah/get-mahasiswa/{nim}', [MahasiswaBermasalahController::class, 'getMahasiswaByNim'])->name('mahasiswa-bermasalah.get-mahasiswa');
+    
     
     // Pendaftaran Management
     Route::resource('pendaftaran', AdminPendaftaranController::class);
