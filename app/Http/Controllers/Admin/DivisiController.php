@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Divisi;
+use App\Models\AnggotaHima;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -21,54 +22,68 @@ class DivisiController extends Controller
 
     public function create()
     {
-        return view('admin.divisi.create');
+        // Ambil data anggota untuk dropdown ketua
+        $anggota = AnggotaHima::where('status', 1)
+            ->orderBy('nama')
+            ->get();
+            
+        return view('admin.divisi.create', compact('anggota'));
     }
 
     public function store(Request $request)
-{
-    $request->validate([
-        'nama_divisi' => 'required|string|max:100|unique:divisis,nama_divisi',
-        'ketua_divisi' => 'required|string|max:100',
-        'deskripsi' => 'nullable|string'
-    ]);
-
-    try {
-        DB::beginTransaction();
-
-        Divisi::create([
-            'nama_divisi' => $request->nama_divisi,
-            'ketua_divisi' => $request->ketua_divisi,
-            'deskripsi' => $request->deskripsi
+    {
+        $request->validate([
+            'nama_divisi' => 'required|string|max:100|unique:divisis,nama_divisi',
+            'ketua_divisi' => 'required|string|max:100',
+            'deskripsi' => 'nullable|string'
         ]);
 
-        DB::commit();
+        try {
+            DB::beginTransaction();
 
-        return redirect()->route('admin.divisi.index')
-            ->with('success', 'Divisi berhasil ditambahkan.');
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return redirect()->back()
-            ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
-            ->withInput();
+            Divisi::create([
+                'nama_divisi' => $request->nama_divisi,
+                'ketua_divisi' => $request->ketua_divisi,
+                'deskripsi' => $request->deskripsi
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('admin.divisi.index')
+                ->with('success', 'Divisi berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
+                ->withInput();
+        }
     }
-}
+
     public function show($id)
     {
-        // PERBAIKAN: Ambil divisi dengan jumlah anggota
         $divisi = Divisi::withCount('anggotaHima')->findOrFail($id);
         
         return view('admin.divisi.show', compact('divisi'));
     }
 
-    public function edit(Divisi $divisi)
+    public function edit($id)
     {
-        return view('admin.divisi.edit', compact('divisi'));
+        $divisi = Divisi::findOrFail($id);
+        // Ambil data anggota untuk dropdown ketua
+        $anggota = AnggotaHima::where('status', 1)
+            ->orderBy('nama')
+            ->get();
+            
+        return view('admin.divisi.edit', compact('divisi', 'anggota'));
     }
 
-    public function update(Request $request, Divisi $divisi)
+    public function update(Request $request, $id)
     {
+        $divisi = Divisi::findOrFail($id);
+        
         $request->validate([
             'nama_divisi' => 'required|string|max:100|unique:divisis,nama_divisi,' . $divisi->id_divisi . ',id_divisi',
+            'ketua_divisi' => 'required|string|max:100',
             'deskripsi' => 'nullable|string'
         ]);
 
@@ -77,6 +92,7 @@ class DivisiController extends Controller
 
             $divisi->update([
                 'nama_divisi' => $request->nama_divisi,
+                'ketua_divisi' => $request->ketua_divisi,
                 'deskripsi' => $request->deskripsi
             ]);
 
@@ -92,8 +108,10 @@ class DivisiController extends Controller
         }
     }
 
-    public function destroy(Divisi $divisi)
+    public function destroy($id)
     {
+        $divisi = Divisi::findOrFail($id);
+        
         try {
             DB::beginTransaction();
 

@@ -43,6 +43,7 @@
                         <tr>
                             <th>No</th>
                             <th>Nama Divisi</th>
+                            <th>Ketua</th>
                             <th>Deskripsi</th>
                             <th>Jumlah Anggota</th>
                             <th>Aksi</th>
@@ -52,7 +53,14 @@
                         @forelse($divisis as $key => $divisi)
                         <tr>
                             <td>{{ $key + 1 }}</td>
-                            <td>{{ $divisi->nama_divisi }}</td> {{-- PERBAIKAN: ganti 'nama' jadi 'nama_divisi' --}}
+                            <td>{{ $divisi->nama_divisi }}</td>
+                            <td>
+                                @if($divisi->ketua_divisi)
+                                    {{ $divisi->ketua_divisi }}
+                                @else
+                                    <span class="text-muted">Belum ada ketua</span>
+                                @endif
+                            </td>
                             <td>
                                 @if($divisi->deskripsi)
                                     {{ Str::limit($divisi->deskripsi, 100) }}
@@ -61,12 +69,12 @@
                                 @endif
                             </td>
                             <td>
-                                <span class="badge badge-primary">{{ $divisi->anggota_hima_count }} Anggota</span> {{-- PERBAIKAN: gunakan withCount --}}
+                                <span class="badge badge-primary">{{ $divisi->anggota_hima_count }} Anggota</span>
                             </td>
                             <td>
                                 <div class="btn-group" role="group">
                                     <a href="{{ route('admin.divisi.show', $divisi->id_divisi) }}" 
-                                       class="btn btn-info btn-sm" title="Lihat">
+                                       class="btn btn-info btn-sm" title="Lihat Detail">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <a href="{{ route('admin.divisi.edit', $divisi->id_divisi) }}" 
@@ -88,7 +96,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="5" class="text-center">Tidak ada data divisi</td>
+                            <td colspan="6" class="text-center">Tidak ada data divisi</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -112,7 +120,14 @@
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Indonesian.json"
             },
-            "order": [[1, 'asc']] // Urutkan berdasarkan nama divisi
+            "order": [[1, 'asc']], // Urutkan berdasarkan nama divisi
+            "columnDefs": [
+                {
+                    "targets": [5], // Kolom aksi
+                    "orderable": false,
+                    "searchable": false
+                }
+            ]
         });
     });
 </script>

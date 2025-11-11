@@ -23,6 +23,17 @@
                 <option value="{{ $divisi }}">{{ $divisi }}</option>
                 @endforeach
             </select>
+            <select class="filter-select" id="statusFilter">
+                <option value="">Semua Status</option>
+                <option value="aktif">Aktif</option>
+                <option value="tidak-aktif">Tidak Aktif</option>
+            </select>
+            <select class="filter-select" id="semesterFilter">
+                <option value="">Semua Semester</option>
+                @for($i = 1; $i <= 8; $i++)
+                <option value="{{ $i }}">Semester {{ $i }}</option>
+                @endfor
+            </select>
         </div>
     </div>
 
@@ -37,65 +48,78 @@
     </div>
     @endif
 
+    <!-- Filter Active Tags -->
+    <div class="active-filters" id="activeFilters">
+        <!-- Filter tags akan muncul di sini -->
+    </div>
+
     <!-- Cards View -->
-    <div class="anggota-grid" id="anggotaCards">
-        @foreach($anggota as $item)
-        <div class="anggota-card-wrapper" data-divisi="{{ $item->divisi->nama_divisi ?? '' }}">
-            <div class="anggota-card">
-                <!-- Status Indicator -->
-                <div class="card-status {{ $item->status ? 'status-active' : 'status-inactive' }}"></div>
-                
-                <!-- Foto Profil -->
-                <div class="card-avatar">
-                    @if($item->foto)
-                        <img src="{{ asset('storage/' . $item->foto) }}" 
-                             alt="{{ $item->nama }}" 
-                             class="avatar-image"
-                             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($item->nama) }}&background=3B82F6&color=fff&size=100'">
-                    @else
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode($item->nama) }}&background=3B82F6&color=fff&size=100" 
-                             alt="{{ $item->nama }}" 
-                             class="avatar-image">
-                    @endif
-                </div>
-                
-                <!-- Card Content -->
-                <div class="card-content">
-                    <!-- Nama dan NIM -->
-                    <h3 class="member-name">{{ $item->nama }}</h3>
-                    <p class="member-nim">NIM: {{ $item->nim }}</p>
+    <div class="anggota-grid-container">
+        <div class="anggota-grid" id="anggotaCards">
+            @foreach($anggota as $item)
+            <div class="anggota-card-wrapper" 
+                 data-divisi="{{ $item->divisi->nama_divisi ?? '' }}"
+                 data-status="{{ $item->status ? 'aktif' : 'tidak-aktif' }}"
+                 data-semester="{{ $item->semester }}"
+                 data-nama="{{ strtolower($item->nama) }}"
+                 data-nim="{{ $item->nim }}"
+                 data-jabatan="{{ strtolower($item->jabatan->nama_jabatan ?? '') }}">
+                <div class="anggota-card">
+                    <!-- Status Indicator -->
+                    <div class="card-status {{ $item->status ? 'status-active' : 'status-inactive' }}"></div>
                     
-                    <!-- Divisi -->
-                    <div class="member-divisi">
-                        <span class="divisi-tag">
-                            <i class="fas fa-users tag-icon"></i>
-                            {{ $item->divisi->nama_divisi ?? 'Tidak ada divisi' }}
-                        </span>
+                    <!-- Foto Profil -->
+                    <div class="card-avatar">
+                        @if($item->foto)
+                            <img src="{{ asset('storage/' . $item->foto) }}" 
+                                 alt="{{ $item->nama }}" 
+                                 class="avatar-image"
+                                 onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($item->nama) }}&background=3B82F6&color=fff&size=100'">
+                        @else
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode($item->nama) }}&background=3B82F6&color=fff&size=100" 
+                                 alt="{{ $item->nama }}" 
+                                 class="avatar-image">
+                        @endif
                     </div>
                     
-                    <!-- Jabatan -->
-                    <p class="member-jabatan">
-                        <i class="fas fa-briefcase jabatan-icon"></i>
-                        {{ $item->jabatan->nama_jabatan ?? 'Tidak ada jabatan' }}
-                    </p>
+                    <!-- Card Content -->
+                    <div class="card-content">
+                        <!-- Nama dan NIM -->
+                        <h3 class="member-name">{{ $item->nama }}</h3>
+                        <p class="member-nim">NIM: {{ $item->nim }}</p>
+                        
+                        <!-- Divisi -->
+                        <div class="member-divisi">
+                            <span class="divisi-tag">
+                                <i class="fas fa-users tag-icon"></i>
+                                {{ $item->divisi->nama_divisi ?? 'Tidak ada divisi' }}
+                            </span>
+                        </div>
+                        
+                        <!-- Jabatan -->
+                        <p class="member-jabatan">
+                            <i class="fas fa-briefcase jabatan-icon"></i>
+                            {{ $item->jabatan->nama_jabatan ?? 'Tidak ada jabatan' }}
+                        </p>
+                        
+                        <!-- Semester -->
+                        <p class="member-semester">
+                            <i class="fas fa-graduation-cap semester-icon"></i>
+                            Semester {{ $item->semester }}
+                        </p>
+                    </div>
                     
-                    <!-- Semester -->
-                    <p class="member-semester">
-                        <i class="fas fa-graduation-cap semester-icon"></i>
-                        Semester {{ $item->semester }}
-                    </p>
-                </div>
-                
-                <!-- Status Badge -->
-                <div class="card-footer">
-                    <span class="status-badge {{ $item->status ? 'badge-active' : 'badge-inactive' }}">
-                        <i class="fas fa-circle status-dot"></i>
-                        {{ $item->status ? 'Aktif' : 'Tidak Aktif' }}
-                    </span>
+                    <!-- Status Badge -->
+                    <div class="card-footer">
+                        <span class="status-badge {{ $item->status ? 'badge-active' : 'badge-inactive' }}">
+                            <i class="fas fa-circle status-dot"></i>
+                            {{ $item->status ? 'Aktif' : 'Tidak Aktif' }}
+                        </span>
+                    </div>
                 </div>
             </div>
+            @endforeach
         </div>
-        @endforeach
     </div>
 
     <!-- Empty State -->
@@ -106,8 +130,13 @@
         <h3 class="empty-title">Tidak ada anggota yang ditemukan</h3>
         <p class="empty-description">Coba ubah filter pencarian Anda</p>
         <button class="btn-reset" id="resetFilters">
-            <i class="fas fa-refresh btn-icon"></i>Reset Filter
+            <i class="fas fa-refresh btn-icon"></i>Reset Semua Filter
         </button>
+    </div>
+
+    <!-- Results Count -->
+    <div class="results-count" id="resultsCount">
+        Menampilkan <span id="visibleCount">0</span> dari <span id="totalCount">0</span> anggota
     </div>
 
     <!-- Pagination -->
@@ -139,10 +168,12 @@
 </div>
 
 <style>
-/* Main Container */
+/* Main Container - Perbaikan margin */
 .anggota-container {
-    padding: 2rem 0;
+    padding: 2rem 1.5rem;
     animation: fadeInUp 0.6s ease-out;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .anggota-header {
@@ -160,7 +191,7 @@
 .anggota-title {
     font-size: 1.875rem;
     font-weight: 700;
-    background: linear-gradient(135deg, #ea3bf6, #d51dd8);
+    background: linear-gradient(135deg, #5d87f1, #5d87f1);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -178,6 +209,7 @@
     display: flex;
     gap: 1rem;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .search-box {
@@ -206,7 +238,7 @@
 
 .search-input:focus {
     outline: none;
-    border-color: #f33bf6;
+    border-color: #5d87f1;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -216,14 +248,75 @@
     border-radius: 10px;
     background: #FFFFFF;
     font-size: 0.875rem;
-    width: 200px;
+    width: 180px;
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .filter-select:focus {
     outline: none;
-    border-color: #ea3bf6;
+    border-color: #5d87f1;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Active Filters */
+.active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    min-height: 40px;
+    align-items: center;
+}
+
+.filter-tag {
+    background: linear-gradient(135deg, #5d87f1, #5d87f1);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: fadeIn 0.3s ease;
+}
+
+.filter-tag-remove {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.6rem;
+    transition: all 0.2s ease;
+}
+
+.filter-tag-remove:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* Results Count */
+.results-count {
+    text-align: center;
+    color: #6B7280;
+    font-size: 0.875rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #F8FAFC;
+    border-radius: 10px;
+    border: 1px solid #E5E7EB;
+}
+
+.results-count span {
+    font-weight: 600;
+    color: #5d87f1;
 }
 
 /* Alert Notification */
@@ -265,16 +358,25 @@
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-/* Grid Layout */
+/* Grid Container - Baru untuk memusatkan grid */
+.anggota-grid-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+/* Grid Layout - Perbaikan untuk memusatkan */
 .anggota-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.5rem;
-    margin-bottom: 2rem;
+    width: 100%;
+    max-width: 1200px;
 }
 
 .anggota-card-wrapper {
     perspective: 1000px;
+    animation: fadeInUp 0.5s ease-out;
 }
 
 .anggota-card {
@@ -288,12 +390,13 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    text-align: center; /* Memusatkan konten */
 }
 
 .anggota-card:hover {
     transform: translateY(-8px) rotateX(5deg);
     box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
-    border-color: #f63bda;
+    border-color: #5d87f1;
 }
 
 /* Card Status */
@@ -320,6 +423,8 @@
 .card-avatar {
     text-align: center;
     margin-bottom: 1rem;
+    display: flex;
+    justify-content: center; /* Memusatkan avatar */
 }
 
 .avatar-image {
@@ -332,7 +437,7 @@
 }
 
 .anggota-card:hover .avatar-image {
-    border-color: #f33bf6;
+    border-color: #5d87f1;
     transform: scale(1.05);
 }
 
@@ -360,10 +465,12 @@
 
 .member-divisi {
     margin-bottom: 0.75rem;
+    display: flex;
+    justify-content: center; /* Memusatkan tag divisi */
 }
 
 .divisi-tag {
-    background: linear-gradient(135deg, #f63bc7, #d81dc2);
+    background: linear-gradient(135deg, #5d87f1, #5d87f1);
     color: #FFFFFF;
     padding: 0.5rem 1rem;
     border-radius: 20px;
@@ -411,6 +518,8 @@
 .card-footer {
     text-align: center;
     margin-top: auto;
+    display: flex;
+    justify-content: center; /* Memusatkan badge status */
 }
 
 .status-badge {
@@ -444,6 +553,10 @@
     text-align: center;
     padding: 3rem 2rem;
     display: none;
+    background: #F8FAFC;
+    border-radius: 16px;
+    border: 2px dashed #E5E7EB;
+    margin: 2rem 0;
 }
 
 .empty-state.show {
@@ -593,11 +706,34 @@
     }
 }
 
+@keyframes bounceIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
     .anggota-grid {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         gap: 1rem;
+    }
+    
+    .filter-section {
+        gap: 0.75rem;
+    }
+    
+    .search-box {
+        width: 220px;
+    }
+    
+    .filter-select {
+        width: 160px;
     }
 }
 
@@ -619,7 +755,7 @@
     }
     
     .anggota-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
         gap: 1rem;
     }
     
@@ -635,7 +771,7 @@
 
 @media (max-width: 480px) {
     .anggota-container {
-        padding: 1rem 0;
+        padding: 1rem;
     }
     
     .anggota-title {
@@ -651,6 +787,11 @@
         min-width: 40px;
         font-size: 0.75rem;
     }
+    
+    .active-filters {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
 </style>
 @endsection
@@ -660,49 +801,162 @@
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
     const divisiFilter = document.getElementById('divisiFilter');
+    const statusFilter = document.getElementById('statusFilter');
+    const semesterFilter = document.getElementById('semesterFilter');
     const anggotaCards = document.querySelectorAll('.anggota-card-wrapper');
     const emptyState = document.getElementById('emptyState');
     const resetFiltersBtn = document.getElementById('resetFilters');
+    const activeFilters = document.getElementById('activeFilters');
+    const resultsCount = document.getElementById('resultsCount');
+    const visibleCount = document.getElementById('visibleCount');
+    const totalCount = document.getElementById('totalCount');
+    
+    // Inisialisasi total count
+    totalCount.textContent = anggotaCards.length;
+    
+    // State untuk filter aktif
+    let activeFilterState = {
+        search: '',
+        divisi: '',
+        status: '',
+        semester: ''
+    };
+
+    function updateActiveFilters() {
+        activeFilters.innerHTML = '';
+        
+        if (activeFilterState.search) {
+            createFilterTag('Pencarian: ' + activeFilterState.search, 'search');
+        }
+        if (activeFilterState.divisi) {
+            createFilterTag('Divisi: ' + activeFilterState.divisi, 'divisi');
+        }
+        if (activeFilterState.status) {
+            const statusText = activeFilterState.status === 'aktif' ? 'Aktif' : 'Tidak Aktif';
+            createFilterTag('Status: ' + statusText, 'status');
+        }
+        if (activeFilterState.semester) {
+            createFilterTag('Semester: ' + activeFilterState.semester, 'semester');
+        }
+        
+        // Tampilkan container jika ada filter aktif
+        if (Object.values(activeFilterState).some(val => val !== '')) {
+            activeFilters.style.display = 'flex';
+        } else {
+            activeFilters.style.display = 'none';
+        }
+    }
+
+    function createFilterTag(text, type) {
+        const tag = document.createElement('div');
+        tag.className = 'filter-tag';
+        tag.innerHTML = `
+            ${text}
+            <button class="filter-tag-remove" data-type="${type}">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        activeFilters.appendChild(tag);
+        
+        // Event listener untuk tombol hapus
+        tag.querySelector('.filter-tag-remove').addEventListener('click', function() {
+            removeFilter(type);
+        });
+    }
+
+    function removeFilter(type) {
+        switch(type) {
+            case 'search':
+                searchInput.value = '';
+                activeFilterState.search = '';
+                break;
+            case 'divisi':
+                divisiFilter.value = '';
+                activeFilterState.divisi = '';
+                break;
+            case 'status':
+                statusFilter.value = '';
+                activeFilterState.status = '';
+                break;
+            case 'semester':
+                semesterFilter.value = '';
+                activeFilterState.semester = '';
+                break;
+        }
+        filterCards();
+        updateActiveFilters();
+    }
 
     function filterCards() {
         const searchTerm = searchInput.value.toLowerCase().trim();
         const divisiValue = divisiFilter.value;
-        let visibleCount = 0;
+        const statusValue = statusFilter.value;
+        const semesterValue = semesterFilter.value;
+        
+        // Update state
+        activeFilterState.search = searchTerm;
+        activeFilterState.divisi = divisiValue;
+        activeFilterState.status = statusValue;
+        activeFilterState.semester = semesterValue;
+        
+        let visibleCountValue = 0;
 
         anggotaCards.forEach(card => {
-            const nama = card.querySelector('.member-name').textContent.toLowerCase();
-            const nim = card.querySelector('.member-nim').textContent.toLowerCase();
-            const jabatan = card.querySelector('.member-jabatan').textContent.toLowerCase();
+            const nama = card.getAttribute('data-nama');
+            const nim = card.getAttribute('data-nim');
+            const jabatan = card.getAttribute('data-jabatan');
             const divisi = card.getAttribute('data-divisi');
+            const status = card.getAttribute('data-status');
+            const semester = card.getAttribute('data-semester');
 
-            const matchesSearch = nama.includes(searchTerm) || 
+            const matchesSearch = !searchTerm || 
+                                nama.includes(searchTerm) || 
                                 nim.includes(searchTerm) || 
                                 jabatan.includes(searchTerm);
             const matchesDivisi = !divisiValue || divisi === divisiValue;
+            const matchesStatus = !statusValue || status === statusValue;
+            const matchesSemester = !semesterValue || semester === semesterValue;
 
-            if (matchesSearch && matchesDivisi) {
+            if (matchesSearch && matchesDivisi && matchesStatus && matchesSemester) {
                 card.style.display = 'block';
-                visibleCount++;
-                
-                // Staggered animation
-                card.style.animationDelay = `${visibleCount * 0.1}s`;
+                card.style.animation = 'fadeInUp 0.5s ease-out';
+                visibleCountValue++;
             } else {
                 card.style.display = 'none';
             }
         });
 
+        // Update results count
+        visibleCount.textContent = visibleCountValue;
+        
         // Toggle empty state
-        if (visibleCount === 0) {
+        if (visibleCountValue === 0) {
             emptyState.classList.add('show');
+            resultsCount.style.display = 'none';
         } else {
             emptyState.classList.remove('show');
+            resultsCount.style.display = 'block';
         }
+        
+        // Update active filters display
+        updateActiveFilters();
     }
 
     function resetFilters() {
         searchInput.value = '';
         divisiFilter.value = '';
+        statusFilter.value = '';
+        semesterFilter.value = '';
+        
+        activeFilterState = {
+            search: '',
+            divisi: '',
+            status: '',
+            semester: ''
+        };
+        
         filterCards();
+        updateActiveFilters();
         
         // Add visual feedback
         resetFiltersBtn.style.transform = 'scale(0.95)';
@@ -712,12 +966,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Event listeners
-    searchInput.addEventListener('input', filterCards);
+    searchInput.addEventListener('input', function() {
+        // Debounce untuk performa
+        clearTimeout(this.debounce);
+        this.debounce = setTimeout(() => {
+            filterCards();
+        }, 300);
+    });
+    
     divisiFilter.addEventListener('change', filterCards);
+    statusFilter.addEventListener('change', filterCards);
+    semesterFilter.addEventListener('change', filterCards);
     resetFiltersBtn.addEventListener('click', resetFilters);
-
-    // Initialize
-    filterCards();
 
     // Add hover effects
     anggotaCards.forEach(card => {
@@ -729,6 +989,10 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.transform = 'translateY(0) rotateX(0)';
         });
     });
+
+    // Initialize
+    filterCards();
+    updateActiveFilters();
 });
 </script>
 @endpush
