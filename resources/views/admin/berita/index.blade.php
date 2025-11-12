@@ -36,7 +36,7 @@
                     <table class="table table-bordered table-hover align-middle mb-0">
                         <thead class="table-light">
                         <tr>
-                            <th style="width:60px;">#</th>
+                            <th style="width:60px;">No</th>
                             <th>Judul</th>
                             <th>Penulis</th>
                             <th>Foto</th>

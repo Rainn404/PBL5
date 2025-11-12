@@ -116,7 +116,7 @@
 
 <main class="content">
   <!-- ===== HERO ===== -->
-  <section class="hero">
+  <section class="hero {{ $mode === 'utama' ? 'hero-utama' : 'hero-berita' }}">
     @if(isset($mode) && $mode === 'utama')
       <h1>HIMPUNAN MAHASISWA TEKNIK INFORMATIKA</h1>
       <p>Wadah pengembangan potensi mahasiswa Teknik Informatika dalam bidang teknologi, kepemimpinan, dan sosial.</p>
@@ -125,6 +125,7 @@
       <p>Kumpulan berita, kegiatan, dan prestasi terkini dari Himpunan Mahasiswa Teknik Informatika Politeknik Negeri Tanah Laut.</p>
     @endif
   </section>
+</main>
 
   <!-- ===== BERITA SECTION ===== -->
   <div class="container mt-5">
@@ -150,8 +151,12 @@
             Posted by <strong>{{ $b->nama_penulis ?? 'Anonim' }}</strong> — {{ $b->created_at?->format('d M Y') }}
           </p>
           <p>{{ Str::limit(strip_tags($b->isi), 180, '...') }}</p>
-          <a href="{{ route('berita.show', $b->id_berita) }}" class="btn btn-warning px-3 py-2">
-            READ MORE
+<a href="{{ route('berita.show', $b->id_berita) }}" 
+   class="btn px-3 py-2 text-white" 
+   style="background-color: #1f2942;">
+  READ MORE
+</a>
+
           </a>
         </div>
       </div>

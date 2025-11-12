@@ -101,11 +101,6 @@ class BeritaController extends Controller
         return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil dihapus.');
     }
 
-    /* =========================================================
-     * FRONTEND / PUBLIK AREA
-     * ========================================================= */
-
-    // GET / → tampilkan 3 berita terbaru
     public function publicIndex()
     {
         $highlight = Berita::orderByDesc('Tanggal_berita')
@@ -128,7 +123,6 @@ class BeritaController extends Controller
         return view('berita.lainnya', compact('beritaLainnya'));
     }
 
-    // GET /berita/{id} → halaman detail berita publik
     public function publicShow($id)
     {
         $berita = Berita::with('komentar')->findOrFail($id);
