@@ -39,6 +39,16 @@
     text-align: center;
   }
 
+  /* ===== SECTION BERITA ===== */
+  .news-section {
+    background: 
+      linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+      url('https://maukuliah.ap-south-1.linodeobjects.com/gallery/005039/Gedung%202%20Politala-thumbnail.jpg')
+      no-repeat center center fixed;
+    background-size: cover;
+    padding: 60px 0;
+  }
+
   /* ===== JUDUL SECTION ===== */
   .section-title {
     text-align: center;
@@ -52,12 +62,13 @@
   .card-news {
     display: flex;
     align-items: flex-start;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.85);
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, .08);
     margin-bottom: 24px;
     overflow: hidden;
     transition: transform 0.2s ease-in-out;
+    backdrop-filter: blur(4px);
   }
 
   .card-news:hover {
@@ -95,11 +106,56 @@
     border-radius: 8px;
     transition: 0.3s;
   }
+  
+body.page-berita {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+    url('https://maukuliah.ap-south-1.linodeobjects.com/gallery/005039/Gedung%202%20Politala-thumbnail.jpg')
+    no-repeat center center fixed;
+  background-size: cover;
+  background-attachment: fixed;
+}
 
   .btn-warning:hover {
     background-color: #ffb300;
     color: #fff;
   }
+/* ===== Tombol Lihat Semua Berita ===== */
+.btn-berita {
+  background: linear-gradient(90deg, #1d8cf8, #007bff); /* gradasi biru khas HIMA-TI */
+  color: #fff !important;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  padding: 10px 28px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.25);
+}
+
+.btn-berita:hover {
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 123, 255, 0.35);
+}
+/* ===== Tombol Lihat Semua Berita ===== */
+.btn-berita {
+  background: linear-gradient(90deg, #1d8cf8, #007bff); /* gradasi biru khas HIMA-TI */
+  color: #fff !important;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  padding: 10px 28px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.25);
+}
+
+.btn-berita:hover {
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 123, 255, 0.35);
+}
 
   @media (max-width: 768px) {
     .card-news {
@@ -110,6 +166,7 @@
       width: 100%;
       height: 220px;
       border-radius: 16px 16px 0 0;
+
     }
   }
 </style>
@@ -128,7 +185,9 @@
 </main>
 
   <!-- ===== BERITA SECTION ===== -->
-  <div class="container mt-5">
+  <section class="news-section" style="margin-top: -30px;">
+  <div class="container">
+
     @if(isset($mode) && $mode === 'utama')
       <h3 class="section-title">BERITA TERKINI</h3>
     @else
@@ -164,14 +223,15 @@
       <p class="text-center text-muted mt-4 mb-5">Belum ada berita yang tersedia.</p>
     @endforelse
 
-    <!-- Tombol lihat semua (hanya muncul di halaman utama) -->
-    @if(isset($mode) && $mode === 'utama')
-      <div class="text-center mt-4 mb-5">
-        <a href="{{ route('berita.lainnya') }}" class="btn btn-outline-primary px-4 py-2">
-          <i class="fas fa-layer-group me-2"></i> Lihat Semua Berita
-        </a>
-      </div>
-    @endif
+<!-- Tombol lihat semua (hanya muncul di halaman utama) -->
+@if(isset($mode) && $mode === 'utama')
+  <div class="text-center mt-4 mb-5">
+    <a href="{{ route('berita.lainnya') }}" class="btn btn-berita px-4 py-2">
+      <i class="fas fa-layer-group me-2"></i> Lihat Semua Berita
+    </a>
   </div>
+@endif
+  </div>
+  </section>
 </main>
 @endsection
