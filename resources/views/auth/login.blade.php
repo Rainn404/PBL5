@@ -6,6 +6,89 @@
     <title>Login - HIMA-TI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+body {
+  background: linear-gradient(135deg, #eef1f8 0%, #dee6ff 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;       /* ✅ aktifkan scroll ke bawah */
+}
+
+.login-card {
+    text-align: center;
+    background: #fff;
+    padding: 25px 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+    width: 100%;
+    margin: 30px auto;
+    font-family: 'Poppins', sans-serif;
+}
+
+.login-card h5 {
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.login-card p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border: 2px solid #4285F4; /* 🔹 Garis tepi biru */
+    border-radius: 8px;
+    background-color: #fff; /* Tetap putih */
+    color: #3c4043;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 12px 0;
+    transition: all 0.25s ease;
+    box-shadow: 0 3px 6px rgba(66, 133, 244, 0.1); /* 🔹 Bayangan lembut */
+}
+
+.google-btn img {
+    width: 22px;
+    height: 22px;
+    margin-right: 10px;
+}
+
+.google-btn:hover {
+    background-color: #f1f4ff; /* 🔹 Efek hover biru lembut */
+    box-shadow: 0 4px 8px rgba(66, 133, 244, 0.2);
+    transform: translateY(-1px);
+    border-color: #3367D6; /* sedikit lebih gelap saat hover */
+}
+
+
+.divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 25px;
+    color: #9aa0a6;
+    font-size: 14px;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #e0e0e0;
+    margin: 0 12px;
+}
+
         * {
             margin: 0;
             padding: 0;
@@ -24,40 +107,87 @@
             --light-gray: #e9ecef;
         }
 
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+/* ====== Fullscreen, no outer gaps ====== */
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background: linear-gradient(135deg, #eef1f8 0%, #dee6ff 100%);
+}
 
-        .login-container {
-            display: flex;
-            max-width: 1200px;
-            width: 100%;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
+/* Container memenuhi layar penuh */
+.login-container {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  width: 100vw;
+  min-height: 100vh;       /* ❗ ubah dari height ke min-height */
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow-x: hidden;      /* biar bisa scroll ke bawah, tapi nggak ke samping */
+  background: #fff;
+}
 
-        .login-form-container {
-            flex: 1;
-            padding: 50px;
-            background: white;
-        }
 
-        .login-info {
-            flex: 1;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            padding: 50px;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
+/* Kolom kiri */
+.login-form-container {
+  flex: 1;
+  background: #fff;
+  padding: 60px 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid #eee;
+  min-width: 0;          /* cegah overflow konten panjang */
+}
+
+/* Kolom kanan */
+.login-info {
+  flex: 1;
+  background: linear-gradient(135deg, #3a0ca3 0%, #4361ee 100%);
+  color: #fff;
+  padding: 60px 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+/* Kartu info */
+.info-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 25px;
+  border-radius: 15px;
+  margin-bottom: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+.info-card:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+/* ====== Responsif ====== */
+@media (max-width: 992px) {
+  .login-container {
+    flex-direction: column;
+    width: 100%;
+    height: auto;         /* biar konten panjang bisa scroll */
+  }
+  .login-form-container {
+    border-right: none;
+    border-bottom: 1px solid #eee;
+    padding: 40px 30px;
+  }
+  .login-info {
+    padding: 40px 30px;
+    text-align: center;
+    align-items: center;
+  }
+}
 
         .logo {
             display: flex;
@@ -434,152 +564,99 @@
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-form-container">
-            <div class="logo">
-                <div class="logo-icon">
-                    <i class="fas fa-laptop-code"></i>
-                </div>
-                <div class="logo-text">HIMA-TI</div>
-            </div>
-            
-            <h1>Masuk ke Akun Anda</h1>
-            <p class="subtitle">Akses dashboard dan fitur eksklusif untuk anggota HIMA-TI</p>
-            
-            <!-- Error Messages -->
-            @if($errors->any())
-                <div class="alert alert-danger">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    {{ $errors->first() }}
-                </div>
-            @endif
+  <div class="login-container">
+    <!-- Kolom kiri -->
+    <div class="login-form-container">
+      <div class="logo">
+        <div class="logo-icon"><i class="fas fa-id-card"></i></div>
+        <span class="logo-text">HIMA-TI</span>
+      </div>
 
-            @if(session('success'))
-                <div class="alert alert-success">
-                    <i class="fas fa-check-circle me-2"></i>
-                    {{ session('success') }}
-                </div>
-            @endif
+     <section class="bg-white/70 backdrop-blur-md p-6 rounded-xl shadow-md">
+  <h1 class="text-2xl font-bold text-gray-900">Masuk ke Akun Anda</h1>
+  <p class="text-gray-500">Akses dashboard dan fitur eksklusif untuk anggota HIMA-TI</p>
+</section>
 
-            <form class="login-form" method="POST" action="{{ route('login') }}">
-                @csrf
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="email@example.com" required autofocus>
-                    <i class="fas fa-envelope input-icon"></i>
-                </div>
+      <div class="login-card">
+        <h5>Masuk dan Verifikasi</h5>
+        <p><b>Baru!</b> Nikmati kemudahan sistem autentikasi tunggal untuk mengakses semua layanan dengan satu akun.</p>
+       <a href="{{ route('google.login') }}" class="google-btn">
+  <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
+  Login dengan Google
+</a>
+      </div>
 
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Masukkan password" required>
-                    <i class="fas fa-lock input-icon"></i>
-                    <button type="button" class="toggle-password" id="togglePassword">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
+<form action="{{ route('login.post') }}" method="POST">
+    @csrf
 
-                <div class="form-options">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="remember" name="remember">
-                        <span class="checkmark"></span>
-                        Ingat saya
-                    </label>
-                    <a href="#" class="forgot-password">Lupa password?</a>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Masuk</button>
-
-                <div class="login-divider">
-                    <span>Akun Demo</span>
-                </div>
-
-                <div class="demo-accounts">
-                    <h4>Gunakan akun demo berikut:</h4>
-                    <div class="demo-account">
-                        <span class="role">Super Admin:</span>
-                        <span>superadmin@hima.com / password123</span>
-                    </div>
-                    <div class="demo-account">
-                        <span class="role">Admin:</span>
-                        <span>admin@hima.com / password123</span>
-                    </div>
-                    <div class="demo-account">
-                        <span class="role">Mahasiswa:</span>
-                        <span>ahmad@hima.com / password123</span>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-        <div class="login-info">
-            <div>
-                <div class="info-card">
-                    <div class="info-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3>Anggota HIMA-TI</h3>
-                    <p>Login untuk mengakses dashboard anggota, mengajukan prestasi, dan berpartisipasi dalam kegiatan</p>
-                    <a href="{{ route('pendaftaran.create') }}" class="btn-outline">Daftar Menjadi Anggota</a>
-                </div>
-
-                <div class="info-card">
-                    <div class="info-icon">
-                        <i class="fas fa-user-shield"></i>
-                    </div>
-                    <h3>Admin & Pengurus</h3>
-                    <p>Akses panel admin untuk mengelola data anggota, berita, dan kegiatan organisasi</p>
-                </div>
-            </div>
-
-            <div class="login-features">
-                <h4>Fitur yang Dapat Diakses:</h4>
-                <ul>
-                    <li><i class="fas fa-check"></i> Kelola profil anggota</li>
-                    <li><i class="fas fa-check"></i> Ajukan prestasi dan kegiatan</li>
-                    <li><i class="fas fa-check"></i> Akses materi eksklusif</li>
-                    <li><i class="fas fa-check"></i> Partisipasi dalam forum diskusi</li>
-                    <li><i class="fas fa-check"></i> Notifikasi kegiatan terbaru</li>
-                </ul>
-            </div>
-        </div>
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input id="email" type="email" name="email" placeholder="Masukkan email" required>
     </div>
 
-    <script>
-        // Toggle password visibility
-        document.getElementById('togglePassword').addEventListener('click', function() {
-            const passwordInput = document.getElementById('password');
-            const icon = this.querySelector('i');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        });
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password" placeholder="Masukkan password" required>
+    </div>
 
-        // Auto-fill demo accounts for testing
-        document.addEventListener('DOMContentLoaded', function() {
-            // You can remove this in production
-            const urlParams = new URLSearchParams(window.location.search);
-            const demo = urlParams.get('demo');
-            
-            if (demo) {
-                const accounts = {
-                    'superadmin': {email: 'superadmin@hima.com', password: 'password123'},
-                    'admin': {email: 'admin@hima.com', password: 'password123'},
-                    'mahasiswa': {email: 'ahmad@hima.com', password: 'password123'}
-                };
-                
-                if (accounts[demo]) {
-                    document.getElementById('email').value = accounts[demo].email;
-                    document.getElementById('password').value = accounts[demo].password;
-                }
-            }
-        });
-    </script>
+    <div class="form-options">
+        <label class="checkbox-label">
+            <input type="checkbox" name="remember"> Ingat saya
+        </label>
+        <!-- Jika belum ada fitur lupa password -->
+        <a href="#" class="forgot-password">Lupa password?</a>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Masuk</button>
+</form>
+
+
+        <p style="text-align:center;margin-top:10px;font-size:14px">
+          Belum punya akun? <a href="/register" style="color:#4361ee;font-weight:600;">Daftar di sini</a>
+        </p>
+      </form>
+
+      <!-- Error Messages -->
+      @if($errors->any())
+        <div class="alert alert-danger">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          {{ $errors->first() }}
+        </div>
+      @endif
+
+      @if(session('success'))
+        <div class="alert alert-success">
+          <i class="fas fa-check-circle me-2"></i>
+          {{ session('success') }}
+        </div>
+      @endif
+    </div>
+
+    <!-- Kolom kanan -->
+    <div class="login-info">
+      <div class="info-card">
+        <div class="info-icon"><i class="fas fa-users"></i></div>
+        <h3>Anggota HIMA-TI</h3>
+        <p>Login untuk mengakses dashboard anggota, mengajukan prestasi, dan berpartisipasi dalam kegiatan.</p>
+        <a href="#" class="btn-outline">Daftar Menjadi Anggota</a>
+      </div>
+
+      <div class="info-card">
+        <div class="info-icon"><i class="fas fa-user-cog"></i></div>
+        <h3>Admin & Pengurus</h3>
+        <p>Akses panel admin untuk mengelola data anggota, berita, dan kegiatan organisasi.</p>
+      </div>
+
+      <div class="login-features">
+        <h4>Fitur yang Dapat Diakses:</h4>
+        <ul>
+          <li><i class="fas fa-check"></i> Kelola profil anggota</li>
+          <li><i class="fas fa-check"></i> Ajukan prestasi dan kegiatan</li>
+          <li><i class="fas fa-check"></i> Akses materi eksklusif</li>
+          <li><i class="fas fa-check"></i> Partisipasi dalam forum diskusi</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

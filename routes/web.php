@@ -20,6 +20,11 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\Auth\LoginController;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\Auth\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,10 +36,14 @@ use App\Http\Controllers\Auth\LoginController;
 // Authentication Routes
 // ========================
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'login']);
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
-// ========================
+Route::post('/login', [LoginController::class, 'login'])->name('login.post'); // ← ini WAJIB ada
+Route::post('/logout', function () {
+    Auth::logout();
+    session()->flush();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/login')->with('success', 'Anda telah logout. Silakan login kembali.');
+})->name('logout');
 // Public Routes (Frontend)
 // ========================
 Route::get('/', [IndexController::class, 'index'])->name('home');
@@ -187,3 +196,13 @@ Route::redirect('/admin', '/admin/dashboard');
 Route::fallback(function () {
     return view('errors.404');
 });
+
+Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+
+// ========================
+// Register
+// ========================
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
+
