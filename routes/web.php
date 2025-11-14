@@ -25,6 +25,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\UserDashboardController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -205,4 +207,9 @@ Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallb
 // ========================
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
+});
+
 

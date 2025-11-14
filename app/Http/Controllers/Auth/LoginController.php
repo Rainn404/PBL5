@@ -16,37 +16,39 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-    /**
-     * Proses login user
-     */
     public function login(Request $request)
     {
-        // Validasi input
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|min:8',
         ]);
 
-        // Coba login dengan kredensial yang diberikan
+        // Jika autentikasi berhasil
         if (Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
-            $request->session()->regenerate();
 
-            // 🔹 Cek role user setelah login
+            $request->session()->regenerate();
             $user = Auth::user();
 
+            // =============== REDIRECT BERDASARKAN ROLE ===============
+            
+            // Jika admin
             if ($user->role === 'admin') {
-                // Jika admin, arahkan ke dashboard admin
-                return redirect()->route('admin.dashboard')->with('success', 'Selamat datang kembali, Admin!');
-            } else {
-                // Jika user biasa, arahkan ke home
-                return redirect()->route('home')->with('success', 'Login berhasil! Selamat datang kembali.');
+                return redirect()->route('admin.dashboard');
             }
+
+            // Jika super admin (jika kamu punya)
+            if ($user->role === 'super_admin') {
+                return redirect()->route('admin.dashboard');
+            }
+
+            // Jika user biasa
+            return redirect()->route('dashboard');
         }
 
         // Jika gagal login
         return back()->withErrors([
             'email' => 'Email atau password salah.',
-        ])->withInput();
+        ]);
     }
 
     /**

@@ -23,14 +23,22 @@ class RegisterController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-       $user = User::create([
-    'name' => $request->name,
-    'email' => $request->email,
-    'password' => Hash::make($request->password),
-    'role' => 'user', // default: anggota biasa
-]);
+        // 🚫 Cegah email admin daftar lewat form publik
+        if ($request->email === 'admin@himati.com') {
+            return back()->withErrors([
+                'email' => 'Email ini tidak bisa digunakan untuk pendaftaran.',
+            ]);
+        }
 
+        // Buat user baru
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'user', // default user biasa
+        ]);
 
+        // Login otomatis setelah register
         Auth::login($user);
 
         return redirect()->route('dashboard')->with('success', 'Akun berhasil dibuat! Selamat datang di HIMA-TI 🎉');
