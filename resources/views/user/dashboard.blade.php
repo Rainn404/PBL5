@@ -2,93 +2,143 @@
 
 @section('content')
 <style>
-    /* Custom CSS untuk tema biru */
-    .dashboard-header {
-        background: linear-gradient(135deg, #007bff, #0056b3); /* Gradien biru */
-        color: white;
-        padding: 40px 0;
-        border-radius: 10px;
-        margin-bottom: 30px;
-    }
-    .card-blue {
-        border: 1px solid #007bff;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.1);
-        transition: transform 0.3s ease;
-    }
-    .card-blue:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 16px rgba(0, 123, 255, 0.2);
-    }
-    .btn-blue {
-        background-color: #007bff;
-        border-color: #007bff;
-        color: white;
-    }
-    .btn-blue:hover {
-        background-color: #0056b3;
-        border-color: #0056b3;
-    }
-    .icon-blue {
-        color: #007bff;
-        font-size: 2rem;
-    }
+/* ====== GLOBAL ====== */
+.dashboard-container {
+    padding: 30px 0;
+    background: #f5f8ff;
+}
+
+/* ====== HERO MINI ====== */
+.dashboard-hero {
+    background: linear-gradient(90deg, #1d8cf8, #007bff);
+    color: #fff;
+    padding: 32px;
+    border-radius: 16px;
+    text-align: center;
+    margin-bottom: 40px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+}
+
+/* ====== GRID MENU ====== */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 25px;
+}
+
+/* ====== CARD ====== */
+.menu-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 28px 20px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: 0.25s ease;
+}
+
+.menu-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 18px rgba(0,0,0,0.12);
+}
+
+.menu-icon {
+    font-size: 42px;
+    color: #1d8cf8;
+    margin-bottom: 15px;
+}
+
+.menu-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.menu-card p {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin-bottom: 18px;
+}
+
+/* BUTTON */
+.menu-btn {
+    display: inline-block;
+    background: #1d8cf8;
+    color: white;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.25s;
+}
+
+.menu-btn:hover {
+    background: #007bff;
+    color: white;
+}
+
+/* ===== BUTTON EDLINK ===== */
+.btn-edlink {
+    display: inline-block;
+    margin-top: 35px;
+    background: #097e18;
+    color: #fff;
+    padding: 12px 30px;
+    font-weight: 600;
+    border-radius: 10px;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: 0.25s ease;
+    box-shadow: 0 4px 12px rgba(15, 122, 229, 0.25);
+}
+
+.btn-edlink:hover {
+    background: #0b5fc0;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(15, 122, 229, 0.35);
+}
 </style>
 
-<div class="container py-5">
-    <!-- Header Dashboard dengan Tema Biru -->
-    <div class="dashboard-header text-center">
-        <h1 class="display-4">Dashboard Anggota</h1>
-        <p class="lead">Selamat datang, {{ Auth::user()->name }}! Kelola akun dan aktivitas Anda di sini.</p>
+<div class="dashboard-container container">
+
+    <!-- HERO MINI -->
+    <div class="dashboard-hero">
+        <h3>Dashboard Anggota</h3>
+        <p>Halo, {{ auth()->user()->nim }} {{ auth()->user()->name }}! Selamat datang kembali.</p>
     </div>
 
-    <!-- Grid Kartu untuk Fitur Dashboard -->
-    <div class="row g-4">
-        <!-- Kartu Profil -->
-        <div class="col-md-4">
-            <div class="card card-blue h-100">
-                <div class="card-body text-center">
-                    <i class="fas fa-user icon-blue mb-3"></i>
-                    <h5 class="card-title">Profil Saya</h5>
-                    <p class="card-text">Lihat dan edit informasi pribadi Anda.</p>
-                    <a href="#" class="btn btn-blue">Lihat Profil</a>
-                </div>
-            </div>
+    <!-- MENU GRID -->
+    <div class="dashboard-grid">
+
+        <!-- PROFIL -->
+        <div class="menu-card">
+            <div class="menu-icon">🧑</div>
+            <h4>Profil Saya</h4>
+            <p>Kelola dan edit informasi pribadi Anda.</p>
+            <a href="#" class="menu-btn">Lihat Profil</a>
         </div>
 
-        <!-- Kartu Pesan -->
-        <div class="col-md-4">
-            <div class="card card-blue h-100">
-                <div class="card-body text-center">
-                    <i class="fas fa-envelope icon-blue mb-3"></i>
-                    <h5 class="card-title">Pesan</h5>
-                    <p class="card-text">Cek pesan masuk dan kirim pesan baru.</p>
-                    <a href="#" class="btn btn-blue">Buka Pesan</a>
-                </div>
-            </div>
+        <!-- PESAN -->
+        <div class="menu-card">
+            <div class="menu-icon">✉️</div>
+            <h4>Pesan</h4>
+            <p>Cek inbox dan kirim pesan baru.</p>
+            <a href="#" class="menu-btn">Buka Pesan</a>
         </div>
 
-        <!-- Kartu Statistik -->
-        <div class="col-md-4">
-            <div class="card card-blue h-100">
-                <div class="card-body text-center">
-                    <i class="fas fa-chart-bar icon-blue mb-3"></i>
-                    <h5 class="card-title">Statistik</h5>
-                    <p class="card-text">Lihat ringkasan aktivitas dan pencapaian Anda.</p>
-                    <a href="#" class="btn btn-blue">Lihat Statistik</a>
-                </div>
-            </div>
+        <!-- STATISTIK -->
+        <div class="menu-card">
+            <div class="menu-icon">📊</div>
+            <h4>Statistik</h4>
+            <p>Lihat rangkuman aktivitas dan pencapaian Anda.</p>
+            <a href="#" class="menu-btn">Lihat Statistik</a>
         </div>
+
+    </div> <!-- END GRID -->
+
+    <!-- ===== BUTTON EDLINK (CENTERED) ===== -->
+    <div class="text-center">
+        <a href="https://edlink.id/login" target="_blank" class="btn-edlink">
+            📘 Buka EdLink
+        </a>
     </div>
 
-    <!-- Bagian Tambahan: Quick Actions -->
-    <div class="mt-5">
-        <h3 class="text-primary mb-4">Aksi Cepat</h3>
-        <div class="d-flex flex-wrap gap-3">
-            <a href="#" class="btn btn-outline-primary btn-lg">Update Profil</a>
-            <a href="#" class="btn btn-outline-primary btn-lg">Kirim Pesan</a>
-            <a href="#" class="btn btn-outline-primary btn-lg">Lihat Laporan</a>
-        </div>
-    </div>
 </div>
 @endsection
