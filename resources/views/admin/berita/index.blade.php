@@ -95,6 +95,20 @@
                         @endforeach
                         </tbody>
                     </table>
+                    <div class="card mt-4 shadow-sm" style="border-radius: 12px;">
+    <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="mb-1" style="font-weight: 700;">Kelola Komentar</h5>
+            <p class="mb-0 text-muted">Lihat, moderasi, dan hapus komentar berita.</p>
+        </div>
+        <a href="{{ route('admin.komentar.index') }}" 
+           class="btn btn-secondary px-4 py-2"
+           style="font-weight: 600; border-radius: 8px;">
+            Buka Halaman
+        </a>
+    </div>
+</div>
+
                 </div>
             @else
                 <p class="text-muted p-3 mb-0">Belum ada berita.</p>

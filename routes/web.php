@@ -26,7 +26,8 @@ use App\Models\User;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\UserDashboardController;
-
+use App\Http\Controllers\KomentarController;
+use App\Http\Controllers\Admin\AdminKomentarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -108,14 +109,20 @@ Route::prefix('api')->group(function () {
     Route::get('/pendaftaran-status', [PendaftaranController::class, 'getStatus'])->name('api.pendaftaran-status');
 });
 
-// ========================
-// Admin Routes (Protected)
-// ========================
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
+        // Komentar Management (ADMIN)
+    Route::middleware(['isadmin'])->group(function () {
+        Route::get('komentar', [AdminKomentarController::class, 'index'])
+            ->name('komentar.index');
+
+        Route::delete('komentar/{id}', [AdminKomentarController::class, 'destroy'])
+            ->name('komentar.destroy');
+    });
+
     // Anggota Management
     Route::resource('anggota', AdminAnggotaController::class);
 
@@ -140,7 +147,7 @@ Route::match(['put', 'patch'], '/{id}/validasi', [AdminPrestasiController::class
 
     Route::post('/bulk-action', [AdminPrestasiController::class, 'bulkAction'])->name('bulk-action');
 });
-    
+
     // Mahasiswa Management
     Route::resource('mahasiswa', MahasiswaController::class);
     Route::post('/mahasiswa/import', [MahasiswaController::class, 'import'])->name('mahasiswa.import');
@@ -165,8 +172,7 @@ Route::post('/pendaftaran/settings', [AdminPendaftaranController::class, 'update
     
     // Berita Management
     Route::resource('berita', AdminBeritaController::class);
-    Route::get('/berita/{id}', [AdminBeritaController::class, 'show'])->name('berita.show');
-    
+  
     // Pelanggaran Management
     Route::resource('pelanggaran', PelanggaranController::class);
     
@@ -191,13 +197,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
-// ========================
-// Redirects & Fallback
-// ========================
-Route::redirect('/admin', '/admin/dashboard');
-Route::fallback(function () {
-    return view('errors.404');
-});
 
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
@@ -212,4 +211,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
 });
 
+// ========================
+// Redirects & Fallback
+// ========================
+Route::redirect('/admin', '/admin/dashboard');
+Route::fallback(function () {
+    return view('errors.404');
+});
 

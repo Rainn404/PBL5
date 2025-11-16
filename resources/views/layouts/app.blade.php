@@ -186,31 +186,97 @@
 </head>
 
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <a href="{{ url('/') }}">
-                    <i class="fas fa-laptop-code"></i>
-                    <span>HIMA-TI</span>
-                </a>
-            </div>
-            <div class="nav-menu" id="navMenu">
-                <a href="{{ url('/home') }}" class="nav-link">Home</a>
-                <a href="{{ url('/divisi') }}" class="nav-link">Divisi</a>
-                <a href="{{ url('/anggota') }}" class="nav-link">Profil Anggota</a>
-                <a href="{{ url('/berita') }}" class="nav-link">Berita</a>
-                <a href="{{ url('/pendaftaran') }}" class="nav-link">Pendaftaran</a>
-                <a href="{{ url('/prestasi') }}" class="nav-link">Prestasi</a>
-                <a href="{{ url('/login') }}" class="nav-link login-btn">Masuk/Login</a>
-            </div>
-            <div class="nav-toggle" id="navToggle">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-logo">
+            <a href="{{ url('/') }}">
+                <i class="fas fa-laptop-code"></i>
+                <span>HIMA-TI</span>
+            </a>
         </div>
-    </nav>
+
+        <div class="nav-menu" id="navMenu">
+            <a href="{{ url('/home') }}" class="nav-link">Home</a>
+            <a href="{{ url('/divisi') }}" class="nav-link">Divisi</a>
+            <a href="{{ url('/anggota') }}" class="nav-link">Profil Anggota</a>
+            <a href="{{ url('/berita') }}" class="nav-link">Berita</a>
+            <a href="{{ url('/pendaftaran') }}" class="nav-link">Pendaftaran</a>
+            <a href="{{ url('/prestasi') }}" class="nav-link">Prestasi</a>
+
+            @guest
+                <!-- Jika belum login -->
+                <a href="{{ route('login') }}" class="nav-link login-btn">Masuk/Login</a>
+            @endguest
+
+@auth
+    <div class="relative">
+
+        <!-- BUTTON GARIS 3 -->
+        <button id="userMenuToggle"
+            class="p-2 rounded-md border bg-white shadow-sm hover:bg-gray-100"
+            style="font-size: 22px;">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+<ul id="userMenuPanel"
+    class="dropdown-menu user-menu shadow position-absolute end-0 mt-2"
+    style="display:none;">
+    
+    <li>
+        <a href="{{ route('dashboard') }}"
+           class="dropdown-item">
+            <span class="item-main">
+                <i class="fa-solid fa-user"></i>
+                <span>Profil Saya</span>
+            </span>
+        </a>
+    </li>
+
+    <li><hr class="dropdown-divider my-1"></li>
+
+    <li>
+        <form action="{{ route('logout') }}" method="POST" class="m-0">
+            @csrf
+            <button class="dropdown-item text-danger">
+                <span class="item-main">
+                    <span>Logout</span>
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </span>
+            </button>
+        </form>
+    </li>
+</ul>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggle = document.getElementById("userMenuToggle");
+            const panel = document.getElementById("userMenuPanel");
+
+            toggle.addEventListener("click", () => {
+                panel.style.display = (panel.style.display === "none" || panel.style.display === "") 
+                    ? "block" 
+                    : "none";
+            });
+
+            // klik di luar → panel tertutup
+            document.addEventListener("click", function (e) {
+                if (!toggle.contains(e.target) && !panel.contains(e.target)) {
+                    panel.style.display = "none";
+                }
+            });
+        });
+    </script>
+@endauth
+
+        </div>
+
+        <div class="nav-toggle" id="navToggle">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </div>
+</nav>
 
     <!-- Main Content -->
     <main>
