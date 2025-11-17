@@ -7,12 +7,18 @@
 @section('content')
 <div class="container-fluid">
     <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Daftar Mahasiswa</h1>
+    <!-- Di bagian Page Heading, tambahkan tombol export -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Data Mahasiswa</h1>
+    <div>
+        <a href="{{ route('admin.mahasiswa.export.view') }}" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm me-2">
+            <i class="fas fa-file-excel fa-sm text-white-50 me-1"></i> Export Excel
+        </a>
         <a href="{{ route('admin.mahasiswa.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-            <i class="fas fa-plus fa-sm text-white-50"></i> Tambah Mahasiswa
+            <i class="fas fa-plus fa-sm text-white-50 me-1"></i> Tambah Data
         </a>
     </div>
+</div>
 
     <!-- Content Row -->
     <div class="row">

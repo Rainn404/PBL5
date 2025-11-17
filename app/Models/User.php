@@ -13,10 +13,8 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'nim',
-        'phone',
-        'role',
         'password',
+        'role'
     ];
 
     protected $hidden = [
@@ -26,33 +24,70 @@ class User extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
-    // Relationship dengan prestasi
-    public function prestasi()
+    /**
+     * Scope untuk super admin
+     */
+    public function scopeSuperAdmin($query)
     {
-        return $this->hasMany(Prestasi::class, 'nim', 'nim');
+        return $query->where('role', 'super_admin');
     }
 
-    // Helper methods untuk check role
-    public function isMahasiswa()
+    /**
+     * Scope untuk admin biasa
+     */
+    public function scopeAdmin($query)
     {
-        return $this->role === 'mahasiswa';
+        return $query->where('role', 'admin');
     }
 
-    public function isAdmin()
+    /**
+     * Scope untuk mahasiswa
+     */
+    public function scopeMahasiswa($query)
     {
-        return $this->role === 'admin';
+        return $query->where('role', 'mahasiswa');
     }
 
+    /**
+     * Relasi dengan pendaftaran
+     */
+    public function pendaftaran()
+    {
+        return $this->hasOne(Pendaftaran::class, 'user_id');
+    }
+
+    /**
+     * Cek apakah user adalah super admin
+     */
     public function isSuperAdmin()
     {
         return $this->role === 'super_admin';
     }
 
-    // Method yang diperbaiki - tambahkan ini
-    public function isAdminOrSuperAdmin()
+    /**
+     * Cek apakah user adalah admin
+     */
+    public function isAdmin()
     {
-        return $this->isAdmin() || $this->isSuperAdmin();
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Cek apakah user adalah mahasiswa
+     */
+    public function isMahasiswa()
+    {
+        return $this->role === 'mahasiswa';
+    }
+
+    /**
+     * Cek apakah user memiliki akses admin
+     */
+    public function isAdministrator()
+    {
+        return in_array($this->role, ['super_admin', 'admin']);
     }
 }

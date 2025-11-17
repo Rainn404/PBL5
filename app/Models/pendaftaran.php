@@ -18,6 +18,8 @@ class Pendaftaran extends Model
         'nama',
         'semester',
         'alasan_mendaftar',
+        'pengalaman',
+        'skill',
         'dokumen',
         'no_hp',
         'status_pendaftaran',
@@ -33,20 +35,31 @@ class Pendaftaran extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'id_user');
+        return $this->belongsTo(User::class, 'id_user', 'id');
     }
 
+    /**
+     * Get the divisi.
+     */
     public function divisi()
-{
-    return $this->belongsTo(Divisi::class, 'id_divisi', 'id');
-}
+    {
+        return $this->belongsTo(Divisi::class, 'id_divisi', 'id');
+    }
+
+    /**
+     * Get the jabatan.
+     */
+    public function jabatan()
+    {
+        return $this->belongsTo(Jabatan::class, 'id_jabatan', 'id');
+    }
 
     /**
      * Get the validator user.
      */
     public function validator()
     {
-        return $this->belongsTo(User::class, 'divalidasi_oleh');
+        return $this->belongsTo(User::class, 'divalidasi_oleh', 'id');
     }
 
     /**
@@ -75,9 +88,5 @@ class Pendaftaran extends Model
         ];
 
         return $labels[$this->status_pendaftaran] ?? 'Tidak Diketahui';
-    }
-    public function jabatan()
-    {
-        return $this->belongsTo(Jabatan::class, 'id_jabatan', 'id');
     }
 }

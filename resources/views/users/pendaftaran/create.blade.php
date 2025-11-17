@@ -241,14 +241,15 @@
 
                 <!-- Submit Button -->
                 <div class="form-actions">
+                      <a href="{{ url('/') }}" class="submit-button outline">
+                        <i class="fas fa-arrow-left button-icon"></i>
+                        <span class="button-text">Kembali</span>
+                    </a>
                     <button type="submit" class="submit-button primary">
                         <i class="fas fa-paper-plane button-icon"></i>
                         <span class="button-text">Kirim Pendaftaran</span>
                     </button>
-                    <a href="{{ url('/') }}" class="submit-button outline">
-                        <i class="fas fa-arrow-left button-icon"></i>
-                        <span class="button-text">Kembali</span>
-                    </a>
+                  
                 </div>
             </form>
         </div>

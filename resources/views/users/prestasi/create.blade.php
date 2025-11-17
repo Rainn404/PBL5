@@ -13,7 +13,7 @@
                         <i class="fas fa-trophy text-primary me-2"></i>
                         Form Pengajuan Prestasi
                     </h1>
-                    <p class="text-muted mb-0">Isi form berikut untuk mengajukan prestasi Anda</p>
+                    <p class="text-muted mb-0">Isi form berikut untuk mengajukan prestasi</p>
                 </div>
                 <a href="{{ route('prestasi.index') }}" class="btn btn-outline-primary">
                     <i class="fas fa-arrow-left me-2"></i>Kembali ke Daftar
@@ -26,7 +26,7 @@
                     <div class="steps">
                         <div class="step active">
                             <div class="step-number">1</div>
-                            <div class="step-label">Data Diri</div>
+                            <div class="step-label">Data Mahasiswa</div>
                         </div>
                         <div class="step">
                             <div class="step-number">2</div>
@@ -70,108 +70,144 @@
                     <form action="{{ route('prestasi.store') }}" method="POST" enctype="multipart/form-data" id="prestasiForm">
                         @csrf
 
-                        <!-- Step 1: Data Diri -->
+                        <!-- Step 1: Data Mahasiswa -->
                         <div class="form-step active" data-step="1">
                             <div class="row">
                                 <div class="col-12 mb-4">
                                     <div class="section-header d-flex align-items-center mb-4">
                                         <span class="step-badge bg-primary text-white rounded-circle me-3">1</span>
                                         <h5 class="mb-0 text-primary">
-                                            <i class="fas fa-user me-2"></i>Informasi Pribadi
+                                            <i class="fas fa-users me-2"></i>Data Mahasiswa
                                         </h5>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="nama" class="form-label fw-semibold">Nama Lengkap <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-light border-end-0">
-                                            <i class="fas fa-user text-muted"></i>
-                                        </span>
-                                        <input type="text" class="form-control @error('nama') is-invalid @enderror" 
-                                               id="nama" name="nama" 
-                                               value="{{ old('nama', auth()->user()->name ?? '') }}" 
-                                               placeholder="Masukkan nama lengkap" required>
-                                        @error('nama')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="nim" class="form-label fw-semibold">NIM <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-light border-end-0">
-                                            <i class="fas fa-id-card text-muted"></i>
-                                        </span>
-                                        <input type="text" class="form-control @error('nim') is-invalid @enderror" 
-                                               id="nim" name="nim" 
-                                               value="{{ old('nim', auth()->user()->nim ?? '') }}" 
-                                               placeholder="Masukkan NIM" required maxlength="15">
-                                        @error('nim')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                            <div class="alert alert-info mb-4">
+                                <div class="d-flex">
+                                    <i class="fas fa-info-circle mt-1 me-3 fs-5"></i>
+                                    <div>
+                                        <strong>Informasi</strong>
+                                        <p class="mb-0 mt-1">
+                                            Tambahkan mahasiswa yang terlibat dalam prestasi ini. 
+                                            Minimal 1 mahasiswa, maksimal 10 mahasiswa.
+                                        </p>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="email" class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-light border-end-0">
-                                            <i class="fas fa-envelope text-muted"></i>
-                                        </span>
-                                        <input type="email" class="form-control @error('email') is-invalid @enderror" 
-                                               id="email" name="email" 
-                                               value="{{ old('email', auth()->user()->email ?? '') }}" 
-                                               placeholder="nama@contoh.com" required>
-                                        @error('email')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                            <!-- Mahasiswa Container -->
+                            <div id="mahasiswaContainer">
+                                <!-- Mahasiswa 1 -->
+                                <div class="mahasiswa-item card mb-4" data-index="0">
+                                    <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
+                                        <h6 class="mb-0 fw-semibold">
+                                            <i class="fas fa-user-graduate me-2 text-primary"></i>Mahasiswa 1
+                                        </h6>
+                                        <button type="button" class="btn btn-sm btn-outline-danger remove-mahasiswa d-none">
+                                            <i class="fas fa-times me-1"></i>Hapus
+                                        </button>
                                     </div>
-                                </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-semibold">Nama Lengkap <span class="text-danger">*</span></label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light border-end-0">
+                                                        <i class="fas fa-user text-muted"></i>
+                                                    </span>
+                                                    <input type="text" class="form-control" 
+                                                           name="mahasiswa[0][nama]" 
+                                                           value="{{ old('mahasiswa.0.nama', auth()->user()->name ?? '') }}" 
+                                                           placeholder="Masukkan nama lengkap" required>
+                                                </div>
+                                                @error('mahasiswa.0.nama')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
+                                            </div>
 
-                                <div class="col-md-6 mb-3">
-                                    <label for="no_hp" class="form-label fw-semibold">No. HP/WhatsApp <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-light border-end-0">
-                                            <i class="fas fa-phone text-muted"></i>
-                                        </span>
-                                        <input type="tel" class="form-control @error('no_hp') is-invalid @enderror" 
-                                               id="no_hp" name="no_hp" 
-                                               value="{{ old('no_hp') }}" 
-                                               placeholder="08xxxxxxxxxx" required maxlength="15">
-                                        @error('no_hp')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-semibold">NIM <span class="text-danger">*</span></label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light border-end-0">
+                                                        <i class="fas fa-id-card text-muted"></i>
+                                                    </span>
+                                                    <input type="text" class="form-control" 
+                                                           name="mahasiswa[0][nim]" 
+                                                           value="{{ old('mahasiswa.0.nim', auth()->user()->nim ?? '') }}" 
+                                                           placeholder="Masukkan NIM" required maxlength="15">
+                                                </div>
+                                                @error('mahasiswa.0.nim')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light border-end-0">
+                                                        <i class="fas fa-envelope text-muted"></i>
+                                                    </span>
+                                                    <input type="email" class="form-control" 
+                                                           name="mahasiswa[0][email]" 
+                                                           value="{{ old('mahasiswa.0.email', auth()->user()->email ?? '') }}" 
+                                                           placeholder="nama@contoh.com" required>
+                                                </div>
+                                                @error('mahasiswa.0.email')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-semibold">No. HP/WhatsApp <span class="text-danger">*</span></label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light border-end-0">
+                                                        <i class="fas fa-phone text-muted"></i>
+                                                    </span>
+                                                    <input type="tel" class="form-control" 
+                                                           name="mahasiswa[0][no_hp]" 
+                                                           value="{{ old('mahasiswa.0.no_hp') }}" 
+                                                           placeholder="08xxxxxxxxxx" required maxlength="15">
+                                                </div>
+                                                @error('mahasiswa.0.no_hp')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-semibold">Semester Saat Ini <span class="text-danger">*</span></label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light border-end-0">
+                                                        <i class="fas fa-graduation-cap text-muted"></i>
+                                                    </span>
+                                                    <select class="form-select" 
+                                                            name="mahasiswa[0][semester]" required>
+                                                        <option value="" selected disabled>Pilih semester</option>
+                                                        @for($i = 1; $i <= 8; $i++)
+                                                        <option value="{{ $i }}" {{ old('mahasiswa.0.semester') == $i ? 'selected' : '' }}>
+                                                            Semester {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                </div>
+                                                @error('mahasiswa.0.semester')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="semester" class="form-label fw-semibold">Semester Saat Ini <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-light border-end-0">
-                                            <i class="fas fa-graduation-cap text-muted"></i>
-                                        </span>
-                                        <select class="form-select @error('semester') is-invalid @enderror" 
-                                                id="semester" name="semester" required>
-                                            <option value="" selected disabled>Pilih semester</option>
-                                            @for($i = 1; $i <= 8; $i++)
-                                            <option value="{{ $i }}" {{ old('semester') == $i ? 'selected' : '' }}>
-                                                Semester {{ $i }}
-                                            </option>
-                                            @endfor
-                                        </select>
-                                        @error('semester')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
+                            <!-- Add Mahasiswa Button -->
+                            <div class="text-center mb-4">
+                                <button type="button" class="btn btn-outline-primary" id="addMahasiswa">
+                                    <i class="fas fa-plus me-2"></i>Tambah Mahasiswa
+                                </button>
                             </div>
 
                             <div class="row mt-4">
@@ -297,7 +333,7 @@
                                     <textarea class="form-control @error('deskripsi') is-invalid @enderror" 
                                               id="deskripsi" name="deskripsi" 
                                               rows="5" 
-                                              placeholder="Jelaskan prestasi yang Anda raih secara lengkap, termasuk tingkat kompetisi, pencapaian, penyelenggara, dan detail lainnya" 
+                                              placeholder="Jelaskan prestasi yang diraih secara lengkap, termasuk tingkat kompetisi, pencapaian, penyelenggara, dan detail lainnya" 
                                               required>{{ old('deskripsi') }}</textarea>
                                     <div class="form-text text-muted">
                                         <span id="charCount">0</span>/500 karakter
@@ -311,7 +347,7 @@
                             <div class="row mt-4">
                                 <div class="col-6">
                                     <button type="button" class="btn btn-outline-primary prev-step" data-prev="1">
-                                        <i class="fas fa-arrow-left me-2"></i>Kembali ke Data Diri
+                                        <i class="fas fa-arrow-left me-2"></i>Kembali ke Data Mahasiswa
                                     </button>
                                 </div>
                                 <div class="col-6 text-end">
@@ -580,6 +616,27 @@
     border-radius: 12px 12px 0 0 !important;
 }
 
+/* Mahasiswa item styles */
+.mahasiswa-item {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.mahasiswa-item .card-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.mahasiswa-item .card-body {
+    padding: 1.5rem;
+}
+
+.remove-mahasiswa {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+}
+
 @media (max-width: 768px) {
     .steps {
         flex-direction: column;
@@ -621,6 +678,10 @@
     
     .step-badge {
         align-self: flex-start;
+    }
+    
+    .mahasiswa-item .card-body {
+        padding: 1rem;
     }
 }
 </style>
@@ -715,6 +776,141 @@ document.addEventListener('DOMContentLoaded', function() {
         return isValid;
     }
 
+    // Multiple Mahasiswa Functionality
+    const mahasiswaContainer = document.getElementById('mahasiswaContainer');
+    const addMahasiswaBtn = document.getElementById('addMahasiswa');
+    let mahasiswaCount = 1;
+
+    addMahasiswaBtn.addEventListener('click', function() {
+        if (mahasiswaCount >= 10) {
+            alert('Maksimal 10 mahasiswa per prestasi');
+            return;
+        }
+
+        const newIndex = mahasiswaCount;
+        const template = `
+            <div class="mahasiswa-item card mb-4" data-index="${newIndex}">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
+                    <h6 class="mb-0 fw-semibold">
+                        <i class="fas fa-user-graduate me-2 text-primary"></i>Mahasiswa ${newIndex + 1}
+                    </h6>
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-mahasiswa">
+                        <i class="fas fa-times me-1"></i>Hapus
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Nama Lengkap <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-user text-muted"></i>
+                                </span>
+                                <input type="text" class="form-control" 
+                                       name="mahasiswa[${newIndex}][nama]" 
+                                       placeholder="Masukkan nama lengkap" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">NIM <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-id-card text-muted"></i>
+                                </span>
+                                <input type="text" class="form-control" 
+                                       name="mahasiswa[${newIndex}][nim]" 
+                                       placeholder="Masukkan NIM" required maxlength="15">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-envelope text-muted"></i>
+                                </span>
+                                <input type="email" class="form-control" 
+                                       name="mahasiswa[${newIndex}][email]" 
+                                       placeholder="nama@contoh.com" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">No. HP/WhatsApp <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-phone text-muted"></i>
+                                </span>
+                                <input type="tel" class="form-control" 
+                                       name="mahasiswa[${newIndex}][no_hp]" 
+                                       placeholder="08xxxxxxxxxx" required maxlength="15">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Semester Saat Ini <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-graduation-cap text-muted"></i>
+                                </span>
+                                <select class="form-select" name="mahasiswa[${newIndex}][semester]" required>
+                                    <option value="" selected disabled>Pilih semester</option>
+                                    @for($i = 1; $i <= 8; $i++)
+                                    <option value="{{ $i }}">Semester {{ $i }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        mahasiswaContainer.insertAdjacentHTML('beforeend', template);
+        mahasiswaCount++;
+
+        // Show remove button on first item if there are multiple
+        if (mahasiswaCount > 1) {
+            document.querySelector('.mahasiswa-item:first-child .remove-mahasiswa').classList.remove('d-none');
+        }
+    });
+
+    // Remove mahasiswa
+    mahasiswaContainer.addEventListener('click', function(e) {
+        if (e.target.closest('.remove-mahasiswa')) {
+            const item = e.target.closest('.mahasiswa-item');
+            const index = parseInt(item.dataset.index);
+            
+            if (mahasiswaCount <= 1) {
+                alert('Minimal harus ada 1 mahasiswa');
+                return;
+            }
+
+            item.remove();
+            mahasiswaCount--;
+
+            // Renumber remaining items
+            const items = mahasiswaContainer.querySelectorAll('.mahasiswa-item');
+            items.forEach((item, index) => {
+                item.dataset.index = index;
+                item.querySelector('.card-header h6').textContent = `Mahasiswa ${index + 1}`;
+                
+                // Update input names
+                const inputs = item.querySelectorAll('input, select');
+                inputs.forEach(input => {
+                    const name = input.name.replace(/\[\d+\]/, `[${index}]`);
+                    input.name = name;
+                });
+            });
+
+            // Hide remove button if only one item left
+            if (mahasiswaCount === 1) {
+                document.querySelector('.mahasiswa-item:first-child .remove-mahasiswa').classList.add('d-none');
+            }
+        }
+    });
+
     // Character counter for description
     const deskripsi = document.getElementById('deskripsi');
     const charCount = document.getElementById('charCount');
@@ -799,20 +995,25 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Auto-format inputs
-    const nimInput = document.getElementById('nim');
-    if (nimInput) {
-        nimInput.addEventListener('input', function() {
-            this.value = this.value.replace(/[^0-9]/g, '');
+    // Auto-format inputs for all mahasiswa
+    function setupInputFormatting() {
+        const nimInputs = document.querySelectorAll('input[name$="[nim]"]');
+        nimInputs.forEach(input => {
+            input.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+        });
+
+        const noHpInputs = document.querySelectorAll('input[name$="[no_hp]"]');
+        noHpInputs.forEach(input => {
+            input.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9+]/g, '');
+            });
         });
     }
 
-    const noHpInput = document.getElementById('no_hp');
-    if (noHpInput) {
-        noHpInput.addEventListener('input', function() {
-            this.value = this.value.replace(/[^0-9+]/g, '');
-        });
-    }
+    // Initialize input formatting
+    setupInputFormatting();
 
     // Form submission
     const prestasiForm = document.getElementById('prestasiForm');

@@ -1,6 +1,5 @@
 @extends('layouts.admin.app')
 
-
 @section('title', 'Kelola Pendaftaran - HIMA Sistem Manajemen')
 
 @section('content')
@@ -55,24 +54,23 @@
                     <div class="col-md-2">
                         <label class="form-label">Aksi</label>
                         <div class="d-grid">
-    @if($settings->pendaftaran_aktif)
-        <button type="button" class="btn btn-danger" onclick="tutupSesiPendaftaran(event)">
-            <i class="fas fa-stop me-2"></i>Tutup Pendaftaran
-        </button>
-    @else
-        <button type="button" class="btn btn-success" onclick="simpanDanBukaPendaftaran(event)">
-            <i class="fas fa-play me-2"></i>Simpan & Buka Pendaftaran
-        </button>
-    @endif
-</div>
-
+                            @if($settings->pendaftaran_aktif)
+                                <button type="button" class="btn btn-danger" onclick="tutupSesiPendaftaran(event)">
+                                    <i class="fas fa-stop me-2"></i>Tutup Pendaftaran
+                                </button>
+                            @else
+                                <button type="button" class="btn btn-success" onclick="simpanDanBukaPendaftaran(event)">
+                                    <i class="fas fa-play me-2"></i>Simpan & Buka Pendaftaran
+                                </button>
+                            @endif
+                        </div>
                     </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col-md-6">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="auto_close" name="auto_close" 
-                                   {{ $settings->auto_close ? 'checked' : '' }}>
+                                   value="1" {{ $settings->auto_close ? 'checked' : '' }}>
                             <label class="form-check-label" for="auto_close">
                                 Tutup otomatis ketika periode berakhir
                             </label>
@@ -414,17 +412,15 @@
                                             data-bs-toggle="tooltip" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                       <form action="{{ route('admin.pendaftaran.destroy', ['pendaftaran' => $item->id_pendaftaran]) }}" method="POST" class="d-inline">
-
-
-    @csrf
-    @method('DELETE')
-    <button type="submit" class="btn btn-sm btn-outline-danger action-btn" 
-            data-bs-toggle="tooltip" title="Hapus"
-            onclick="return confirm('Apakah Anda yakin ingin menghapus pendaftaran ini?')">
-        <i class="fas fa-trash"></i>
-    </button>
-</form>
+                                    <form action="{{ route('admin.pendaftaran.destroy', ['pendaftaran' => $item->id_pendaftaran]) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger action-btn" 
+                                                data-bs-toggle="tooltip" title="Hapus"
+                                                onclick="return confirm('Apakah Anda yakin ingin menghapus pendaftaran ini?')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -578,19 +574,11 @@
 }
 
 /* Header Styles */
-/*ininiii coba cobaaa*/
-.body {
-    background:#3a0ca3;
-    margin top:100px;
-}
-
-
 .page-header {
     background: white;
     padding: 1.5rem;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    
 }
 
 .page-title {
@@ -860,7 +848,7 @@
 @push('scripts')
 <script>
 // Fungsi untuk menyimpan pengaturan dan membuka pendaftaran
-async function simpanDanBukaPendaftaran() {
+async function simpanDanBukaPendaftaran(event) {
     // Validasi form terlebih dahulu
     const tanggalMulai = document.getElementById('tanggal_mulai').value;
     const tanggalSelesai = document.getElementById('tanggal_selesai').value;
@@ -896,7 +884,7 @@ async function simpanDanBukaPendaftaran() {
     }
 
     try {
-        const button = event.target;
+        const button = event?.target || document.querySelector('button[onclick*="simpanDanBukaPendaftaran"]');
         const originalText = button.innerHTML;
         button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan & Membuka...';
         button.disabled = true;
@@ -945,20 +933,23 @@ async function simpanDanBukaPendaftaran() {
         console.error('Error:', error);
         showAlert(error.message || 'Terjadi kesalahan saat menyimpan pengaturan dan membuka sesi pendaftaran', 'error');
         
-        const button = event.target;
-        button.innerHTML = '<i class="fas fa-play me-2"></i>Simpan & Buka Pendaftaran';
-        button.disabled = false;
+        // Reset button state dengan cara yang aman
+        const button = event?.target || document.querySelector('button[onclick*="simpanDanBukaPendaftaran"]');
+        if (button) {
+            button.innerHTML = '<i class="fas fa-play me-2"></i>Simpan & Buka Pendaftaran';
+            button.disabled = false;
+        }
     }
 }
 
 // Fungsi untuk menutup sesi pendaftaran
-async function tutupSesiPendaftaran() {
+async function tutupSesiPendaftaran(event) {
     if (!confirm('Apakah Anda yakin ingin menutup sesi pendaftaran?\nPendaftaran baru tidak akan bisa masuk.')) {
         return;
     }
 
     try {
-        const button = event.target;
+        const button = event?.target || document.querySelector('button[onclick*="tutupSesiPendaftaran"]');
         const originalText = button.innerHTML;
         button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menutup...';
         button.disabled = true;
@@ -988,9 +979,12 @@ async function tutupSesiPendaftaran() {
         console.error('Error:', error);
         showAlert(error.message || 'Terjadi kesalahan saat menutup sesi pendaftaran', 'error');
         
-        const button = event.target;
-        button.innerHTML = '<i class="fas fa-stop"></i> Tutup Pendaftaran';
-        button.disabled = false;
+        // Reset button state dengan cara yang aman
+        const button = event?.target || document.querySelector('button[onclick*="tutupSesiPendaftaran"]');
+        if (button) {
+            button.innerHTML = '<i class="fas fa-stop me-2"></i>Tutup Pendaftaran';
+            button.disabled = false;
+        }
     }
 }
 
@@ -1012,7 +1006,10 @@ function showAlert(message, type = 'info') {
 
     const alertHtml = `
         <div class="alert ${alertClass} alert-dismissible fade show">
-            <i class="fas ${iconClass} me-2"></i>${message}
+            <div class="d-flex align-items-center">
+                <i class="fas ${iconClass} me-2"></i>
+                <div>${message}</div>
+            </div>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     `;
@@ -1021,10 +1018,12 @@ function showAlert(message, type = 'info') {
     const firstCard = container.querySelector('.card');
     container.insertBefore(document.createRange().createContextualFragment(alertHtml), firstCard);
 
+    // Auto remove after 5 seconds
     setTimeout(() => {
         const alert = document.querySelector('.alert');
         if (alert) {
-            alert.remove();
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
         }
     }, 5000);
 }
@@ -1055,6 +1054,7 @@ function filterPendaftaran(status) {
     } else {
         url.searchParams.set('status', status);
     }
+    url.searchParams.delete('page'); // Reset to first page
     window.location.href = url.toString();
 }
 
@@ -1067,6 +1067,7 @@ function searchPendaftaran() {
     } else {
         url.searchParams.set('search', searchTerm);
     }
+    url.searchParams.delete('page'); // Reset to first page
     window.location.href = url.toString();
 }
 
@@ -1188,20 +1189,18 @@ function updateStatus(id, status) {
     document.getElementById('id_jabatan').required = status === 'diterima';
     
     // Update modal content
-    const row = document.querySelector(`tr[data-status] button[onclick*="${id}"]`).closest('tr');
-    const nama = row.querySelector('strong').textContent;
+    const row = document.querySelector(`tr[data-status] button[onclick*="${id}"]`)?.closest('tr');
+    const nama = row ? row.querySelector('strong').textContent : 'Pendaftar';
     
     if (status === 'diterima') {
-        document.getElementById('statusTitle').textContent = 'Terima Pendaftaran';
+        document.getElementById('statusTitle').innerHTML = '<i class="fas fa-check-circle me-2"></i>Terima Pendaftaran';
         document.getElementById('confirmationText').textContent = `Apakah Anda yakin ingin menerima pendaftaran ${nama}?`;
         document.getElementById('submitButton').className = 'btn btn-success';
-        document.getElementById('submitButton').textContent = 'Terima';
         document.getElementById('submitText').textContent = 'Terima';
     } else {
-        document.getElementById('statusTitle').textContent = 'Tolak Pendaftaran';
+        document.getElementById('statusTitle').innerHTML = '<i class="fas fa-times-circle me-2"></i>Tolak Pendaftaran';
         document.getElementById('confirmationText').textContent = `Apakah Anda yakin ingin menolak pendaftaran ${nama}?`;
         document.getElementById('submitButton').className = 'btn btn-danger';
-        document.getElementById('submitButton').textContent = 'Tolak';
         document.getElementById('submitText').textContent = 'Tolak';
     }
     
@@ -1258,6 +1257,19 @@ document.addEventListener('DOMContentLoaded', function() {
             validateDates();
         });
     }
+    
+    // Handle form submission for status modal
+    document.getElementById('statusForm').addEventListener('submit', function(e) {
+        const status = document.getElementById('statusValue').value;
+        if (status === 'diterima') {
+            const divisi = document.getElementById('id_divisi').value;
+            const jabatan = document.getElementById('id_jabatan').value;
+            if (!divisi || !jabatan) {
+                e.preventDefault();
+                showAlert('Harap pilih divisi dan jabatan untuk penerimaan', 'error');
+            }
+        }
+    });
 });
 </script>
 @endpush

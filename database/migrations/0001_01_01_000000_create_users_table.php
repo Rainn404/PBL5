@@ -8,19 +8,16 @@ return new class extends Migration
 {
     public function up()
     {
-
-               Schema::create('users', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role', ['super_admin', 'admin', 'mahasiswa'])->default('mahasiswa');
             $table->rememberToken();
             $table->timestamps();
         });
-
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
@@ -37,11 +34,22 @@ return new class extends Migration
             $table->integer('last_activity')->index();
         });
 
-
+        // Insert default super admin
+        DB::table('users')->insert([
+            'name' => 'Super Admin',
+            'email' => 'superadmin@hima.com',
+            'password' => Hash::make('password123'),
+            'role' => 'super_admin',
+            'email_verified_at' => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 
     public function down()
     {
+        Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('users');
     }
 };

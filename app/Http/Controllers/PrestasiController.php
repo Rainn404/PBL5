@@ -12,11 +12,13 @@ class PrestasiController extends Controller
     /**
      * Display a listing of the resource.
      */
-   public function index()
+  public function index()
 {
+    $user = Auth::user(); // Cek user login
+
     $prestasi = Prestasi::with('user')
-        ->when(Auth::user()->role === 'anggota', function($query) {
-            return $query->where('id_user', Auth::id());
+        ->when($user && $user->role === 'anggota', function ($query) use ($user) {
+            return $query->where('id_user', $user->id);
         })
         ->orderBy('created_at', 'desc')
         ->paginate(10);
@@ -31,7 +33,7 @@ class PrestasiController extends Controller
         ->orderBy('tahun', 'desc')
         ->pluck('tahun');
 
-         $prestasiTerbaru = Prestasi::latest()->take(5)->get();
+    $prestasiTerbaru = Prestasi::latest()->take(5)->get();
 
     return view('users.prestasi.index', compact(
         'prestasi',
@@ -41,7 +43,7 @@ class PrestasiController extends Controller
         'prestasiDitolak',
         'mahasiswaBerprestasi',
         'tahunList',
-        'prestasiTerbaru' 
+        'prestasiTerbaru'
     ));
 }
 

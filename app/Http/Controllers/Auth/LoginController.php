@@ -13,29 +13,41 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-   public function login(Request $request)
-{
-    $credentials = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-    ]);
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-    if (Auth::attempt($credentials, $request->remember)) {
-        $request->session()->regenerate();
-
-        $user = Auth::user();
-        
-        // Redirect berdasarkan role
-        if ($user->role === 'admin' || $user->role === 'super_admin') {
-            return redirect()->route('admin.dashboard');
+        // Coba login dengan guard web (untuk semua user)
+        if (Auth::guard('web')->attempt($credentials)) {
+            $request->session()->regenerate();
+            
+            $user = Auth::guard('web')->user();
+            
+            // Redirect berdasarkan role
+            if ($user->role === 'super_admin') {
+                return redirect()->intended('/admin/pendaftaran');
+            } elseif ($user->role === 'admin') {
+                return redirect()->intended('/admin/dashboard');
+            } else {
+                return redirect()->intended('/dashboard');
+            }
         }
 
-        // Mahasiswa / user biasa langsung ke pendaftaran
-        return redirect()->route('pendaftaran.create');
+        return back()->withErrors([
+            'email' => 'Email atau password salah.',
+        ])->onlyInput('email');
     }
 
-    return back()->withErrors([
-        'email' => 'Email atau password yang dimasukkan salah.',
-    ])->onlyInput('email');
-}
+    public function logout(Request $request)
+    {
+        Auth::guard('web')->logout();
+        
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/');
+    }
 }

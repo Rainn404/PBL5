@@ -14,9 +14,7 @@ use App\Http\Controllers\SanksiController;
 use App\Http\Controllers\DivisiController;
 use App\Http\Controllers\AnggotaHimaController;
 use App\Http\Controllers\BeritaController;
-use App\Http\Controllers\PrestasiController;
 use App\Http\Controllers\PendaftaranController;
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\Auth\LoginController;
@@ -38,6 +36,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // Public Routes (Frontend)
 // ========================
 Route::get('/', [IndexController::class, 'index'])->name('home');
+
 // Redirect /home ke /
 Route::get('/home', function () {
     return redirect()->route('home');
@@ -54,6 +53,11 @@ Route::prefix('berita')->name('berita.')->group(function () {
     Route::put('/{id}/komentar/{komentarId}', [BeritaController::class, 'publicCommentUpdate'])->name('komentar.update');
     Route::delete('/{id}/komentar/{komentarId}', [BeritaController::class, 'publicCommentDestroy'])->name('komentar.destroy');
 });
+use App\Http\Controllers\PrestasiController;
+
+Route::get('/prestasi', [PrestasiController::class, 'index'])->name('prestasi.index');
+Route::resource('prestasi', PrestasiController::class);
+
 
 // Divisi Routes (Public)
 Route::prefix('divisi')->name('divisi.')->group(function () {
@@ -62,34 +66,44 @@ Route::prefix('divisi')->name('divisi.')->group(function () {
 });
 
 // Anggota HIMA Routes (Public)
-Route::resource('anggota', AnggotaHimaController::class)->only(['index', 'show']);
-
-// Prestasi Routes (Public)
-Route::prefix('prestasi')->name('prestasi.')->group(function () {
-    Route::get('/', [PrestasiController::class, 'index'])->name('index');
-    Route::get('/create', [PrestasiController::class, 'create'])->name('create');
-    Route::post('/', [PrestasiController::class, 'store'])->name('store');
-    Route::get('/{id}', [PrestasiController::class, 'show'])->name('show');
-    Route::get('/{id}/edit', [PrestasiController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [PrestasiController::class, 'update'])->name('update');
-    Route::delete('/{id}', [PrestasiController::class, 'destroy'])->name('destroy');
-    Route::post('/{id}/validate', [PrestasiController::class, 'validatePrestasi'])->name('validate');
-    Route::post('/{id}/reject', [PrestasiController::class, 'rejectPrestasi'])->name('reject');
+Route::prefix('anggota')->name('anggota.')->group(function () {
+    Route::get('/', [AnggotaHimaController::class, 'index'])->name('index');
+    Route::get('/{id}', [AnggotaHimaController::class, 'show'])->name('show');
 });
 
 // Pendaftaran Routes (Public)
-
-Route::get('/pendaftaran/closed', [PendaftaranController::class, 'closed'])->name('pendaftaran.closed');
-Route::get('/pendaftaran/quota-full', [PendaftaranController::class, 'quotaFull'])->name('pendaftaran.quota-full');
-Route::get('/pendaftaran/status/{id}', [PendaftaranController::class, 'status'])->name('pendaftaran.status');
-Route::get('/pendaftaran/success', [PendaftaranController::class, 'success'])->name('pendaftaran.success');
-Route::get('/pendaftaran/check-status', [PendaftaranController::class, 'showCheckStatus'])->name('pendaftaran.check-status');
-Route::post('/pendaftaran/check-status', [PendaftaranController::class, 'checkStatus'])->name('pendaftaran.check-status.post');
-
-// Resource route harus di paling bawah
-Route::resource('pendaftaran', PendaftaranController::class)->only([
-    'index', 'create', 'store', 'show'
-]);
+Route::prefix('pendaftaran')->name('pendaftaran.')->group(function () {
+    // Halaman utama & form pendaftaran
+    Route::get('/', [PendaftaranController::class, 'index'])->name('index');
+    Route::get('/create', [PendaftaranController::class, 'create'])->name('create');
+    Route::post('/', [PendaftaranController::class, 'store'])->name('store');
+    
+    // Halaman status pendaftaran
+    Route::get('/status/{id}', [PendaftaranController::class, 'status'])->name('status');
+    Route::get('/success', [PendaftaranController::class, 'success'])->name('success');
+    
+    // Cek status pendaftaran
+    Route::get('/check-status', [PendaftaranController::class, 'showCheckStatus'])->name('check-status.form');
+    Route::post('/check-status', [PendaftaranController::class, 'checkStatus'])->name('check-status');
+    
+    // Halaman kondisi khusus
+    Route::get('/closed', [PendaftaranController::class, 'closed'])->name('closed');
+    Route::get('/quota-full', [PendaftaranController::class, 'quotaFull'])->name('quota-full');
+    Route::get('/coming-soon', [PendaftaranController::class, 'comingSoon'])->name('coming-soon');
+    Route::get('/ended', [PendaftaranController::class, 'ended'])->name('ended');
+    
+    // Dokumen pendaftaran
+    Route::get('/{id}/download-dokumen', [PendaftaranController::class, 'downloadDokumen'])->name('download-dokumen');
+    Route::get('/{id}/view-dokumen', [PendaftaranController::class, 'viewDokumen'])->name('view-dokumen');
+    
+    // API
+    Route::get('/api/status', [PendaftaranController::class, 'getStatusApi'])->name('api.status');
+    
+    // Admin routes (jika diperlukan)
+    Route::get('/{id}/edit', [PendaftaranController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [PendaftaranController::class, 'update'])->name('update');
+    Route::delete('/{id}', [PendaftaranController::class, 'destroy'])->name('destroy');
+});
 
 // API Routes
 Route::prefix('api')->group(function () {
@@ -106,58 +120,124 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     // Anggota Management
-    Route::resource('anggota', AdminAnggotaController::class);
+    Route::prefix('anggota')->name('anggota.')->group(function () {
+        Route::get('/', [AdminAnggotaController::class, 'index'])->name('index');
+        Route::get('/create', [AdminAnggotaController::class, 'create'])->name('create');
+        Route::post('/', [AdminAnggotaController::class, 'store'])->name('store');
+        Route::get('/{id}', [AdminAnggotaController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [AdminAnggotaController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [AdminAnggotaController::class, 'update'])->name('update');
+        Route::delete('/{id}', [AdminAnggotaController::class, 'destroy'])->name('destroy');
+    });
 
     // Divisi Management
-    Route::resource('divisi', AdminDivisiController::class);
+    Route::prefix('divisi')->name('divisi.')->group(function () {
+        Route::get('/', [AdminDivisiController::class, 'index'])->name('index');
+        Route::get('/create', [AdminDivisiController::class, 'create'])->name('create');
+        Route::post('/', [AdminDivisiController::class, 'store'])->name('store');
+        Route::get('/{id}', [AdminDivisiController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [AdminDivisiController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [AdminDivisiController::class, 'update'])->name('update');
+        Route::delete('/{id}', [AdminDivisiController::class, 'destroy'])->name('destroy');
+    });
     
     // Jabatan Management
-    Route::resource('jabatan', JabatanController::class);
-    Route::post('/jabatan/{id}/toggle-status', [JabatanController::class, 'toggleStatus'])->name('jabatan.toggle-status');
+    Route::prefix('jabatan')->name('jabatan.')->group(function () {
+        Route::get('/', [JabatanController::class, 'index'])->name('index');
+        Route::get('/create', [JabatanController::class, 'create'])->name('create');
+        Route::post('/', [JabatanController::class, 'store'])->name('store');
+        Route::get('/{id}', [JabatanController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [JabatanController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [JabatanController::class, 'update'])->name('update');
+        Route::delete('/{id}', [JabatanController::class, 'destroy'])->name('destroy');
+        Route::post('/{id}/toggle-status', [JabatanController::class, 'toggleStatus'])->name('toggle-status');
+    });
     
-  // Prestasi Management - ADMIN
-Route::prefix('prestasi')->name('prestasi.')->group(function () {
-
-    Route::get('/', [AdminPrestasiController::class, 'index'])->name('index');
-    Route::get('/create', [AdminPrestasiController::class, 'create'])->name('create');
-    Route::post('/', [AdminPrestasiController::class, 'store'])->name('store');
-    Route::get('/{id}', [AdminPrestasiController::class, 'show'])->name('show');
-    Route::get('/{id}/edit', [AdminPrestasiController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [AdminPrestasiController::class, 'update'])->name('update');
-    Route::delete('/{id}', [AdminPrestasiController::class, 'destroy'])->name('destroy');
-Route::match(['put', 'patch'], '/{id}/validasi', [AdminPrestasiController::class, 'validasi'])->name('validasi');
-
-    Route::post('/bulk-action', [AdminPrestasiController::class, 'bulkAction'])->name('bulk-action');
-});
+    // Prestasi Management - ADMIN
+    Route::prefix('prestasi')->name('prestasi.')->group(function () {
+        Route::get('/', [AdminPrestasiController::class, 'index'])->name('index');
+        Route::get('/create', [AdminPrestasiController::class, 'create'])->name('create');
+        Route::post('/', [AdminPrestasiController::class, 'store'])->name('store');
+        Route::get('/{id}', [AdminPrestasiController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [AdminPrestasiController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [AdminPrestasiController::class, 'update'])->name('update');
+        Route::delete('/{id}', [AdminPrestasiController::class, 'destroy'])->name('destroy');
+        Route::match(['put', 'patch'], '/{id}/validasi', [AdminPrestasiController::class, 'validasi'])->name('validasi');
+        Route::post('/bulk-action', [AdminPrestasiController::class, 'bulkAction'])->name('bulk-action');
+    });
     
     // Mahasiswa Management
-    Route::resource('mahasiswa', MahasiswaController::class);
-    Route::post('/mahasiswa/import', [MahasiswaController::class, 'import'])->name('mahasiswa.import');
-    Route::get('/mahasiswa/export', [MahasiswaController::class, 'export'])->name('mahasiswa.export');
-    Route::get('/mahasiswa/template', [MahasiswaController::class, 'template'])->name('mahasiswa.template');
+    Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
+        Route::get('/', [MahasiswaController::class, 'index'])->name('index');
+        Route::get('/create', [MahasiswaController::class, 'create'])->name('create');
+        Route::post('/', [MahasiswaController::class, 'store'])->name('store');
+        Route::get('/{id}', [MahasiswaController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [MahasiswaController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [MahasiswaController::class, 'update'])->name('update');
+        Route::delete('/{id}', [MahasiswaController::class, 'destroy'])->name('destroy');
+        Route::post('/import', [MahasiswaController::class, 'import'])->name('import');
+        Route::get('/export', [MahasiswaController::class, 'export'])->name('export');
+        Route::get('/template', [MahasiswaController::class, 'template'])->name('template');
+    });
     
     // Mahasiswa Bermasalah Management
-    Route::resource('mahasiswa-bermasalah', MahasiswaBermasalahController::class);
-    Route::get('/mahasiswa-bermasalah/get-mahasiswa/{nim}', [MahasiswaBermasalahController::class, 'getMahasiswaByNim'])->name('mahasiswa-bermasalah.get-mahasiswa');
+    Route::prefix('mahasiswa-bermasalah')->name('mahasiswa-bermasalah.')->group(function () {
+        Route::get('/', [MahasiswaBermasalahController::class, 'index'])->name('index');
+        Route::get('/create', [MahasiswaBermasalahController::class, 'create'])->name('create');
+        Route::post('/', [MahasiswaBermasalahController::class, 'store'])->name('store');
+        Route::get('/{id}', [MahasiswaBermasalahController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [MahasiswaBermasalahController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [MahasiswaBermasalahController::class, 'update'])->name('update');
+        Route::delete('/{id}', [MahasiswaBermasalahController::class, 'destroy'])->name('destroy');
+        Route::get('/get-mahasiswa/{nim}', [MahasiswaBermasalahController::class, 'getMahasiswaByNim'])->name('get-mahasiswa');
+    });
     
     // Pendaftaran Management
-    Route::resource('pendaftaran', AdminPendaftaranController::class);
-    Route::post('/pendaftaran/buka-sesi', [AdminPendaftaranController::class, 'bukaSesi'])->name('pendaftaran.buka-sesi');
-    Route::post('/pendaftaran/tutup-sesi', [AdminPendaftaranController::class, 'tutupSesi'])->name('pendaftaran.tutup-sesi');
-Route::post('/pendaftaran/settings', [AdminPendaftaranController::class, 'updateSettings'])
-    ->name('pendaftaran.update-settings');
-
-    Route::post('/pendaftaran/{id}/status', [AdminPendaftaranController::class, 'updateStatus'])->name('pendaftaran.update-status');
+    Route::prefix('pendaftaran')->name('pendaftaran.')->group(function () {
+        Route::get('/', [AdminPendaftaranController::class, 'index'])->name('index');
+        Route::post('/buka-sesi', [AdminPendaftaranController::class, 'bukaSesi'])->name('buka-sesi');
+        Route::post('/tutup-sesi', [AdminPendaftaranController::class, 'tutupSesi'])->name('tutup-sesi');
+        Route::post('/update-settings', [AdminPendaftaranController::class, 'updateSettings'])->name('update-settings');
+        Route::get('/status', [AdminPendaftaranController::class, 'getStatus'])->name('get-status');
+        Route::get('/{pendaftaran}', [AdminPendaftaranController::class, 'show'])->name('show');
+        Route::get('/{pendaftaran}/edit', [AdminPendaftaranController::class, 'edit'])->name('edit');
+        Route::put('/{pendaftaran}', [AdminPendaftaranController::class, 'update'])->name('update');
+        Route::put('/{pendaftaran}/update-status', [AdminPendaftaranController::class, 'updateStatus'])->name('update-status');
+        Route::delete('/{pendaftaran}', [AdminPendaftaranController::class, 'destroy'])->name('destroy');
+    });
     
     // Berita Management
-    Route::resource('berita', AdminBeritaController::class);
-    Route::get('/berita/{id}', [AdminBeritaController::class, 'show'])->name('berita.show');
+    Route::prefix('berita')->name('berita.')->group(function () {
+        Route::get('/', [AdminBeritaController::class, 'index'])->name('index');
+        Route::get('/create', [AdminBeritaController::class, 'create'])->name('create');
+        Route::post('/', [AdminBeritaController::class, 'store'])->name('store');
+        Route::get('/{id}', [AdminBeritaController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [AdminBeritaController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [AdminBeritaController::class, 'update'])->name('update');
+        Route::delete('/{id}', [AdminBeritaController::class, 'destroy'])->name('destroy');
+    });
     
     // Pelanggaran Management
-    Route::resource('pelanggaran', PelanggaranController::class);
+    Route::prefix('pelanggaran')->name('pelanggaran.')->group(function () {
+        Route::get('/', [PelanggaranController::class, 'index'])->name('index');
+        Route::get('/create', [PelanggaranController::class, 'create'])->name('create');
+        Route::post('/', [PelanggaranController::class, 'store'])->name('store');
+        Route::get('/{id}', [PelanggaranController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [PelanggaranController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [PelanggaranController::class, 'update'])->name('update');
+        Route::delete('/{id}', [PelanggaranController::class, 'destroy'])->name('destroy');
+    });
     
     // Sanksi Management
-    Route::resource('sanksi', SanksiController::class);
+    Route::prefix('sanksi')->name('sanksi.')->group(function () {
+        Route::get('/', [SanksiController::class, 'index'])->name('index');
+        Route::get('/create', [SanksiController::class, 'create'])->name('create');
+        Route::post('/', [SanksiController::class, 'store'])->name('store');
+        Route::get('/{id}', [SanksiController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [SanksiController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [SanksiController::class, 'update'])->name('update');
+        Route::delete('/{id}', [SanksiController::class, 'destroy'])->name('destroy');
+    });
     
     // Data & Reports
     Route::prefix('data')->name('data.')->group(function () {
@@ -184,3 +264,6 @@ Route::redirect('/admin', '/admin/dashboard');
 Route::fallback(function () {
     return view('errors.404');
 });
+
+Route::get('/admin/mahasiswa/export', [MahasiswaController::class, 'exportView'])->name('admin.mahasiswa.export.view');
+Route::get('/admin/mahasiswa/export/data', [MahasiswaController::class, 'export'])->name('admin.mahasiswa.export');
