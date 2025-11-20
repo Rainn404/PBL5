@@ -112,7 +112,7 @@
             <div class="menu-icon">🧑</div>
             <h4>Profil Saya</h4>
             <p>Kelola dan edit informasi pribadi Anda.</p>
-            <a href="#" class="menu-btn">Lihat Profil</a>
+            <a href="{{ route('user.profil') }}" class="menu-btn">Lihat Profil</a>
         </div>
 
         <!-- PESAN -->
@@ -120,7 +120,7 @@
             <div class="menu-icon">✉️</div>
             <h4>Pesan</h4>
             <p>Cek inbox dan kirim pesan baru.</p>
-            <a href="#" class="menu-btn">Buka Pesan</a>
+            <a href="{{ route('user.pesan') }}" class="menu-btn">Buka Pesan</a>
         </div>
 
         <!-- STATISTIK -->
@@ -128,7 +128,7 @@
             <div class="menu-icon">📊</div>
             <h4>Statistik</h4>
             <p>Lihat rangkuman aktivitas dan pencapaian Anda.</p>
-            <a href="#" class="menu-btn">Lihat Statistik</a>
+            <a href="{{ route('user.statistik') }}" class="menu-btn">Lihat Statistik</a>
         </div>
 
     </div> <!-- END GRID -->

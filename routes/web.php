@@ -219,3 +219,8 @@ Route::fallback(function () {
     return view('errors.404');
 });
 
+Route::get('/profil', [UserDashboardController::class, 'profil'])->name('user.profil');
+
+Route::get('/pesan', [UserDashboardController::class, 'pesan'])->name('user.pesan');
+
+Route::get('/statistik', [UserDashboardController::class, 'statistik'])->name('user.statistik');

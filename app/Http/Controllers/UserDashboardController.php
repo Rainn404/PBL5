@@ -8,6 +8,21 @@ class UserDashboardController extends Controller
 {
     public function index()
     {
-        return view('user.dashboard'); // nanti kita buat view-nya
+        return view('user.dashboard');
+    }
+
+    public function profil()
+    {
+        return view('user.profil');
+    }
+
+    public function pesan()
+    {
+        return view('user.pesan');
+    }
+
+    public function statistik()
+    {
+        return view('user.statistik');
     }
 }
