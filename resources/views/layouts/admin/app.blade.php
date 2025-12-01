@@ -15,7 +15,7 @@
 
     <style>
         :root {
-            --primary-color: #4e73df;
+            --primary-color: #0d6efd;
             --secondary-color: #030304;
             --success-color: #1cc88a;
             --info-color: #36b9cc;
@@ -305,7 +305,7 @@
                 <li class="nav-item">
                     <a href="{{ route('admin.berita.index') }}" class="nav-link {{ Request::routeIs('admin.berita.*') ? 'active' : '' }}">
                         <i class="fas fa-newspaper me-3"></i>
-                        <span>Berita</span>
+                        <span>Berita dan komentar
                     </a>
                 </li>
                 
@@ -339,15 +339,30 @@
                     </a>
                 </li>
                 
-                <li class="nav-item">
-                    <a href="{{ route('logout') }}" class="nav-link text-danger" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <i class="fas fa-sign-out-alt me-3"></i>
-                        <span>Logout</span>
-                    </a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                        @csrf
-                    </form>
-                </li>
+<li class="nav-item">
+    <a href="{{ route('logout') }}" 
+       class="nav-link text-danger"
+       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+        <i class="fas fa-sign-out-alt me-3"></i>
+        <span>Logout</span>
+    </a>
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+        @csrf
+    </form>
+</li>
+
+<script>
+    document.getElementById('logout-form').addEventListener('submit', function (e) {
+        // Hapus token sesi Google dari localStorage (biar gak auto-login)
+        localStorage.clear();
+
+        // Setelah logout dari Laravel, arahkan ke halaman login Google
+        setTimeout(() => {
+            window.location.href = "{{ route('google.login') }}";
+        }, 500);
+    });
+</script>
+
             </ul>
         </nav>
 

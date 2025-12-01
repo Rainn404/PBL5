@@ -462,6 +462,24 @@ section {
     box-shadow: var(--shadow-lg);
 }
 
+/* Dropdown user menu fix */
+.user-menu {
+    min-width: 180px;
+    border-radius: 10px;
+    padding: 8px 0;
+    position: absolute !important;
+    top: 48px !important;    /* TURUNKAN DROPDOWN */
+    right: 0;
+    z-index: 99999;
+}
+
+.user-menu .dropdown-item {
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+ 
 .berita-image {
     height: 200px;
     overflow: hidden;

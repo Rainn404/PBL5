@@ -18,6 +18,23 @@
             <h6 class="m-0 font-weight-bold text-primary">Form Edit Divisi</h6>
         </div>
         <div class="card-body">
+            <!-- Informasi Divisi -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="info-box bg-light p-3 rounded">
+                        <h6 class="font-weight-bold text-primary">Informasi Divisi</h6>
+                        <p class="mb-1"><strong>ID Divisi:</strong> {{ $divisi->id_divisi }}</p>
+                        <p class="mb-1"><strong>Nama Divisi:</strong> {{ $divisi->nama }}</p>
+                        <p class="mb-1"><strong>Tanggal Dibuat:</strong> 
+                            {{ \Carbon\Carbon::parse($divisi->created_at)->setTimezone('Asia/Makassar')->format('d/m/Y H:i') }} WITA
+                        </p>
+                        <p class="mb-1"><strong>Terakhir Diupdate:</strong> 
+                            {{ \Carbon\Carbon::parse($divisi->updated_at)->setTimezone('Asia/Makassar')->format('d/m/Y H:i') }} WITA
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <form action="{{ route('admin.divisi.update', $divisi->id_divisi) }}" method="POST">
                 @csrf
                 @method('PUT')

@@ -11,13 +11,36 @@ use Illuminate\Support\Facades\Storage;
 
 class AnggotaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $anggota = AnggotaHima::with(['divisi', 'jabatan', 'user'])->get();
+        // Ambil parameter filter dari request
+        $id_divisi = $request->get('divisi');
+        $id_jabatan = $request->get('jabatan');
+        $status = $request->get('status');
+
+        // Query dengan filter
+        $query = AnggotaHima::with(['divisi', 'jabatan', 'user']);
+
+        // Filter berdasarkan divisi
+        if ($id_divisi && $id_divisi != 'all') {
+            $query->where('id_divisi', $id_divisi);
+        }
+
+        // Filter berdasarkan jabatan
+        if ($id_jabatan && $id_jabatan != 'all') {
+            $query->where('id_jabatan', $id_jabatan);
+        }
+
+        // Filter berdasarkan status
+        if ($status !== null && $status != 'all') {
+            $query->where('status', $status);
+        }
+
+        $anggota = $query->get();
         $divisi = Divisi::orderBy('nama_divisi')->get();
         $jabatan = Jabatan::orderBy('nama_jabatan')->get();
 
-        return view('admin.anggota', compact('anggota', 'divisi', 'jabatan'));
+        return view('admin.anggota', compact('anggota', 'divisi', 'jabatan', 'id_divisi', 'id_jabatan', 'status'));
     }
 
     public function store(Request $request)
@@ -84,7 +107,6 @@ class AnggotaController extends Controller
         return redirect()->route('admin.anggota.index')->with('success', 'Data anggota berhasil diperbarui!');
     }
 
-    // ✅ Tambahkan method destroy di bawah ini
     public function destroy($id)
     {
         $anggota = AnggotaHima::findOrFail($id);

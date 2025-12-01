@@ -4,7 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
     "content-hash": "3cdf95bcd088aa2e9f37527cde58a171",
+=======
+    "content-hash": "22fed3880aa4b769a140b86d475b69ab",
+>>>>>>> 394ab96dd88585365c452ade82975fdae3a8065e
     "packages": [
         {
             "name": "brick/math",
@@ -1674,6 +1678,7 @@
         },
         {
             "name": "laravel/socialite",
+<<<<<<< HEAD
             "version": "v5.23.0",
             "source": {
                 "type": "git",
@@ -1684,6 +1689,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/laravel/socialite/zipball/e9e0fc83b9d8d71c8385a5da20e5b95ca6234cf5",
                 "reference": "e9e0fc83b9d8d71c8385a5da20e5b95ca6234cf5",
+=======
+            "version": "v5.23.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/socialite.git",
+                "reference": "83d7523c97c1101d288126948947891319eef800"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/socialite/zipball/83d7523c97c1101d288126948947891319eef800",
+                "reference": "83d7523c97c1101d288126948947891319eef800",
+>>>>>>> 394ab96dd88585365c452ade82975fdae3a8065e
                 "shasum": ""
             },
             "require": {
@@ -1742,7 +1759,11 @@
                 "issues": "https://github.com/laravel/socialite/issues",
                 "source": "https://github.com/laravel/socialite"
             },
+<<<<<<< HEAD
             "time": "2025-07-23T14:16:08+00:00"
+=======
+            "time": "2025-10-27T15:36:41+00:00"
+>>>>>>> 394ab96dd88585365c452ade82975fdae3a8065e
         },
         {
             "name": "laravel/tinker",

@@ -4,31 +4,35 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Divisi;
+use App\Models\AnggotaHima;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class DivisiController extends Controller
 {
     public function index()
-{
-    // Ambil semua divisi beserta relasi anggota
-    $divisis = Divisi::with('anggotaHima')
-        ->orderBy('nama_divisi')
-        ->get();
+    {
+        // Ambil semua divisi beserta jumlah anggota
+        $divisis = Divisi::withCount('anggotaHima')
+            ->orderBy('nama_divisi')
+            ->get();
 
-    return view('admin.divisi.index', compact('divisis'));
-}
-
+        return view('admin.divisi.index', compact('divisis'));
+    }
 
     public function create()
     {
-        return view('admin.divisi.create');
+        // Ambil data anggota untuk dropdown ketua
+        $anggota = AnggotaHima::where('status', 1)
+            ->orderBy('nama')
+            ->get();
+            
+        return view('admin.divisi.create', compact('anggota'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            // sesuaikan dengan kolom di migration
             'nama_divisi' => 'required|string|max:100|unique:divisis,nama_divisi',
             'ketua_divisi' => 'required|string|max:100',
             'deskripsi' => 'nullable|string'
@@ -37,7 +41,11 @@ class DivisiController extends Controller
         try {
             DB::beginTransaction();
 
-            Divisi::create($request->all());
+            Divisi::create([
+                'nama_divisi' => $request->nama_divisi,
+                'ketua_divisi' => $request->ketua_divisi,
+                'deskripsi' => $request->deskripsi
+            ]);
 
             DB::commit();
 
@@ -51,18 +59,28 @@ class DivisiController extends Controller
         }
     }
 
-    public function show(Divisi $divisi)
+    public function show($id)
     {
+        $divisi = Divisi::withCount('anggotaHima')->findOrFail($id);
+        
         return view('admin.divisi.show', compact('divisi'));
     }
 
-    public function edit(Divisi $divisi)
+    public function edit($id)
     {
-        return view('admin.divisi.edit', compact('divisi'));
+        $divisi = Divisi::findOrFail($id);
+        // Ambil data anggota untuk dropdown ketua
+        $anggota = AnggotaHima::where('status', 1)
+            ->orderBy('nama')
+            ->get();
+            
+        return view('admin.divisi.edit', compact('divisi', 'anggota'));
     }
 
-    public function update(Request $request, Divisi $divisi)
+    public function update(Request $request, $id)
     {
+        $divisi = Divisi::findOrFail($id);
+        
         $request->validate([
             'nama_divisi' => 'required|string|max:100|unique:divisis,nama_divisi,' . $divisi->id_divisi . ',id_divisi',
             'ketua_divisi' => 'required|string|max:100',
@@ -72,7 +90,11 @@ class DivisiController extends Controller
         try {
             DB::beginTransaction();
 
-            $divisi->update($request->all());
+            $divisi->update([
+                'nama_divisi' => $request->nama_divisi,
+                'ketua_divisi' => $request->ketua_divisi,
+                'deskripsi' => $request->deskripsi
+            ]);
 
             DB::commit();
 
@@ -86,14 +108,15 @@ class DivisiController extends Controller
         }
     }
 
-    public function destroy(Divisi $divisi)
+    public function destroy($id)
     {
+        $divisi = Divisi::findOrFail($id);
+        
         try {
             DB::beginTransaction();
 
-            $usedInAnggota = DB::table('anggota_hima')->where('id_divisi', $divisi->id_divisi)->exists();
-            
-            if ($usedInAnggota) {
+            // Cek apakah divisi digunakan oleh anggota
+            if ($divisi->anggotaHima()->exists()) {
                 return redirect()->back()
                     ->with('error', 'Tidak dapat menghapus divisi karena masih digunakan oleh anggota.');
             }

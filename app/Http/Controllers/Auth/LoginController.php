@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+    /**
+     * Tampilkan halaman login
+     */
     public function showLoginForm()
     {
         return view('auth.login');
@@ -23,9 +26,9 @@ class LoginController extends Controller
         // Coba login dengan guard web (untuk semua user)
         if (Auth::guard('web')->attempt($credentials)) {
             $request->session()->regenerate();
-            
+
             $user = Auth::guard('web')->user();
-            
+
             // Redirect berdasarkan role
             if ($user->role === 'super_admin') {
                 return redirect()->intended('/admin/pendaftaran');
@@ -44,7 +47,7 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         Auth::guard('web')->logout();
-        
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

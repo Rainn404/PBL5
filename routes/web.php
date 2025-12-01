@@ -18,6 +18,14 @@ use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\Auth\LoginController;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\KomentarController;
+use App\Http\Controllers\Admin\AdminKomentarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,10 +37,15 @@ use App\Http\Controllers\Auth\LoginController;
 // Authentication Routes
 // ========================
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'login']);
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::post('/login', [LoginController::class, 'login'])->name('login.post'); // ← ini WAJIB ada
+Route::post('/logout', function () {
+    Auth::logout();
+    session()->flush();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/login')->with('success', 'Anda telah logout. Silakan login kembali.');
+})->name('logout');
 
-// ========================
 // Public Routes (Frontend)
 // ========================
 Route::get('/', [IndexController::class, 'index'])->name('home');
@@ -47,17 +60,15 @@ Route::prefix('berita')->name('berita.')->group(function () {
     Route::get('/', [BeritaController::class, 'publicIndex'])->name('index');
     Route::get('/lainnya', [BeritaController::class, 'lainnya'])->name('lainnya');
     Route::get('/{id}', [BeritaController::class, 'publicShow'])->name('show');
-    
+
     // Komentar Routes
     Route::post('/{id}/komentar', [BeritaController::class, 'publicCommentStore'])->name('komentar.store');
     Route::put('/{id}/komentar/{komentarId}', [BeritaController::class, 'publicCommentUpdate'])->name('komentar.update');
     Route::delete('/{id}/komentar/{komentarId}', [BeritaController::class, 'publicCommentDestroy'])->name('komentar.destroy');
 });
-use App\Http\Controllers\PrestasiController;
 
 Route::get('/prestasi', [PrestasiController::class, 'index'])->name('prestasi.index');
 Route::resource('prestasi', PrestasiController::class);
-
 
 // Divisi Routes (Public)
 Route::prefix('divisi')->name('divisi.')->group(function () {
@@ -77,28 +88,28 @@ Route::prefix('pendaftaran')->name('pendaftaran.')->group(function () {
     Route::get('/', [PendaftaranController::class, 'index'])->name('index');
     Route::get('/create', [PendaftaranController::class, 'create'])->name('create');
     Route::post('/', [PendaftaranController::class, 'store'])->name('store');
-    
+
     // Halaman status pendaftaran
     Route::get('/status/{id}', [PendaftaranController::class, 'status'])->name('status');
     Route::get('/success', [PendaftaranController::class, 'success'])->name('success');
-    
+
     // Cek status pendaftaran
     Route::get('/check-status', [PendaftaranController::class, 'showCheckStatus'])->name('check-status.form');
     Route::post('/check-status', [PendaftaranController::class, 'checkStatus'])->name('check-status');
-    
+
     // Halaman kondisi khusus
     Route::get('/closed', [PendaftaranController::class, 'closed'])->name('closed');
     Route::get('/quota-full', [PendaftaranController::class, 'quotaFull'])->name('quota-full');
     Route::get('/coming-soon', [PendaftaranController::class, 'comingSoon'])->name('coming-soon');
     Route::get('/ended', [PendaftaranController::class, 'ended'])->name('ended');
-    
+
     // Dokumen pendaftaran
     Route::get('/{id}/download-dokumen', [PendaftaranController::class, 'downloadDokumen'])->name('download-dokumen');
     Route::get('/{id}/view-dokumen', [PendaftaranController::class, 'viewDokumen'])->name('view-dokumen');
-    
+
     // API
     Route::get('/api/status', [PendaftaranController::class, 'getStatusApi'])->name('api.status');
-    
+
     // Admin routes (jika diperlukan)
     Route::get('/{id}/edit', [PendaftaranController::class, 'edit'])->name('edit');
     Route::put('/{id}', [PendaftaranController::class, 'update'])->name('update');
@@ -111,14 +122,20 @@ Route::prefix('api')->group(function () {
     Route::get('/pendaftaran-status', [PendaftaranController::class, 'getStatus'])->name('api.pendaftaran-status');
 });
 
-// ========================
-// Admin Routes (Protected)
-// ========================
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    
+
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
+
+    // Komentar Management (ADMIN)
+    Route::middleware(['isadmin'])->group(function () {
+        Route::get('komentar', [AdminKomentarController::class, 'index'])
+            ->name('komentar.index');
+
+        Route::delete('komentar/{id}', [AdminKomentarController::class, 'destroy'])
+            ->name('komentar.destroy');
+    });
+
     // Anggota Management
     Route::prefix('anggota')->name('anggota.')->group(function () {
         Route::get('/', [AdminAnggotaController::class, 'index'])->name('index');
@@ -140,7 +157,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::put('/{id}', [AdminDivisiController::class, 'update'])->name('update');
         Route::delete('/{id}', [AdminDivisiController::class, 'destroy'])->name('destroy');
     });
-    
+
     // Jabatan Management
     Route::prefix('jabatan')->name('jabatan.')->group(function () {
         Route::get('/', [JabatanController::class, 'index'])->name('index');
@@ -152,7 +169,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::delete('/{id}', [JabatanController::class, 'destroy'])->name('destroy');
         Route::post('/{id}/toggle-status', [JabatanController::class, 'toggleStatus'])->name('toggle-status');
     });
-    
+
     // Prestasi Management - ADMIN
     Route::prefix('prestasi')->name('prestasi.')->group(function () {
         Route::get('/', [AdminPrestasiController::class, 'index'])->name('index');
@@ -165,7 +182,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::match(['put', 'patch'], '/{id}/validasi', [AdminPrestasiController::class, 'validasi'])->name('validasi');
         Route::post('/bulk-action', [AdminPrestasiController::class, 'bulkAction'])->name('bulk-action');
     });
-    
+
     // Mahasiswa Management
     Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
         Route::get('/', [MahasiswaController::class, 'index'])->name('index');
@@ -179,19 +196,13 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::get('/export', [MahasiswaController::class, 'export'])->name('export');
         Route::get('/template', [MahasiswaController::class, 'template'])->name('template');
     });
-    
+
     // Mahasiswa Bermasalah Management
-    Route::prefix('mahasiswa-bermasalah')->name('mahasiswa-bermasalah.')->group(function () {
-        Route::get('/', [MahasiswaBermasalahController::class, 'index'])->name('index');
-        Route::get('/create', [MahasiswaBermasalahController::class, 'create'])->name('create');
-        Route::post('/', [MahasiswaBermasalahController::class, 'store'])->name('store');
-        Route::get('/{id}', [MahasiswaBermasalahController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [MahasiswaBermasalahController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [MahasiswaBermasalahController::class, 'update'])->name('update');
-        Route::delete('/{id}', [MahasiswaBermasalahController::class, 'destroy'])->name('destroy');
-        Route::get('/get-mahasiswa/{nim}', [MahasiswaBermasalahController::class, 'getMahasiswaByNim'])->name('get-mahasiswa');
-    });
-    
+    Route::resource('mahasiswa-bermasalah', MahasiswaBermasalahController::class);
+    // TAMBAHKAN ROUTE INI UNTUK MULTIPLE MAHASISWA
+    Route::post('/mahasiswa-bermasalah/store-multiple', [MahasiswaBermasalahController::class, 'storeMultiple'])->name('mahasiswa-bermasalah.store-multiple');
+    Route::get('/mahasiswa-bermasalah/get-mahasiswa/{nim}', [MahasiswaBermasalahController::class, 'getMahasiswaByNim'])->name('mahasiswa-bermasalah.get-mahasiswa');
+
     // Pendaftaran Management
     Route::prefix('pendaftaran')->name('pendaftaran.')->group(function () {
         Route::get('/', [AdminPendaftaranController::class, 'index'])->name('index');
@@ -205,18 +216,10 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::put('/{pendaftaran}/update-status', [AdminPendaftaranController::class, 'updateStatus'])->name('update-status');
         Route::delete('/{pendaftaran}', [AdminPendaftaranController::class, 'destroy'])->name('destroy');
     });
-    
+
     // Berita Management
-    Route::prefix('berita')->name('berita.')->group(function () {
-        Route::get('/', [AdminBeritaController::class, 'index'])->name('index');
-        Route::get('/create', [AdminBeritaController::class, 'create'])->name('create');
-        Route::post('/', [AdminBeritaController::class, 'store'])->name('store');
-        Route::get('/{id}', [AdminBeritaController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [AdminBeritaController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [AdminBeritaController::class, 'update'])->name('update');
-        Route::delete('/{id}', [AdminBeritaController::class, 'destroy'])->name('destroy');
-    });
-    
+    Route::resource('berita', AdminBeritaController::class);
+
     // Pelanggaran Management
     Route::prefix('pelanggaran')->name('pelanggaran.')->group(function () {
         Route::get('/', [PelanggaranController::class, 'index'])->name('index');
@@ -227,7 +230,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::put('/{id}', [PelanggaranController::class, 'update'])->name('update');
         Route::delete('/{id}', [PelanggaranController::class, 'destroy'])->name('destroy');
     });
-    
+
     // Sanksi Management
     Route::prefix('sanksi')->name('sanksi.')->group(function () {
         Route::get('/', [SanksiController::class, 'index'])->name('index');
@@ -238,7 +241,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::put('/{id}', [SanksiController::class, 'update'])->name('update');
         Route::delete('/{id}', [SanksiController::class, 'destroy'])->name('destroy');
     });
-    
+
     // Data & Reports
     Route::prefix('data')->name('data.')->group(function () {
         Route::get('/users', function () { return view('admin.data.users'); })->name('users');
@@ -255,6 +258,19 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 // ========================
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+});
+
+Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+
+// ========================
+// Register
+// ========================
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
 });
 
 // ========================

@@ -16,7 +16,7 @@
             <h6 class="m-0 font-weight-bold text-primary">Form Edit Mahasiswa Bermasalah</h6>
         </div>
         <div class="card-body">
-            <form action="{{ route('admin.mahasiswa-bermasalah.update', $mahasiswaBermasalah->id) }}" method="POST">
+            <form action="{{ route('admin.mahasiswa-bermasalah.update', $mahasiswaBermasalah->id) }}" method="POST" id="editForm">
                 @csrf
                 @method('PUT')
 
@@ -26,8 +26,7 @@
                             <label for="nim" class="form-label">NIM <span class="text-danger">*</span></label>
                             <input type="text" name="nim" id="nim" class="form-control" required 
                                    placeholder="Masukkan NIM mahasiswa" value="{{ old('nim', $mahasiswaBermasalah->nim) }}">
-                            <small class="form-text text-muted"></small>
-                            <div id="nim-error" class="text-danger small mt-1"></div>
+                            <div id="nim-error" class="small mt-1"></div>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -45,7 +44,6 @@
                             <label for="semester" class="form-label">Semester <span class="text-danger">*</span></label>
                             <input type="number" name="semester" id="semester" class="form-control" min="1" max="14" 
                                    placeholder="Masukkan semester" value="{{ old('semester', $mahasiswaBermasalah->semester) }}" required>
-                            <small class="form-text text-muted"></small>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -53,7 +51,6 @@
                             <label for="nama_orang_tua" class="form-label">Nama Orang Tua <span class="text-danger">*</span></label>
                             <input type="text" name="nama_orang_tua" id="nama_orang_tua" class="form-control" 
                                    placeholder="Masukkan nama orang tua" value="{{ old('nama_orang_tua', $mahasiswaBermasalah->nama_orang_tua) }}" required>
-                            <small class="form-text text-muted"></small>
                         </div>
                     </div>
                 </div>
@@ -97,7 +94,7 @@
                     <a href="{{ route('admin.mahasiswa-bermasalah.index') }}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left me-2"></i>Kembali
                     </a>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
                         <i class="fas fa-save me-2"></i>Update Data
                     </button>
                 </div>
@@ -111,81 +108,111 @@ document.addEventListener('DOMContentLoaded', function() {
     const nimInput = document.getElementById('nim');
     const namaInput = document.getElementById('nama');
     const nimError = document.getElementById('nim-error');
+    const semesterInput = document.getElementById('semester');
+    const orangTuaInput = document.getElementById('nama_orang_tua');
+    const submitBtn = document.getElementById('submitBtn');
+    const editForm = document.getElementById('editForm');
 
-    nimInput.addEventListener('input', function() {
-        const nim = this.value.trim();
-        
-        // Clear previous data
-        namaInput.value = '';
-        nimError.textContent = '';
-        
+    // Fungsi untuk mencari data mahasiswa berdasarkan NIM
+    function searchMahasiswa(nim) {
         if (nim.length >= 8) {
             // Show loading state
             nimError.textContent = 'Mencari data mahasiswa...';
-            
-            console.log('Mencari NIM:', nim);
+            nimError.className = 'text-info small mt-1';
             
             fetch(`/admin/mahasiswa-bermasalah/get-mahasiswa/${nim}`)
                 .then(response => {
-                    console.log('Response status:', response.status);
                     if (!response.ok) {
                         throw new Error('Mahasiswa tidak ditemukan');
                     }
                     return response.json();
                 })
                 .then(data => {
-                    console.log('Data received:', data);
-                    
                     if (data.error) {
                         throw new Error(data.error);
                     }
                     
-                    // Hanya isi nama saja (semester dan orang tua diisi manual)
+                    // Isi data otomatis
                     namaInput.value = data.nama || '';
-                    nimError.textContent = '';
                     
-                    console.log('Nama terisi:', data.nama);
+                    // Auto-fill semester dan nama orang tua jika kosong
+                    if (semesterInput && !semesterInput.value && data.semester && data.semester !== 'Tidak diketahui') {
+                        semesterInput.value = data.semester;
+                    }
+                    if (orangTuaInput && !orangTuaInput.value && data.nama_orang_tua && data.nama_orang_tua !== 'Tidak diketahui') {
+                        orangTuaInput.value = data.nama_orang_tua;
+                    }
                     
-                    // Enable form submission
-                    document.querySelector('form').querySelector('button[type="submit"]').disabled = false;
+                    nimError.textContent = '✓ Data ditemukan';
+                    nimError.className = 'text-success small mt-1';
+                    
                 })
                 .catch(error => {
-                    console.error('Error:', error);
                     nimError.textContent = error.message;
-                    // Disable form submission if student not found
-                    document.querySelector('form').querySelector('button[type="submit"]').disabled = true;
+                    nimError.className = 'text-danger small mt-1';
+                    namaInput.value = '';
                 });
         } else if (nim.length > 0) {
             nimError.textContent = 'NIM harus minimal 8 karakter';
+            nimError.className = 'text-danger small mt-1';
+            namaInput.value = '';
+        } else {
+            nimError.textContent = '';
+            nimError.className = 'small mt-1';
+            namaInput.value = '';
         }
+    }
+
+    nimInput.addEventListener('blur', function() {
+        const nim = this.value.trim();
+        searchMahasiswa(nim);
     });
 
     // Validate form before submission
-    document.querySelector('form').addEventListener('submit', function(e) {
+    editForm.addEventListener('submit', function(e) {
         const nim = nimInput.value.trim();
         const nama = namaInput.value.trim();
-        const semester = document.getElementById('semester').value.trim();
-        const namaOrangTua = document.getElementById('nama_orang_tua').value.trim();
+        const semester = semesterInput.value.trim();
+        const namaOrangTua = orangTuaInput.value.trim();
         const pelanggaran = document.getElementById('pelanggaran_id').value;
         const sanksi = document.getElementById('sanksi_id').value;
         const deskripsi = document.getElementById('deskripsi').value.trim();
         
+        let errors = [];
+        
         if (!nim || !nama) {
-            e.preventDefault();
-            alert('Harap isi NIM dan pastikan data mahasiswa ditemukan');
-            return;
+            errors.push('Harap isi NIM dan pastikan data mahasiswa ditemukan');
         }
         
-        if (!semester || !namaOrangTua || !pelanggaran || !sanksi || !deskripsi) {
+        if (!semester) {
+            errors.push('Harap isi semester');
+        }
+        
+        if (!namaOrangTua) {
+            errors.push('Harap isi nama orang tua');
+        }
+        
+        if (!pelanggaran) {
+            errors.push('Harap pilih pelanggaran');
+        }
+        
+        if (!sanksi) {
+            errors.push('Harap pilih sanksi');
+        }
+        
+        if (!deskripsi) {
+            errors.push('Harap isi deskripsi');
+        }
+
+        if (errors.length > 0) {
             e.preventDefault();
-            alert('Harap lengkapi semua field yang wajib diisi');
-            return;
+            alert('Terjadi kesalahan:\n' + errors.join('\n'));
         }
     });
 
-    // Trigger input event on page load if NIM already has value
+    // Trigger search on page load if NIM already has value
     if (nimInput.value.trim().length >= 8) {
-        nimInput.dispatchEvent(new Event('input'));
+        searchMahasiswa(nimInput.value.trim());
     }
 });
 </script>

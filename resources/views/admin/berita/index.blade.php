@@ -36,7 +36,7 @@
                     <table class="table table-bordered table-hover align-middle mb-0">
                         <thead class="table-light">
                         <tr>
-                            <th style="width:60px;">#</th>
+                            <th style="width:60px;">No</th>
                             <th>Judul</th>
                             <th>Penulis</th>
                             <th>Foto</th>
@@ -72,13 +72,12 @@
                                 </td>
                                 <td>
                             <a href="{{ route('admin.berita.show', $row->id_berita) }}" class="btn btn-primary">Detail</a>
-                                       class="btn btn-sm btn-info text-white">
-                                        <i class="fas fa-eye"></i> Lihat
+                        
+                        
                                     </a>
 
                                             <a href="{{ route('admin.berita.edit', $row->id_berita) }}" class="btn btn-warning btn-sm">Edit</a>
-                                       class="btn btn-sm btn-warning text-white">
-                                        <i class="fas fa-edit"></i> Edit
+      
                                     </a>
 
                                     <form action="{{ route('admin.berita.destroy', $row->id_berita ?? $row->id) }}"
@@ -96,6 +95,20 @@
                         @endforeach
                         </tbody>
                     </table>
+                    <div class="card mt-4 shadow-sm" style="border-radius: 12px;">
+    <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="mb-1" style="font-weight: 700;">Kelola Komentar</h5>
+            <p class="mb-0 text-muted">Lihat, moderasi, dan hapus komentar berita.</p>
+        </div>
+        <a href="{{ route('admin.komentar.index') }}" 
+           class="btn btn-secondary px-4 py-2"
+           style="font-weight: 600; border-radius: 8px;">
+            Buka Halaman
+        </a>
+    </div>
+</div>
+
                 </div>
             @else
                 <p class="text-muted p-3 mb-0">Belum ada berita.</p>

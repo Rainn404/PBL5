@@ -12,7 +12,7 @@
                 @csrf
 
                 <div class="mb-3">
-                    <label for="judul" class="form-label">Judul Berita Utama</label>
+                    <label for="judul" class="form-label">Judul Berita</label>
                     <input type="text" class="form-control @error('judul') is-invalid @enderror"
                            id="judul" name="judul" value="{{ old('judul') }}" required>
                     @error('judul') <div class="invalid-feedback">{{ $message }}</div> @enderror
@@ -52,9 +52,9 @@
                 <button type="submit" class="btn btn-success">
                     <i class="fas fa-save me-2"></i> Simpan
                 </button>
-                <a href="{{ route('admin.berita.index') }}" class="btn btn-secondary">
-                    Batal
-                </a>
+<a href="{{ url('/admin/berita') }}" class="btn btn-secondary">
+    <i class="fas fa-times me-1"></i> Batalkan
+</a>
             </form>
         </div>
     </div>

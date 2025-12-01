@@ -10,28 +10,60 @@ class Komentar extends Model
     use HasFactory;
 
     protected $table = 'komentar';
-    protected $primaryKey = 'id';          // default sudah 'id', tulis eksplisit biar jelas
-    public $timestamps = true;             // gunakan created_at & updated_at
+    protected $primaryKey = 'id';
+    public $timestamps = true;
 
-    // Field yang boleh diisi mass-assignment
-    protected $fillable = ['berita_id', 'nama', 'isi'];
+    protected $fillable = [
+        'berita_id',
+        'nama',
+        'isi',
+    ];
 
-    // Cast waktu agar mudah di-format di Blade: $komentar->created_at->format('d M Y H:i')
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
 
-    /** Relasi: komentar milik satu berita */
+    /**
+     * Relasi: komentar milik satu berita
+     * FK   : berita_id (di komentar)
+     * PK   : Id_berita (di berita)
+     */
     public function berita()
     {
-        // kolom FK di tabel komentar = 'berita_id', PK di tabel berita = 'Id_berita'
         return $this->belongsTo(\App\Models\Berita::class, 'berita_id', 'Id_berita');
     }
 
-    /** Scope opsional: ambil komentar terbaru dulu */
+    /**
+     * Accessor optional: jika nama kosong, tampilkan "Anonim"
+     */
+    public function getNamaAttribute($value)
+    {
+        return $value ?: 'Anonim';
+    }
+
+    /**
+     * Scope: komentar terbaru dulu
+     */
     public function scopeLatestFirst($query)
     {
-        return $query->orderByDesc('created_at');
+        return $query->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * Scope: filter komentar berdasarkan berita
+     */
+    public function scopeByBerita($query, $berita_id)
+    {
+        return $query->where('berita_id', $berita_id);
+    }
+
+    /**
+     * Scope: pencarian komentar di dashboard admin
+     */
+    public function scopeSearch($query, $keyword)
+    {
+        return $query->where('isi', 'LIKE', '%' . $keyword . '%')
+                     ->orWhere('nama', 'LIKE', '%' . $keyword . '%');
     }
 }
