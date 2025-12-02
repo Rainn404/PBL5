@@ -30,6 +30,31 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
+        .user-menu {
+    background: #fff;
+    border-radius: 8px;
+    padding: 8px 0;
+    min-width: 160px;
+    border: 1px solid #e2e8f0;
+    z-index: 9999 !important;
+}
+
+.user-menu li {
+    list-style: none;
+}
+
+.user-menu .dropdown-item {
+    display: block;
+    padding: 10px 16px;
+    color: #1e293b;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.user-menu .dropdown-item:hover {
+    background: #f1f5f9;
+}
+
         .nav-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -209,63 +234,80 @@
             @endguest
 
 @auth
-    <div class="relative">
+    {{-- Jika ADMIN → pakai dropdown --}}
+    @if(Auth::user()->role === 'admin')
 
-        <!-- BUTTON GARIS 3 -->
-        <button id="userMenuToggle"
-            class="p-2 rounded-md border bg-white shadow-sm hover:bg-gray-100"
-            style="font-size: 22px;">
-            <i class="fa-solid fa-bars"></i>
-        </button>
+        <div class="relative">
 
-<ul id="userMenuPanel"
-    class="dropdown-menu user-menu shadow position-absolute end-0 mt-2"
-    style="display:none;">
-    
-    <li>
-        <a href="{{ route('dashboard') }}"
-           class="dropdown-item">
-            <span class="item-main">
-                <i class="fa-solid fa-user"></i>
-                <span>Profil Saya</span>
-            </span>
-        </a>
-    </li>
+            <!-- Tombol menu admin -->
+            <button id="userMenuToggle"
+                class="p-2 rounded-md border bg-white shadow-sm hover:bg-gray-100"
+                style="font-size: 22px;">
+                <i class="fa-solid fa-bars"></i>
+            </button>
 
-    <li><hr class="dropdown-divider my-1"></li>
+            <!-- Dropdown admin -->
+            <ul id="userMenuPanel"
+                class="user-menu shadow"
+                style="
+                    display:none;
+                    position:fixed;
+                    right:20px;
+                    top:70px;
+                    z-index:99999;
+                ">
 
-    <li>
-        <form action="{{ route('logout') }}" method="POST" class="m-0">
+                <li>
+                    <a href="{{ route('admin.dashboard') }}" class="dropdown-item">
+                        <i class="fa-solid fa-gauge"></i>
+                        Dashboard Admin
+                    </a>
+                </li>
+
+                <li><hr class="dropdown-divider my-1"></li>
+
+                <li>
+                    <form action="{{ route('logout') }}" method="POST" class="m-0">
+                        @csrf
+                        <button class="dropdown-item text-danger">
+                            Logout
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+
+        {{-- Script toggle --}}
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const toggle = document.getElementById("userMenuToggle");
+                const panel = document.getElementById("userMenuPanel");
+
+                toggle.addEventListener("click", () => {
+                    panel.style.display = panel.style.display === "block" ? "none" : "block";
+                });
+
+                document.addEventListener("click", function (e) {
+                    if (!toggle.contains(e.target) && !panel.contains(e.target)) {
+                        panel.style.display = "none";
+                    }
+                });
+            });
+        </script>
+
+    {{-- Jika USER BIASA → tampilkan logout saja --}}
+    @else
+
+        <form action="{{ route('logout') }}" method="POST">
             @csrf
-            <button class="dropdown-item text-danger">
-                <span class="item-main">
-                    <span>Logout</span>
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                </span>
+            <button class="nav-link text-red-600 font-semibold hover:text-red-700"
+                    style="background:none;border:none;cursor:pointer;">
+                Logout <i class="fa-solid fa-right-from-bracket"></i>
             </button>
         </form>
-    </li>
-</ul>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const toggle = document.getElementById("userMenuToggle");
-            const panel = document.getElementById("userMenuPanel");
-
-            toggle.addEventListener("click", () => {
-                panel.style.display = (panel.style.display === "none" || panel.style.display === "") 
-                    ? "block" 
-                    : "none";
-            });
-
-            // klik di luar → panel tertutup
-            document.addEventListener("click", function (e) {
-                if (!toggle.contains(e.target) && !panel.contains(e.target)) {
-                    panel.style.display = "none";
-                }
-            });
-        });
-    </script>
+    @endif
 @endauth
 
         </div>

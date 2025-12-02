@@ -305,7 +305,7 @@
                 <li class="nav-item">
                     <a href="{{ route('admin.berita.index') }}" class="nav-link {{ Request::routeIs('admin.berita.*') ? 'active' : '' }}">
                         <i class="fas fa-newspaper me-3"></i>
-                        <span>Berita dan komentar
+                        <span>Berita dan Komentar
                     </a>
                 </li>
                 
@@ -330,7 +330,14 @@
                     </a>
                 </li>
                 
-                <li class="nav-divider"></li>
+                <hr class="nav-divider">
+                
+                <li class="nav-item">
+    <a href="{{ url('/') }}" class="nav-link">
+        <i class="fas fa-house me-3"></i>
+        <span>Pergi ke Beranda</span>
+    </a>
+</li>
                 
                 <li class="nav-item">
                     <a href="#" class="nav-link">
