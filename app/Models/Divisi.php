@@ -11,42 +11,30 @@ class Divisi extends Model
 
     protected $table = 'divisis';
     protected $primaryKey = 'id_divisi';
-    
+
     protected $fillable = [
         'nama_divisi',
-        'ketua_divisi', // ini adalah string/nama ketua
-        'deskripsi'
+        'ketua_divisi',
+        'deskripsi',
+        'status',
+        'color',
     ];
 
     public $timestamps = true;
 
-    // Relationship ke AnggotaHima
+    /**
+     * RELASI: Divisi punya banyak anggota
+     */
     public function anggotaHima()
     {
         return $this->hasMany(AnggotaHima::class, 'id_divisi', 'id_divisi');
     }
 
-    // Accessor untuk jumlah anggota
-    public function getJumlahAnggotaAttribute()
-    {
-        return $this->anggotaHima()->count();
-    }
-
-    // Accessor untuk menampilkan ketua divisi
-    public function getNamaKetuaAttribute()
-    {
-        return $this->ketua_divisi ?: 'Belum ada ketua';
-    }
-
-    // Scope untuk divisi yang memiliki anggota
+    /**
+     * Scope untuk mengambil jumlah anggota otomatis
+     */
     public function scopeWithAnggota($query)
     {
         return $query->withCount('anggotaHima');
-    }
-
-    // Scope untuk divisi aktif (yang memiliki anggota)
-    public function scopeAktif($query)
-    {
-        return $query->has('anggotaHima');
     }
 }
