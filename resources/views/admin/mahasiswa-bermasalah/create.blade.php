@@ -12,8 +12,8 @@
     </div>
 
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Form Tambah Mahasiswa Bermasalah</h6>
+        <div class="card-header py-3 bg-primary text-white">
+            <h6 class="m-0 font-weight-bold">Form Tambah Mahasiswa Bermasalah</h6>
         </div>
         <div class="card-body">
             <form action="{{ route('admin.mahasiswa-bermasalah.store-multiple') }}" method="POST" id="multipleMahasiswaForm">
@@ -21,56 +21,76 @@
 
                 <!-- Data Mahasiswa (Bisa Multiple) -->
                 <div class="mb-4">
-                    <h5 class="text-primary mb-3">
-                        <i class="fas fa-users me-2"></i>Data Mahasiswa
-                    </h5>
-                    <div id="mahasiswa-container">
-                        <!-- Item pertama -->
-                        <div class="mahasiswa-item border p-3 mb-3 rounded bg-light">
-                            <div class="row">
-                                <div class="col-md-5">
-                                    <div class="mb-3">
-                                        <label class="form-label">NIM <span class="text-danger">*</span></label>
-                                        <div class="input-group">
-                                            <input type="text" name="mahasiswa[0][nim]" class="form-control nim-input" 
-                                                   placeholder="Masukkan NIM mahasiswa" required>
-                                            <button type="button" class="btn btn-success btn-add-mahasiswa">
-                                                <i class="fas fa-plus"></i>
-                                            </button>
-                                        </div>
-                                        <div class="nim-error text-danger small mt-1"></div>
-                                    </div>
-                                </div>
-                                <div class="col-md-5">
-                                    <div class="mb-3">
-                                        <label class="form-label">Nama <span class="text-danger">*</span></label>
-                                        <input type="text" name="mahasiswa[0][nama]" class="form-control nama-input" 
-                                               placeholder="Nama akan terisi otomatis" readonly required>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="mb-3">
-                                        <label class="form-label text-muted">Aksi</label>
-                                        <button type="button" class="btn btn-danger btn-remove-mahasiswa d-none w-100">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="text-primary mb-0">
+                            <i class="fas fa-users me-2"></i>Data Mahasiswa
+                        </h5>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-primary" id="mahasiswa-counter">1 Mahasiswa</span>
+                            <!-- Input untuk menambah banyak mahasiswa sekaligus -->
+                            <div class="input-group input-group-sm" style="width: 220px;">
+                                <span class="input-group-text">
+                                    <i class="fas fa-plus"></i>
+                                </span>
+                                <input type="number" id="jumlah-tambah" class="form-control" 
+                                       min="1" max="50" placeholder="Jumlah mahasiswa" value="1">
+                                <button type="button" id="btn-tambah-banyak" class="btn btn-info">
+                                    Tambah
+                                </button>
                             </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Semester <span class="text-danger">*</span></label>
-                                        <input type="number" name="mahasiswa[0][semester]" class="form-control semester-input" 
-                                               min="1" max="14" placeholder="Masukkan semester" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Info tambahan -->
+                    <div class="alert alert-info alert-dismissible fade show mb-3 py-2" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <small>Input jumlah mahasiswa di atas, lalu klik "Tambah" untuk menambah formulir sekaligus.</small>
+                        <button type="button" class="btn-close py-2" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    
+                    <div id="mahasiswa-container">
+                        <div class="mahasiswa-item card mb-3 border-primary">
+                            <div class="card-header py-2 bg-light d-flex justify-content-between align-items-center">
+                                <span class="fw-bold text-primary">Mahasiswa #1</span>
+                                <button type="button" class="btn btn-sm btn-danger btn-remove-mahasiswa d-none">
+                                    <i class="fas fa-times me-1"></i> Hapus
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold">NIM <span class="text-danger">*</span></label>
+                                            <div class="mb-3">
+                                                <input type="text" name="mahasiswa[0][nim]" class="form-control nim-input" 
+                                                       placeholder="Masukkan NIM mahasiswa" required>
+                                                <div class="nim-error text-danger small mt-1"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold">Nama <span class="text-danger">*</span></label>
+                                            <input type="text" name="mahasiswa[0][nama]" class="form-control nama-input" 
+                                                   placeholder="Nama akan terisi otomatis" readonly required>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Nama Orang Tua <span class="text-danger">*</span></label>
-                                        <input type="text" name="mahasiswa[0][nama_orang_tua]" class="form-control orangtua-input" 
-                                               placeholder="Masukkan nama orang tua" required>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold">Semester <span class="text-danger">*</span></label>
+                                            <input type="number" name="mahasiswa[0][semester]" class="form-control" 
+                                                   min="1" max="14" placeholder="Masukkan semester" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold">Nama Orang Tua <span class="text-danger">*</span></label>
+                                            <input type="text" name="mahasiswa[0][nama_orang_tua]" class="form-control" 
+                                                   placeholder="Masukkan nama orang tua" required>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -83,49 +103,51 @@
                     <h5 class="text-primary mb-3">
                         <i class="fas fa-exclamation-triangle me-2"></i>Data Pelanggaran & Sanksi
                     </h5>
-                    <div class="border p-4 rounded bg-light">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Pelanggaran <span class="text-danger">*</span></label>
-                                    <select name="pelanggaran_id" class="form-control" required>
-                                        <option value="">-- Pilih Pelanggaran --</option>
-                                        @foreach ($pelanggaran as $p)
-                                            <option value="{{ $p->id }}" {{ old('pelanggaran_id') == $p->id ? 'selected' : '' }}>
-                                                {{ $p->nama_pelanggaran }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Sanksi <span class="text-danger">*</span></label>
-                                    <select name="sanksi_id" class="form-control" required>
-                                        <option value="">-- Pilih Sanksi --</option>
-                                        @foreach ($sanksi as $s)
-                                            <option value="{{ $s->id }}" {{ old('sanksi_id') == $s->id ? 'selected' : '' }}>
-                                                {{ $s->nama_sanksi }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
+                    <div class="card border-warning">
+                        <div class="card-header bg-warning text-dark py-2">
+                            <span class="fw-bold">Pelanggaran yang Dilakukan</span>
                         </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Jenis Pelanggaran <span class="text-danger">*</span></label>
+                                        <select name="pelanggaran_id" class="form-control select2" required>
+                                            <option value="">-- Pilih Pelanggaran --</option>
+                                            @foreach ($pelanggaran as $p)
+                                                <option value="{{ $p->id }}">{{ $p->nama_pelanggaran }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Sanksi <span class="text-danger">*</span></label>
+                                        <select name="sanksi_id" class="form-control select2" required>
+                                            <option value="">-- Pilih Sanksi --</option>
+                                            @foreach ($sanksi as $s)
+                                                <option value="{{ $s->id }}">{{ $s->nama_sanksi }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Deskripsi <span class="text-danger">*</span></label>
-                            <textarea name="deskripsi" class="form-control" rows="4" 
-                                      placeholder="Masukkan deskripsi lengkap mengenai masalah yang terjadi..." required>{{ old('deskripsi') }}</textarea>
+                            <div class="mb-0">
+                                <label class="form-label fw-semibold">Deskripsi Kejadian <span class="text-danger">*</span></label>
+                                <textarea name="deskripsi" class="form-control" rows="4" 
+                                          placeholder="Masukkan deskripsi lengkap mengenai masalah yang terjadi..." required>{{ old('deskripsi') }}</textarea>
+                                <div class="form-text">Jelaskan secara detail kronologi pelanggaran yang dilakukan.</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center border-top pt-3">
                     <a href="{{ route('admin.mahasiswa-bermasalah.index') }}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left me-2"></i>Kembali
                     </a>
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" class="btn btn-success px-4">
                         <i class="fas fa-save me-2"></i>Simpan Semua Data
                     </button>
                 </div>
@@ -136,35 +158,64 @@
 
 <style>
 .mahasiswa-item {
-    border-left: 4px solid #007bff !important;
     transition: all 0.3s ease;
 }
 
-.mahasiswa-item:not(:first-child) {
-    border-left: 4px solid #28a745 !important;
+.mahasiswa-item .card-header {
+    transition: all 0.3s ease;
 }
 
-.btn-add-mahasiswa, .btn-remove-mahasiswa {
-    height: 38px;
-    border-radius: 0.375rem;
-}
-
-.btn-add-mahasiswa:hover {
-    background-color: #28a745;
-    border-color: #28a745;
-}
-
-.btn-remove-mahasiswa:hover {
-    background-color: #dc3545;
-    border-color: #dc3545;
-}
-
-.input-group .btn {
-    border-left: 1px solid #dee2e6;
+#btn-tambah-banyak:hover, .btn-remove-mahasiswa:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .nim-error {
     min-height: 20px;
+}
+
+.select2-container--default .select2-selection--single {
+    height: 38px;
+    padding: 5px 10px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px;
+}
+
+#jumlah-tambah:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.batch-add-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.alert-info {
+    background-color: #e7f3ff;
+    border-color: #b6d4fe;
+    color: #055160;
+}
+
+.btn-remove-mahasiswa {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
 }
 </style>
 
@@ -172,28 +223,61 @@
 document.addEventListener('DOMContentLoaded', function() {
     let mahasiswaCount = 1;
     const container = document.getElementById('mahasiswa-container');
+    const counterElement = document.getElementById('mahasiswa-counter');
+    const jumlahTambahInput = document.getElementById('jumlah-tambah');
+    const btnTambahBanyak = document.getElementById('btn-tambah-banyak');
+
+    // Inisialisasi Select2 jika tersedia
+    if (typeof $.fn.select2 !== 'undefined') {
+        $('.select2').select2({
+            theme: 'bootstrap4',
+            width: '100%'
+        });
+    }
+
+    // Update counter mahasiswa
+    function updateCounter() {
+        const count = document.querySelectorAll('.mahasiswa-item').length;
+        counterElement.textContent = `${count} Mahasiswa`;
+        // Update title badge jika lebih dari 1
+        if (count > 1) {
+            counterElement.classList.remove('bg-primary');
+            counterElement.classList.add('bg-success');
+        } else {
+            counterElement.classList.remove('bg-success');
+            counterElement.classList.add('bg-primary');
+        }
+    }
+
+    // Tampilkan/sembunyikan tombol hapus
+    function updateRemoveButtons() {
+        const items = document.querySelectorAll('.mahasiswa-item');
+        items.forEach((item, index) => {
+            const removeBtn = item.querySelector('.btn-remove-mahasiswa');
+            
+            if (items.length > 1) {
+                // Tampilkan tombol hapus untuk semua item
+                removeBtn.classList.remove('d-none');
+            } else {
+                // Hanya satu item, sembunyikan tombol hapus
+                removeBtn.classList.add('d-none');
+            }
+        });
+    }
 
     // Fungsi untuk auto-fill nama berdasarkan NIM
     function setupNimAutoFill(nimInput, namaInput, errorElement) {
-        let isSearching = false;
-        
-        nimInput.addEventListener('blur', function() {
-            const nim = this.value.trim();
-            
-            if (isSearching) return;
+        const searchHandler = function() {
+            const nim = nimInput.value.trim();
             
             if (nim.length >= 8) {
-                isSearching = true;
                 errorElement.textContent = 'Mencari data mahasiswa...';
                 errorElement.className = 'text-info small mt-1';
-                
-                // Disable input sementara
-                nimInput.disabled = true;
                 
                 fetch(`/admin/mahasiswa-bermasalah/get-mahasiswa/${nim}`)
                     .then(response => {
                         if (!response.ok) {
-                            throw new Error('Network response was not ok');
+                            throw new Error('Mahasiswa tidak ditemukan');
                         }
                         return response.json();
                     })
@@ -208,26 +292,20 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         // Auto-fill semester dan nama orang tua jika kosong
                         const cardBody = nimInput.closest('.mahasiswa-item');
-                        const semesterInput = cardBody.querySelector('.semester-input');
-                        const orangTuaInput = cardBody.querySelector('.orangtua-input');
+                        const semesterInput = cardBody.querySelector('input[name*="semester"]');
+                        const orangTuaInput = cardBody.querySelector('input[name*="nama_orang_tua"]');
                         
-                        if (semesterInput && !semesterInput.value && data.semester) {
+                        if (semesterInput && !semesterInput.value && data.semester && data.semester !== 'Tidak diketahui') {
                             semesterInput.value = data.semester;
                         }
-                        if (orangTuaInput && !orangTuaInput.value && data.nama_orang_tua) {
+                        if (orangTuaInput && !orangTuaInput.value && data.nama_orang_tua && data.nama_orang_tua !== 'Tidak diketahui') {
                             orangTuaInput.value = data.nama_orang_tua;
                         }
                     })
                     .catch(error => {
-                        console.error('Error:', error);
-                        errorElement.textContent = error.message || 'Mahasiswa tidak ditemukan';
+                        errorElement.textContent = error.message;
                         errorElement.className = 'text-danger small mt-1';
                         namaInput.value = '';
-                    })
-                    .finally(() => {
-                        isSearching = false;
-                        nimInput.disabled = false;
-                        nimInput.focus();
                     });
             } else if (nim.length > 0) {
                 errorElement.textContent = 'NIM harus minimal 8 karakter';
@@ -237,68 +315,45 @@ document.addEventListener('DOMContentLoaded', function() {
                 errorElement.textContent = '';
                 namaInput.value = '';
             }
-        });
+        };
 
-        // Clear error ketika user mulai mengetik lagi
-        nimInput.addEventListener('input', function() {
-            if (this.value.trim().length >= 8) {
-                errorElement.textContent = 'Tekan Tab atau klik di luar untuk mencari...';
-                errorElement.className = 'text-muted small mt-1';
-            } else {
-                errorElement.textContent = '';
-            }
-        });
+        // Event listener untuk blur pada input NIM
+        nimInput.addEventListener('blur', searchHandler);
     }
 
     // Setup auto-fill untuk form pertama
     const firstNimInput = document.querySelector('.nim-input');
     const firstNamaInput = document.querySelector('.nama-input');
     const firstErrorElement = document.querySelector('.nim-error');
-    if (firstNimInput && firstNamaInput && firstErrorElement) {
-        setupNimAutoFill(firstNimInput, firstNamaInput, firstErrorElement);
-    }
+    setupNimAutoFill(firstNimInput, firstNamaInput, firstErrorElement);
 
-    // Tambah mahasiswa baru
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.btn-add-mahasiswa')) {
-            addMahasiswaItem();
-        }
-        
-        // Hapus mahasiswa
-        if (e.target.closest('.btn-remove-mahasiswa')) {
-            const items = document.querySelectorAll('.mahasiswa-item');
-            if (items.length > 1) {
-                const itemToRemove = e.target.closest('.mahasiswa-item');
-                itemToRemove.remove();
-                reindexForm();
-                updateButtonStates();
-            }
-        }
-    });
-
-    function addMahasiswaItem() {
-        const items = document.querySelectorAll('.mahasiswa-item');
-        const lastItem = items[items.length - 1];
-        const newIndex = mahasiswaCount++;
-        
-        // Clone item
-        const newItem = lastItem.cloneNode(true);
+    // Fungsi untuk membuat item mahasiswa baru
+    function createMahasiswaItem(index) {
+        const originalItem = document.querySelector('.mahasiswa-item');
+        const newItem = originalItem.cloneNode(true);
         
         // Reset values
         newItem.querySelector('.nim-input').value = '';
         newItem.querySelector('.nama-input').value = '';
-        newItem.querySelector('.semester-input').value = '';
-        newItem.querySelector('.orangtua-input').value = '';
+        newItem.querySelector('input[name*="semester"]').value = '';
+        newItem.querySelector('input[name*="nama_orang_tua"]').value = '';
+        newItem.querySelector('.nim-error').textContent = '';
+        newItem.querySelector('.nim-error').className = 'nim-error text-danger small mt-1';
         
-        const errorElement = newItem.querySelector('.nim-error');
-        errorElement.textContent = '';
-        errorElement.className = 'nim-error text-danger small mt-1';
+        // Update header
+        const header = newItem.querySelector('.card-header');
+        const headerText = header.querySelector('span');
+        headerText.textContent = `Mahasiswa #${index}`;
         
-        // Update names dengan index baru
+        // Update names
         newItem.querySelectorAll('[name]').forEach(element => {
-            const name = element.getAttribute('name').replace(/\[\d+\]/, `[${newIndex}]`);
+            const name = element.getAttribute('name').replace(/\[\d+\]/, `[${index - 1}]`);
             element.setAttribute('name', name);
         });
+        
+        // Change border color for new item
+        newItem.classList.remove('border-primary');
+        newItem.classList.add('border-success');
         
         // Setup auto-fill untuk input baru
         const newNimInput = newItem.querySelector('.nim-input');
@@ -306,58 +361,111 @@ document.addEventListener('DOMContentLoaded', function() {
         const newErrorElement = newItem.querySelector('.nim-error');
         setupNimAutoFill(newNimInput, newNamaInput, newErrorElement);
         
-        container.appendChild(newItem);
-        updateButtonStates();
+        return newItem;
     }
 
-    function updateButtonStates() {
-        const items = document.querySelectorAll('.mahasiswa-item');
+    // Fungsi untuk menampilkan notifikasi
+    function showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} batch-add-notification`;
+        notification.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+                <span>${message}</span>
+            </div>
+        `;
         
-        items.forEach((item, index) => {
-            const removeBtn = item.querySelector('.btn-remove-mahasiswa');
-            const addBtn = item.querySelector('.btn-add-mahasiswa');
-            
-            if (index === items.length - 1) {
-                // Item terakhir - tampilkan tombol tambah
-                if (addBtn) {
-                    addBtn.classList.remove('d-none');
-                    addBtn.classList.remove('btn-danger');
-                    addBtn.classList.add('btn-success', 'btn-add-mahasiswa');
-                    addBtn.innerHTML = '<i class="fas fa-plus"></i>';
-                }
-                if (removeBtn) {
-                    removeBtn.classList.add('d-none');
-                }
-            } else {
-                // Bukan item terakhir - tampilkan tombol hapus
-                if (removeBtn) {
-                    removeBtn.classList.remove('d-none');
-                    removeBtn.classList.remove('btn-success');
-                    removeBtn.classList.add('btn-danger', 'btn-remove-mahasiswa');
-                    removeBtn.innerHTML = '<i class="fas fa-trash"></i>';
-                }
-                if (addBtn) {
-                    addBtn.classList.add('d-none');
-                }
-            }
-        });
+        document.body.appendChild(notification);
+        
+        // Hapus notifikasi setelah 3 detik
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
     }
+
+    // Tambah banyak mahasiswa sekaligus
+    btnTambahBanyak.addEventListener('click', function() {
+        const jumlah = parseInt(jumlahTambahInput.value);
+        
+        if (!jumlah || jumlah < 1 || jumlah > 50) {
+            showNotification('Masukkan jumlah antara 1-50', 'warning');
+            jumlahTambahInput.focus();
+            return;
+        }
+        
+        const currentCount = document.querySelectorAll('.mahasiswa-item').length;
+        const totalAfterAdd = currentCount + jumlah;
+        
+        if (totalAfterAdd > 50) {
+            showNotification(`Maksimal 50 mahasiswa. Saat ini sudah ${currentCount} mahasiswa.`, 'warning');
+            return;
+        }
+        
+        // Tambahkan item sebanyak jumlah yang diminta
+        for (let i = 0; i < jumlah; i++) {
+            const newIndex = mahasiswaCount++;
+            const newItem = createMahasiswaItem(newIndex + 1);
+            container.appendChild(newItem);
+        }
+        
+        updateCounter();
+        updateRemoveButtons();
+        
+        // Scroll ke item terakhir yang ditambahkan
+        const lastItem = container.lastElementChild;
+        lastItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        
+        // Tampilkan notifikasi
+        showNotification(`Berhasil menambahkan ${jumlah} formulir mahasiswa`, 'success');
+        
+        // Reset input
+        jumlahTambahInput.value = '';
+        jumlahTambahInput.focus();
+    });
+
+    // Hapus mahasiswa
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.btn-remove-mahasiswa')) {
+            const items = document.querySelectorAll('.mahasiswa-item');
+            if (items.length > 1) {
+                const itemToRemove = e.target.closest('.mahasiswa-item');
+                itemToRemove.remove();
+                reindexForm();
+                updateCounter();
+                updateRemoveButtons();
+                showNotification('Formulir mahasiswa dihapus', 'info');
+            }
+        }
+    });
 
     // Reindex form setelah menghapus item
     function reindexForm() {
         document.querySelectorAll('.mahasiswa-item').forEach((item, index) => {
+            // Update header
+            const headerText = item.querySelector('.card-header span');
+            headerText.textContent = `Mahasiswa #${index + 1}`;
+            
+            // Update names
             item.querySelectorAll('[name]').forEach(element => {
                 const name = element.getAttribute('name').replace(/\[\d+\]/, `[${index}]`);
                 element.setAttribute('name', name);
             });
+            
+            // Update border color
+            if (index === 0) {
+                item.classList.remove('border-success');
+                item.classList.add('border-primary');
+            } else {
+                item.classList.remove('border-primary');
+                item.classList.add('border-success');
+            }
         });
-        mahasiswaCount = document.querySelectorAll('.mahasiswa-item').length;
     }
 
     // Validasi form sebelum submit
     document.getElementById('multipleMahasiswaForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
         const mahasiswaItems = document.querySelectorAll('.mahasiswa-item');
         let isValid = true;
         const errors = [];
@@ -366,38 +474,23 @@ document.addEventListener('DOMContentLoaded', function() {
         mahasiswaItems.forEach((item, index) => {
             const nim = item.querySelector('.nim-input').value.trim();
             const nama = item.querySelector('.nama-input').value.trim();
-            const semester = item.querySelector('.semester-input').value.trim();
-            const namaOrangTua = item.querySelector('.orangtua-input').value.trim();
-            const errorElement = item.querySelector('.nim-error');
+            const semester = item.querySelector('input[name*="semester"]').value.trim();
+            const namaOrangTua = item.querySelector('input[name*="nama_orang_tua"]').value.trim();
+            const nimError = item.querySelector('.nim-error');
 
-            // Validasi NIM dan nama
-            if (!nim) {
+            if (!nim || !nama || nimError.classList.contains('text-danger')) {
                 isValid = false;
-                errors.push(`Mahasiswa ${index + 1}: NIM harus diisi`);
-                item.querySelector('.nim-input').focus();
-            } else if (errorElement.classList.contains('text-danger')) {
-                isValid = false;
-                errors.push(`Mahasiswa ${index + 1}: ${errorElement.textContent}`);
-                item.querySelector('.nim-input').focus();
-            } else if (!nama) {
-                isValid = false;
-                errors.push(`Mahasiswa ${index + 1}: Data mahasiswa tidak valid. Pastikan NIM benar`);
-                item.querySelector('.nim-input').focus();
+                errors.push(`Mahasiswa ${index + 1}: Harap isi NIM dengan benar dan pastikan data mahasiswa ditemukan`);
             }
             
-            // Validasi semester
-            if (!semester) {
-                isValid = false;
-                errors.push(`Mahasiswa ${index + 1}: Semester harus diisi`);
-            } else if (semester < 1 || semester > 14) {
+            if (!semester || semester < 1 || semester > 14) {
                 isValid = false;
                 errors.push(`Mahasiswa ${index + 1}: Semester harus antara 1-14`);
             }
             
-            // Validasi nama orang tua
             if (!namaOrangTua) {
                 isValid = false;
-                errors.push(`Mahasiswa ${index + 1}: Nama orang tua harus diisi`);
+                errors.push(`Mahasiswa ${index + 1}: Harap lengkapi nama orang tua`);
             }
         });
 
@@ -408,35 +501,52 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (!pelanggaran) {
             isValid = false;
-            errors.push('Pilih jenis pelanggaran');
+            errors.push('Harap pilih jenis pelanggaran');
         }
         
         if (!sanksi) {
             isValid = false;
-            errors.push('Pilih sanksi yang sesuai');
+            errors.push('Harap pilih sanksi yang sesuai');
         }
         
-        if (!deskripsi) {
+        if (!deskripsi || deskripsi.length < 10) {
             isValid = false;
-            errors.push('Deskripsi pelanggaran harus diisi');
-        } else if (deskripsi.length < 10) {
-            isValid = false;
-            errors.push('Deskripsi pelanggaran minimal 10 karakter');
+            errors.push('Harap isi deskripsi kejadian dengan lengkap (minimal 10 karakter)');
         }
 
         if (!isValid) {
-            alert('Terjadi kesalahan:\n' + errors.join('\n'));
-            return;
-        }
-
-        // Tampilkan konfirmasi sebelum submit
-        if (confirm(`Anda akan menyimpan data untuk ${mahasiswaItems.length} mahasiswa dengan pelanggaran yang sama. Lanjutkan?`)) {
-            this.submit();
+            e.preventDefault();
+            
+            // Tampilkan pesan error dengan lebih baik
+            let errorMessage = 'Terjadi kesalahan:\n\n';
+            errors.forEach(error => {
+                errorMessage += `• ${error}\n`;
+            });
+            errorMessage += '\nSilakan perbaiki data tersebut sebelum melanjutkan.';
+            
+            alert(errorMessage);
+        } else {
+            // Tampilkan konfirmasi sebelum submit
+            const mahasiswaCount = mahasiswaItems.length;
+            const mahasiswaText = mahasiswaCount > 1 ? `${mahasiswaCount} mahasiswa` : '1 mahasiswa';
+            
+            if (!confirm(`Anda akan menyimpan data untuk ${mahasiswaText} dengan pelanggaran yang sama. Lanjutkan?`)) {
+                e.preventDefault();
+            }
         }
     });
 
-    // Initialize button states
-    updateButtonStates();
+    // Event listener untuk input jumlah (Enter untuk submit)
+    jumlahTambahInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            btnTambahBanyak.click();
+        }
+    });
+    
+    // Inisialisasi counter dan tombol hapus
+    updateCounter();
+    updateRemoveButtons();
 });
 </script>
 @endsection
