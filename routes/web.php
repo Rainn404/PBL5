@@ -1,31 +1,32 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\MahasiswaController;
-use App\Http\Controllers\Admin\DivisiController as AdminDivisiController;
-use App\Http\Controllers\Admin\PendaftaranController as AdminPendaftaranController;
-use App\Http\Controllers\Admin\BeritaController as AdminBeritaController;
-use App\Http\Controllers\Admin\PrestasiController as AdminPrestasiController;
-use App\Http\Controllers\Admin\AnggotaController as AdminAnggotaController;
-use App\Http\Controllers\JabatanController;
-use App\Http\Controllers\MahasiswaBermasalahController;
-use App\Http\Controllers\PelanggaranController;
-use App\Http\Controllers\SanksiController;
-use App\Http\Controllers\DivisiController;
-use App\Http\Controllers\AnggotaHimaController;
-use App\Http\Controllers\BeritaController;
-use App\Http\Controllers\PendaftaranController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\IndexController;
-use App\Http\Controllers\Auth\LoginController;
-use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use Laravel\Socialite\Facades\Socialite;
+use App\Http\Controllers\IndexController;
+use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\DivisiController;
 use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\SanksiController;
+use App\Http\Controllers\JabatanController;
+use App\Http\Controllers\KomentarController;
+use App\Http\Controllers\PrestasiController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\AnggotaHimaController;
+use App\Http\Controllers\PelanggaranController;
+use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\UserDashboardController;
-use App\Http\Controllers\KomentarController;
+use App\Http\Controllers\Admin\MahasiswaController;
 use App\Http\Controllers\Admin\AdminKomentarController;
+use App\Http\Controllers\MahasiswaBermasalahController;
+use App\Http\Controllers\Admin\BeritaController as AdminBeritaController;
+use App\Http\Controllers\Admin\DivisiController as AdminDivisiController;
+use App\Http\Controllers\Admin\AnggotaController as AdminAnggotaController;
+use App\Http\Controllers\Admin\PrestasiController as AdminPrestasiController;
+use App\Http\Controllers\Admin\PendaftaranController as AdminPendaftaranController;
 
 /*
 |--------------------------------------------------------------------------
@@ -119,7 +120,7 @@ Route::prefix('pendaftaran')->name('pendaftaran.')->group(function () {
 // API Routes
 Route::prefix('api')->group(function () {
     Route::get('/pendaftaran/{id}', [PendaftaranController::class, 'showApi'])->name('api.pendaftaran.show');
-    Route::get('/pendaftaran-status', [PendaftaranController::class, 'getStatus'])->name('api.pendaftaran-status');
+    Route::get('/pendaftaran-status', [PendaftaranController::class, 'getStatusApi'])->name('api.pendaftaran-status');
 });
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
@@ -188,14 +189,22 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::get('/', [MahasiswaController::class, 'index'])->name('index');
         Route::get('/create', [MahasiswaController::class, 'create'])->name('create');
         Route::post('/', [MahasiswaController::class, 'store'])->name('store');
+
+        // Specific routes must come before parameterized routes
+        Route::get('/import', [MahasiswaController::class, 'importView'])->name('import.view');
+        Route::post('/import', [MahasiswaController::class, 'import'])->name('import');
+        Route::get('/export', [MahasiswaController::class, 'exportView'])->name('export.view');
+        Route::get('/export/data', [MahasiswaController::class, 'export'])->name('export');
+        Route::get('/template', [MahasiswaController::class, 'template'])->name('template');
+
+        // Parameterized routes
         Route::get('/{id}', [MahasiswaController::class, 'show'])->name('show');
         Route::get('/{id}/edit', [MahasiswaController::class, 'edit'])->name('edit');
         Route::put('/{id}', [MahasiswaController::class, 'update'])->name('update');
         Route::delete('/{id}', [MahasiswaController::class, 'destroy'])->name('destroy');
-        Route::post('/import', [MahasiswaController::class, 'import'])->name('import');
-        Route::get('/export', [MahasiswaController::class, 'export'])->name('export');
-        Route::get('/template', [MahasiswaController::class, 'template'])->name('template');
     });
+
+
 
     // Mahasiswa Bermasalah Management
     Route::resource('mahasiswa-bermasalah', MahasiswaBermasalahController::class);
@@ -214,6 +223,8 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::get('/{pendaftaran}/edit', [AdminPendaftaranController::class, 'edit'])->name('edit');
         Route::put('/{pendaftaran}', [AdminPendaftaranController::class, 'update'])->name('update');
         Route::put('/{pendaftaran}/update-status', [AdminPendaftaranController::class, 'updateStatus'])->name('update-status');
+        // Change registration stage/status (new workflow)
+        Route::post('/{pendaftaran}/status', [AdminPendaftaranController::class, 'changeStatus'])->name('status');
         Route::delete('/{pendaftaran}', [AdminPendaftaranController::class, 'destroy'])->name('destroy');
     });
 
@@ -260,6 +271,25 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
+// Profile & account management
+use App\Http\Controllers\ProfileController;
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.avatar.upload');
+    Route::delete('/profile/avatar', [ProfileController::class, 'removeAvatar'])->name('profile.avatar.remove');
+    Route::get('/profile/password', [ProfileController::class, 'showChangePassword'])->name('profile.password');
+    Route::post('/profile/password', [ProfileController::class, 'changePassword'])->name('profile.password.change');
+});
+
+// Password reset (public)
+Route::get('/password/forgot', [ProfileController::class, 'showResetRequestForm'])->name('password.request');
+Route::post('/password/forgot', [ProfileController::class, 'sendResetLink'])->name('password.email');
+Route::get('/password/reset/{token}', [ProfileController::class, 'showResetForm'])->name('password.reset');
+Route::post('/password/reset', [ProfileController::class, 'resetPassword'])->name('password.update');
+
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
@@ -281,5 +311,4 @@ Route::fallback(function () {
     return view('errors.404');
 });
 
-Route::get('/admin/mahasiswa/export', [MahasiswaController::class, 'exportView'])->name('admin.mahasiswa.export.view');
-Route::get('/admin/mahasiswa/export/data', [MahasiswaController::class, 'export'])->name('admin.mahasiswa.export');
+// Move these routes inside the admin middleware group above

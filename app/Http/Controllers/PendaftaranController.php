@@ -66,8 +66,11 @@ class PendaftaranController extends Controller
                 return view('users.pendaftaran.quota-full', compact('settings'));
             }
 
+            // Hitung kuota tersisa
+            $kuotaTersisa = $settings->kuota - $totalDiterima;
+
             // Jika semua kondisi terpenuhi, tampilkan form
-            return view('users.pendaftaran.create', compact('settings'));
+            return view('users.pendaftaran.create', compact('settings', 'kuotaTersisa', 'totalDiterima'));
 
         } catch (\Exception $e) {
             return view('users.pendaftaran.closed')->with([
@@ -89,6 +92,8 @@ class PendaftaranController extends Controller
      */
     public function store(Request $request)
     {
+        \Log::info('STORE METHOD CALLED', ['url' => $request->url(), 'method' => $request->method()]);
+        
         // Validasi status pendaftaran sebelum memproses
         $settings = PendaftaranSetting::first();
         
@@ -137,11 +142,18 @@ class PendaftaranController extends Controller
         ]);
 
         if ($validator->fails()) {
+            \Log::error('Pendaftaran validation failed', [
+                'errors' => $validator->errors()->toArray(),
+                'input' => $request->except('_token'),
+            ]);
+            
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput()
                 ->with('error', 'Terjadi kesalahan dalam pengisian form');
         }
+
+        \Log::info('Pendaftaran validation passed', ['input' => $request->except('_token')]);
 
         try {
             // Mulai transaction
@@ -186,13 +198,22 @@ class PendaftaranController extends Controller
 
             DB::commit();
 
-            // Log activity
-            activity()
-                ->causedBy($user)
-                ->performedOn($pendaftaran)
-                ->log('Mendaftar sebagai anggota HIMA TI');
+            // Log activity (non-fatal) - protect if activity_log table missing
+            try {
+                if (function_exists('activity')) {
+                    activity()
+                        ->causedBy($user)
+                        ->performedOn($pendaftaran)
+                        ->log('Mendaftar sebagai anggota HIMA TI');
+                }
+            } catch (\Exception $e) {
+                \Log::warning('Activity log failed (non-fatal)', ['message' => $e->getMessage()]);
+            }
 
             // REDIRECT KE SUCCESS - PASTIKAN INI DIEKSEKUSI
+            \Log::info('Pendaftaran saved', ['id' => $pendaftaran->id_pendaftaran]);
+            \Log::info('Redirecting to success route with flash');
+
             return redirect()->route('pendaftaran.success')
                 ->with([
                     'success' => 'Pendaftaran berhasil dikirim!',
@@ -207,6 +228,12 @@ class PendaftaranController extends Controller
             DB::rollBack();
             
             // Untuk debugging, tampilkan error
+            \Log::error('Exception in PendaftaranController@store', [
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
             if (config('app.debug')) {
                 return redirect()->back()
                     ->with('error', 'Terjadi kesalahan: ' . $e->getMessage() . ' di line: ' . $e->getLine())

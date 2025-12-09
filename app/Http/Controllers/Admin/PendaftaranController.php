@@ -22,9 +22,12 @@ class PendaftaranController extends Controller
      */
     public function index(Request $request)
     {
-        // Validasi super admin
-        if (!Auth::check() || !Auth::user()->isSuperAdmin()) {
-            return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses sebagai super admin.');
+        // Validasi akses admin (super admin atau admin diperbolehkan)
+        if (!Auth::check()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Anda tidak memiliki akses.'], 403);
+            }
+            return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses.');
         }
 
         try {
@@ -63,11 +66,11 @@ class PendaftaranController extends Controller
      */
     public function show($id)
     {
-        // Validasi super admin
-        if (!Auth::check() || !Auth::user()->isSuperAdmin()) {
+        // Validasi akses admin
+        if (!Auth::check()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Anda tidak memiliki akses sebagai super admin.'
+                'message' => 'Anda tidak memiliki akses.'
             ], 403);
         }
 
@@ -97,11 +100,11 @@ class PendaftaranController extends Controller
      */
     public function edit($id)
     {
-        // Validasi super admin
-        if (!Auth::check() || !Auth::user()->isSuperAdmin()) {
+        // Validasi admin access
+        if (!Auth::check()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Anda tidak memiliki akses sebagai super admin.'
+                'message' => 'Anda tidak memiliki akses.'
             ], 403);
         }
 
@@ -131,9 +134,9 @@ class PendaftaranController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Validasi super admin
-        if (!Auth::check() || !Auth::user()->isSuperAdmin()) {
-            return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses sebagai super admin.');
+        // Validasi admin access
+        if (!Auth::check()) {
+            return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses.');
         }
 
         $pendaftaran = Pendaftaran::findOrFail($id);
@@ -182,7 +185,7 @@ class PendaftaranController extends Controller
                 $pendaftaran->id_divisi = $request->id_divisi;
                 $pendaftaran->id_jabatan = $request->id_jabatan;
                 $pendaftaran->alasan_penolakan = null;
-                $pendaftaran->validator_id = auth()->id();
+                $pendaftaran->divalidasi_oleh = auth()->id();
                 $pendaftaran->validated_at = now();
                 
                 // Update user role jika status berubah menjadi diterima
@@ -197,7 +200,7 @@ class PendaftaranController extends Controller
                 $pendaftaran->alasan_penolakan = $request->alasan_penolakan;
                 $pendaftaran->id_divisi = null;
                 $pendaftaran->id_jabatan = null;
-                $pendaftaran->validator_id = auth()->id();
+                $pendaftaran->divalidasi_oleh = auth()->id();
                 $pendaftaran->validated_at = now();
             } else {
                 $pendaftaran->alasan_penolakan = null;
@@ -242,9 +245,9 @@ class PendaftaranController extends Controller
      */
     public function destroy($id)
     {
-        // Validasi super admin
-        if (!Auth::check() || !Auth::user()->isSuperAdmin()) {
-            return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses sebagai super admin.');
+        // Validasi admin access
+        if (!Auth::check()) {
+            return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses.');
         }
 
         try {
@@ -276,11 +279,11 @@ class PendaftaranController extends Controller
      */
     public function bukaSesi(Request $request)
     {
-        // Validasi super admin
-        if (!Auth::check() || !Auth::user()->isSuperAdmin()) {
+        // Validasi admin access
+        if (!Auth::check()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Anda tidak memiliki akses sebagai super admin.'
+                'message' => 'Anda tidak memiliki akses.'
             ], 403);
         }
 
@@ -327,11 +330,11 @@ class PendaftaranController extends Controller
      */
     public function tutupSesi(Request $request)
     {
-        // Validasi super admin
-        if (!Auth::check() || !Auth::user()->isSuperAdmin()) {
+        // Validasi admin access
+        if (!Auth::check()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Anda tidak memiliki akses sebagai super admin.'
+                'message' => 'Anda tidak memiliki akses.'
             ], 403);
         }
 
@@ -366,12 +369,12 @@ class PendaftaranController extends Controller
      */
     public function updateSettings(Request $request)
     {
-        // Validasi super admin
-        if (!Auth::check() || !Auth::user()->isSuperAdmin()) {
+        // Validasi admin access
+        if (!Auth::check() || !Auth::user()->isAdministrator()) {
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Anda tidak memiliki akses sebagai super admin.'
+                    'message' => 'Anda tidak memiliki akses.'
                 ], 403);
             }
             return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses sebagai super admin.');
@@ -446,9 +449,9 @@ class PendaftaranController extends Controller
      */
     public function updateStatus(Request $request, $id)
     {
-        // Validasi super admin
-        if (!Auth::check() || !Auth::user()->isSuperAdmin()) {
-            return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses sebagai super admin.');
+        // Validasi admin access
+        if (!Auth::check()) {
+            return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses.');
         }
 
         $validator = Validator::make($request->all(), [
@@ -479,7 +482,7 @@ class PendaftaranController extends Controller
             }
 
             $pendaftaran->status_pendaftaran = $request->status_pendaftaran;
-            $pendaftaran->validator_id = auth()->id();
+            $pendaftaran->divalidasi_oleh = auth()->id();
             $pendaftaran->validated_at = now();
 
             if ($request->status_pendaftaran == 'diterima') {
@@ -515,15 +518,101 @@ class PendaftaranController extends Controller
     }
 
     /**
+     * Change registration stage/status (new workflow)
+     * Accepts: status, interview_date (nullable), notes (nullable)
+     */
+    public function changeStatus(Request $request, $id)
+    {
+        // Validasi akses admin (super admin atau admin diperbolehkan)
+        if (!Auth::check()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Anda tidak memiliki akses.'], 403);
+            }
+            return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses.');
+        }
+
+        $allowed = ['submitted','verifying','interview','accepted','rejected'];
+
+        $validator = Validator::make($request->all(), [
+            'status' => ['required', 'in:' . implode(',', $allowed)],
+            // accept nullable raw input; we'll parse with Carbon below if provided
+            'interview_date' => 'nullable',
+            'notes' => 'nullable|string|max:2000'
+        ]);
+
+        if ($validator->fails()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->errors()->first()
+                ], 422);
+            }
+            return redirect()->back()->with('error', $validator->errors()->first());
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $pendaftaran = Pendaftaran::findOrFail($id);
+
+            // Map new workflow statuses to existing DB enum values (backward-compatible)
+            $statusMap = [
+                'submitted' => 'pending',
+                'verifying'  => 'pending',
+                'interview'  => 'pending',
+                'accepted'   => 'diterima',
+                'rejected'   => 'ditolak',
+            ];
+
+            $dbStatus = $statusMap[$request->status] ?? $request->status;
+
+            // Update only allowed fields
+            $pendaftaran->status_pendaftaran = $dbStatus;
+            $pendaftaran->interview_date = $request->interview_date ? Carbon::parse($request->interview_date) : null;
+            $pendaftaran->notes = $request->notes;
+
+            // If accepted, set validator and validated_at and promote user
+            if ($request->status === 'accepted') {
+                $pendaftaran->divalidasi_oleh = auth()->id();
+                $pendaftaran->validated_at = now();
+
+                $user = User::find($pendaftaran->id_user);
+                if ($user && $user->role !== 'anggota') {
+                    $user->role = 'anggota';
+                    $user->save();
+                }
+            }
+
+            $pendaftaran->save();
+
+            DB::commit();
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Status pendaftaran berhasil diperbarui.',
+                    'data' => $pendaftaran
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Status pendaftaran berhasil diperbarui.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Get status pendaftaran (API)
      */
     public function getStatus()
     {
-        // Validasi super admin
-        if (!Auth::check() || !Auth::user()->isSuperAdmin()) {
+        // Validasi akses admin
+        if (!Auth::check() || !Auth::user()->isAdministrator()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Anda tidak memiliki akses sebagai super admin.'
+                'message' => 'Anda tidak memiliki akses.'
             ], 403);
         }
 
@@ -561,11 +650,11 @@ class PendaftaranController extends Controller
      */
     public function export(Request $request)
     {
-        // Validasi super admin
-        if (!Auth::check() || !Auth::user()->isSuperAdmin()) {
+        // Validasi admin access
+        if (!Auth::check()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Anda tidak memiliki akses sebagai super admin.'
+                'message' => 'Anda tidak memiliki akses.'
             ], 403);
         }
 

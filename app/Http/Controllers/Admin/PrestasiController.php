@@ -4,13 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Prestasi;
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PrestasiController extends Controller
 {
     public function index()
     {
-        $prestasiQuery = Prestasi::with('user');
+        // Eager-load user and validator relations to avoid N+1 and missing data in views
+        $prestasiQuery = Prestasi::with(['user', 'validator']);
         
         // Filter berdasarkan status (menggunakan accessor)
         if (request('status') && request('status') != 'all') {
@@ -42,6 +45,31 @@ class PrestasiController extends Controller
 
         $prestasi = $prestasiQuery->latest()->paginate(10);
 
+        // Jika ada prestasi yang tidak memiliki relasi user (id_user null)
+        // tapi memiliki NIM, ambil semua mahasiswa yang cocok dalam satu query
+        $nimsToResolve = [];
+        foreach ($prestasi as $p) {
+            if ((!$p->relationLoaded('user') || !$p->user) && !empty($p->nim)) {
+                $nimsToResolve[] = $p->nim;
+            }
+        }
+
+        if (!empty($nimsToResolve)) {
+            $mahasiswaList = Mahasiswa::whereIn('nim', array_values(array_unique($nimsToResolve)))->get()->keyBy('nim');
+
+            foreach ($prestasi as $p) {
+                if ((!$p->relationLoaded('user') || !$p->user) && !empty($p->nim)) {
+                    if (isset($mahasiswaList[$p->nim])) {
+                        $m = $mahasiswaList[$p->nim];
+                        $fake = new \stdClass();
+                        $fake->name = $m->nama;
+                        $fake->nim = $m->nim;
+                        $p->setRelation('user', $fake);
+                    }
+                }
+            }
+        }
+
         // Statistik - menggunakan field database yang benar
         $totalPrestasi = Prestasi::count();
         $prestasiMenunggu = Prestasi::where('status_validasi', 'pending')->count();
@@ -64,6 +92,7 @@ class PrestasiController extends Controller
     /**
      * Validasi prestasi individual
      */
+                
     public function validasi(Request $request, $id)
     {
         try {
@@ -73,15 +102,22 @@ class PrestasiController extends Controller
                 'status' => 'required|in:Menunggu Validasi,Tervalidasi,Ditolak'
             ]);
             
-            // Gunakan mutator untuk update status
+            // Map display status to database status_validasi values
+            $statusMapping = [
+                'Menunggu Validasi' => 'pending',
+                'Tervalidasi' => 'disetujui',
+                'Ditolak' => 'ditolak'
+            ];
+            
+            // Gunakan field database yang benar: status_validasi
             $updateData = [
-                'status' => $request->status // Ini akan trigger mutator
+                'status_validasi' => $statusMapping[$request->status]
             ];
             
             // Jika status disetujui, set tanggal validasi dan validator
             if ($request->status == 'Tervalidasi') {
                 $updateData['tanggal_validasi'] = now();
-                $updateData['validator_id'] = auth('super_admin')->id();
+                $updateData['validator_id'] = Auth::id();
             }
             
             // Jika status ditolak atau menunggu, reset tanggal validasi
@@ -96,7 +132,6 @@ class PrestasiController extends Controller
             
             return redirect()->route('admin.prestasi.index')
                 ->with('success', "Prestasi '{$prestasi->nama_prestasi}' berhasil $statusText!");
-                
         } catch (\Exception $e) {
             return redirect()->route('admin.prestasi.index')
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
@@ -144,8 +179,15 @@ class PrestasiController extends Controller
                 $validated['bukti_prestasi'] = $filePath;
             }
 
+
+            // Map display status to database values
+            $statusMapping = [
+                'Menunggu Validasi' => 'pending',
+                'Tervalidasi' => 'disetujui',
+                'Ditolak' => 'ditolak'
+            ];
+
             // Create prestasi dengan field yang sesuai migration
-            // 'status' akan dihandle oleh mutator
             Prestasi::create([
                 'nama_prestasi' => $validated['nama_prestasi'],
                 'kategori' => $validated['kategori'],
@@ -158,9 +200,8 @@ class PrestasiController extends Controller
                 'deskripsi' => $validated['deskripsi'],
                 'nim' => $validated['nim'],
                 'semester' => $validated['semester'],
-                'status' => $validated['status'] // Ini akan trigger mutator
+                'status_validasi' => $statusMapping[$validated['status']]
             ]);
-
             return redirect()->route('admin.prestasi.index')
                 ->with('success', 'Prestasi berhasil ditambahkan!');
 

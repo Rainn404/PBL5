@@ -32,17 +32,25 @@
         
         #wrapper {
             display: flex;
+            width: 100%;
+            min-height: 100vh;
+            flex-wrap: nowrap;
         }
         
         /* Sidebar Styles */
         #sidebar {
+            flex: 0 0 280px;
             min-width: 280px;
             max-width: 280px;
+            width: 280px;
             background: #fff;
             color: #000000;
             transition: all 0.3s;
             min-height: 100vh;
             box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            overflow-y: auto;
+            position: relative;
+            z-index: 1;
         }
         
         #sidebar .sidebar-header {
@@ -165,10 +173,12 @@
         
         /* Content Styles */
         #content {
+            flex: 1 1 auto;
             width: 100%;
             padding: 20px;
             min-height: 100vh;
             transition: all 0.3s;
+            overflow: hidden;
         }
         
         .navbar {
@@ -208,8 +218,14 @@
         /* Responsive */
         @media (max-width: 768px) {
             #sidebar {
+                flex: 0 0 80px;
                 min-width: 80px;
                 max-width: 80px;
+                width: 80px;
+            }
+            
+            #content {
+                overflow: auto;
             }
             
             #sidebar .sidebar-header h4,

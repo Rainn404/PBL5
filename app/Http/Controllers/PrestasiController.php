@@ -12,39 +12,47 @@ class PrestasiController extends Controller
     /**
      * Display a listing of the resource.
      */
-  public function index()
+  public function index(Request $request)
 {
-    $user = Auth::user(); // Cek user login
-
-    $prestasi = Prestasi::with('user')
-        ->when($user && $user->role === 'anggota', function ($query) use ($user) {
-            return $query->where('id_user', $user->id);
-        })
-        ->orderBy('created_at', 'desc')
-        ->paginate(10);
-
-    $totalPrestasi = Prestasi::count();
-    $prestasiTervalidasi = Prestasi::where('status_validasi', 'disetujui')->count();
-    $prestasiMenunggu = Prestasi::where('status_validasi', 'pending')->count();
-    $prestasiDitolak = Prestasi::where('status_validasi', 'ditolak')->count();
-    $mahasiswaBerprestasi = Prestasi::distinct('id_user')->count('id_user');
-    $tahunList = Prestasi::selectRaw('YEAR(tanggal_mulai) as tahun')
+    $user = Auth::user();
+    
+    // Base query
+    $query = Prestasi::with('user');
+    
+    // Hanya tampilkan disetujui untuk public view
+    $query->where('status_validasi', 'disetujui');
+    
+    // Search by nama mahasiswa (user name)
+    if ($request->filled('search')) {
+        $query->whereHas('user', function ($q) use ($request) {
+            $q->where('name', 'like', '%' . $request->search . '%');
+        });
+    }
+    
+    // Filter tahun
+    if ($request->filled('tahun')) {
+        $query->whereYear('tanggal_mulai', $request->tahun);
+    }
+    
+    // Filter kategori
+    if ($request->filled('kategori')) {
+        $query->where('kategori', $request->kategori);
+    }
+    
+    // Order by newest first
+    $query->orderBy('tanggal_mulai', 'desc');
+    
+    // Pagination 20 per page dengan appends untuk menjaga filter
+    $prestasi = $query->paginate(20)->appends(request()->query());
+    
+    // List tahun untuk dropdown (hanya dari prestasi disetujui)
+    $tahunList = Prestasi::where('status_validasi', 'disetujui')
+        ->selectRaw('YEAR(tanggal_mulai) as tahun')
         ->distinct()
         ->orderBy('tahun', 'desc')
         ->pluck('tahun');
 
-    $prestasiTerbaru = Prestasi::latest()->take(5)->get();
-
-    return view('users.prestasi.index', compact(
-        'prestasi',
-        'totalPrestasi',
-        'prestasiTervalidasi',
-        'prestasiMenunggu',
-        'prestasiDitolak',
-        'mahasiswaBerprestasi',
-        'tahunList',
-        'prestasiTerbaru'
-    ));
+    return view('users.prestasi.index', compact('prestasi', 'tahunList'));
 }
 
 
@@ -66,13 +74,13 @@ class PrestasiController extends Controller
             'kategori' => 'required|string|max:50',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
-            'email' => 'required|email|max:255',
-            'no_hp' => 'required|string|max:15',
+            'email' => 'nullable|email|max:255',
+            'no_hp' => 'nullable|string|max:15',
             'ipk' => 'nullable|numeric|min:0|max:4',
             'bukti_prestasi' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
             'deskripsi' => 'required|string',
-            'nim' => 'required|string|max:20',
-            'semester' => 'required|integer|min:1|max:8',
+            'nim' => 'nullable|string|max:20',
+            'semester' => 'nullable|integer|min:1|max:8',
         ]);
 
         // Handle file upload
@@ -190,7 +198,7 @@ class PrestasiController extends Controller
      */
     public function validatePrestasi(Prestasi $prestasi)
     {
-        if (Auth::user()->role !== 'admin') {
+        if (!Auth::user()->isAdministrator()) {
             abort(403);
         }
 
@@ -204,7 +212,7 @@ class PrestasiController extends Controller
      */
     public function rejectPrestasi(Prestasi $prestasi)
     {
-        if (Auth::user()->role !== 'admin') {
+        if (!Auth::user()->isAdministrator()) {
             abort(403);
         }
 

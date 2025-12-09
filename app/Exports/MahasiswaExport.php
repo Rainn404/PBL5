@@ -13,28 +13,45 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 class MahasiswaExport implements FromCollection, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     protected $status;
+    protected $isTemplate;
 
-    public function __construct($status = null)
+    public function __construct($status = null, $isTemplate = false)
     {
         $this->status = $status;
+        $this->isTemplate = $isTemplate;
     }
 
     public function collection()
     {
+        if ($this->isTemplate) {
+            // Return empty collection for template
+            return collect([]);
+        }
+
         $query = Mahasiswa::query();
-        
+
         if ($this->status) {
             $query->where('status', $this->status);
         }
-        
+
         return $query->orderBy('nim')->get();
     }
 
     public function headings(): array
     {
+        if ($this->isTemplate) {
+            return [
+                'nim',
+                'nama',
+                'angkatan',
+                'status'
+            ];
+        }
+
         return [
             'NIM',
             'NAMA MAHASISWA',
+            'ANGKATAN',
             'STATUS',
             'TANGGAL DIBUAT',
             'TANGGAL DIPERBARUI'
@@ -43,17 +60,30 @@ class MahasiswaExport implements FromCollection, WithHeadings, WithMapping, With
 
     public function map($mahasiswa): array
     {
+        if ($this->isTemplate) {
+            // Return sample data for template
+            return [
+                '1234567890', // nim
+                'Nama Mahasiswa', // nama
+                '2021', // angkatan
+                'Aktif' // status
+            ];
+        }
+
         return [
             $mahasiswa->nim,
             $mahasiswa->nama,
+            $mahasiswa->angkatan,
             $mahasiswa->status,
-            $mahasiswa->created_at->format('d/m/Y H:i'),
-            $mahasiswa->updated_at->format('d/m/Y H:i'),
+            $mahasiswa->created_at ? $mahasiswa->created_at->format('d/m/Y H:i') : '-',
+            $mahasiswa->updated_at ? $mahasiswa->updated_at->format('d/m/Y H:i') : '-',
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
+        $columnRange = $this->isTemplate ? 'A:D' : 'A:F';
+
         return [
             // Style untuk header
             1 => [
@@ -66,20 +96,19 @@ class MahasiswaExport implements FromCollection, WithHeadings, WithMapping, With
                     'startColor' => ['rgb' => '4e73df']
                 ]
             ],
-            
+
             // Style untuk seluruh tabel
-            'A:E' => [
+            $columnRange => [
                 'alignment' => [
                     'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
                 ]
             ],
-            
+
             // Auto size columns
             'A' => ['width' => 15],
             'B' => ['width' => 30],
-            'C' => ['width' => 12],
-            'D' => ['width' => 18],
-            'E' => ['width' => 18],
+            'C' => ['width' => 10],
+            'D' => ['width' => 12],
         ];
     }
 

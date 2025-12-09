@@ -11,6 +11,12 @@
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Data Mahasiswa</h1>
     <div>
+        <a href="{{ route('admin.mahasiswa.template') }}" class="d-none d-sm-inline-block btn btn-sm btn-info shadow-sm me-2" title="Download Template Excel">
+            <i class="fas fa-download fa-sm text-white-50 me-1"></i> Template
+        </a>
+        <a href="{{ route('admin.mahasiswa.import.view') }}" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm me-2" title="Import Data Excel">
+            <i class="fas fa-upload fa-sm text-white-50 me-1"></i> Import Excel
+        </a>
         <a href="{{ route('admin.mahasiswa.export.view') }}" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm me-2">
             <i class="fas fa-file-excel fa-sm text-white-50 me-1"></i> Export Excel
         </a>
@@ -49,8 +55,9 @@
                         <table class="table table-bordered" width="100%" cellspacing="0">
                             <thead>
                                 <tr style="background-color: #e6f2ff;">
-                                    <th class="text-center align-middle" style="width: 20%; color: #1a73e8;">NIM</th>
-                                    <th class="text-center align-middle" style="width: 35%; color: #1a73e8;">Nama</th>
+                                    <th class="text-center align-middle" style="width: 15%; color: #1a73e8;">NIM</th>
+                                    <th class="text-center align-middle" style="width: 25%; color: #1a73e8;">Nama</th>
+                                    <th class="text-center align-middle" style="width: 15%; color: #1a73e8;">Angkatan</th>
                                     <th class="text-center align-middle" style="width: 20%; color: #1a73e8;">Status</th>
                                     <th class="text-center align-middle" style="width: 25%; color: #1a73e8;">Aksi</th>
                                 </tr>
@@ -81,7 +88,7 @@
                                     </td>
                                     <td class="text-center align-middle">
                                         <div class="btn-group btn-group-sm">
-                                            <a href="{{ route('admin.mahasiswa.edit', $mahasiswas) }}" class="btn btn-warning btn-icon" title="Edit" style="background-color: #fdd663; border-color: #fdd663;">
+                                            <a href="{{ route('admin.mahasiswa.edit', $mahasiswas->id) }}" class="btn btn-warning btn-icon" title="Edit" style="background-color: #fdd663; border-color: #fdd663;">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             <form action="{{ route('admin.mahasiswa.destroy', $mahasiswas) }}" method="POST" class="d-inline">
@@ -96,11 +103,9 @@
                                 </tr>
                                 @empty
                                 <tr>
-
-                                    <td colspan="4" class="text-center py-4">
+                                    <td colspan="5" class="text-center py-4">
                                         <i class="fas fa-users text-3xl text-gray-300 mb-2 d-block"></i>
                                         Tidak ada data mahasiswa
-
                                     </td>
                                 </tr>
                                 @endforelse

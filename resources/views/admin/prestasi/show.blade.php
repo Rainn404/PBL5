@@ -88,12 +88,12 @@
                     </div>
                     <div class="card-body text-center">
                         <span class="badge status-badge fs-6 
-                            {{ $prestasi->status == 'Tervalidasi' ? 'bg-success' : 
-                               ($prestasi->status == 'Ditolak' ? 'bg-danger' : 'bg-warning') }}">
-                            {{ $prestasi->status }}
+                            {{ $prestasi->status_validasi == 'disetujui' ? 'bg-success' : 
+                               ($prestasi->status_validasi == 'ditolak' ? 'bg-danger' : 'bg-warning') }}">
+                            @if($prestasi->status_validasi == 'disetujui') Tervalidasi @elseif($prestasi->status_validasi == 'ditolak') Ditolak @else Menunggu Validasi @endif
                         </span>
                         
-                        @if($prestasi->status == 'Menunggu Validasi')
+                        @if($prestasi->status_validasi == 'pending' || !$prestasi->status_validasi)
                         <div class="mt-3">
                             <form action="{{ route('admin.prestasi.validasi', $prestasi->id_prestasi ?? $prestasi->id) }}" method="POST" class="d-inline">
                                 @csrf

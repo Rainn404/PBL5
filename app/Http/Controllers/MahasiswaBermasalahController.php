@@ -29,23 +29,24 @@ class MahasiswaBermasalahController extends Controller
         $mahasiswa = Mahasiswa::where('nim', $nim)->first();
 
         if (!$mahasiswa) {
-            return response()->json(['error' => 'Mahasiswa tidak ditemukan'], 404);
+            return response()->json(['success' => false, 'error' => 'Mahasiswa tidak ditemukan'], 404);
         }
 
         return response()->json([
-            'nama' => $mahasiswa->nama ?? $mahasiswa->nama_mahasiswa ?? $mahasiswa->nama_lengkap ?? 'Tidak diketahui',
-            'semester' => $mahasiswa->semester_aktif ?? $mahasiswa->semester ?? 'Tidak diketahui',
-            'nama_orang_tua' => $mahasiswa->nama_ortu ?? $mahasiswa->nama_orang_tua ?? 'Tidak diketahui'
+            'success' => true,
+            'nama' => $mahasiswa->nama ?? 'Tidak diketahui',
+            'angkatan' => $mahasiswa->angkatan ?? 'Tidak diketahui',
+            'status' => $mahasiswa->status ?? 'Tidak diketahui'
         ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'nim' => 'required|exists:mahasiswas,nim',
+            'nim' => 'required|exists:mahasiswa,nim',
             'pelanggaran_id' => 'required|exists:pelanggaran,id',
             'sanksi_id' => 'required|exists:sanksi,id',
-            'deskripsi' => 'required'
+            'deskripsi' => 'nullable|string'
         ]);
 
         // Ambil data mahasiswa berdasarkan NIM
@@ -63,7 +64,7 @@ class MahasiswaBermasalahController extends Controller
             'nama_orang_tua' => $mahasiswa->nama_ortu ?? $mahasiswa->nama_orang_tua ?? $request->nama_orang_tua ?? 'Tidak diketahui',
             'pelanggaran_id' => $request->pelanggaran_id,
             'sanksi_id' => $request->sanksi_id,
-            'deskripsi' => $request->deskripsi,
+            'deskripsi' => $request->deskripsi ?? '',
         ]);
 
         return redirect()->route('admin.mahasiswa-bermasalah.index')
@@ -74,13 +75,13 @@ class MahasiswaBermasalahController extends Controller
     public function storeMultiple(Request $request)
     {
         $request->validate([
-            'mahasiswa.*.nim' => 'required|exists:mahasiswas,nim',
+            'mahasiswa.*.nim' => 'required|exists:mahasiswa,nim',
             'mahasiswa.*.nama' => 'required|string|max:255',
             'mahasiswa.*.semester' => 'required|integer|min:1|max:14',
-            'mahasiswa.*.nama_orang_tua' => 'required|string|max:255',
+            'mahasiswa.*.nama_orang_tua' => 'nullable|string|max:255',
             'pelanggaran_id' => 'required|exists:pelanggaran,id',
             'sanksi_id' => 'required|exists:sanksi,id',
-            'deskripsi' => 'required|string'
+            'deskripsi' => 'nullable|string'
         ]);
 
         DB::beginTransaction();
@@ -96,10 +97,10 @@ class MahasiswaBermasalahController extends Controller
                         'nim' => $mahasiswa->nim,
                         'nama' => $mahasiswa->nama ?? $mahasiswa->nama_mahasiswa ?? $mahasiswa->nama_lengkap ?? $data['nama'],
                         'semester' => $mahasiswa->semester_aktif ?? $mahasiswa->semester ?? $data['semester'],
-                        'nama_orang_tua' => $mahasiswa->nama_ortu ?? $mahasiswa->nama_orang_tua ?? $data['nama_orang_tua'],
+                        'nama_orang_tua' => $mahasiswa->nama_ortu ?? $mahasiswa->nama_orang_tua ?? ($data['nama_orang_tua'] ?? 'Tidak diketahui'),
                         'pelanggaran_id' => $request->pelanggaran_id, // SAMA untuk semua mahasiswa
                         'sanksi_id' => $request->sanksi_id, // SAMA untuk semua mahasiswa
-                        'deskripsi' => $request->deskripsi // SAMA untuk semua mahasiswa
+                        'deskripsi' => $request->deskripsi ?? '' // SAMA untuk semua mahasiswa
                     ]);
                 } else {
                     // Fallback jika mahasiswa tidak ditemukan di database
@@ -107,10 +108,10 @@ class MahasiswaBermasalahController extends Controller
                         'nim' => $data['nim'],
                         'nama' => $data['nama'],
                         'semester' => $data['semester'],
-                        'nama_orang_tua' => $data['nama_orang_tua'],
+                        'nama_orang_tua' => $data['nama_orang_tua'] ?? 'Tidak diketahui',
                         'pelanggaran_id' => $request->pelanggaran_id, // SAMA untuk semua mahasiswa
                         'sanksi_id' => $request->sanksi_id, // SAMA untuk semua mahasiswa
-                        'deskripsi' => $request->deskripsi // SAMA untuk semua mahasiswa
+                        'deskripsi' => $request->deskripsi ?? '' // SAMA untuk semua mahasiswa
                     ]);
                 }
                 $savedCount++;
@@ -139,10 +140,10 @@ class MahasiswaBermasalahController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nim' => 'required|exists:mahasiswas,nim',
+            'nim' => 'required|exists:mahasiswa,nim',
             'pelanggaran_id' => 'required|exists:pelanggaran,id',
             'sanksi_id' => 'required|exists:sanksi,id',
-            'deskripsi' => 'required'
+            'deskripsi' => 'nullable|string'
         ]);
 
         $mahasiswa = Mahasiswa::where('nim', $request->nim)->first();
@@ -155,7 +156,7 @@ class MahasiswaBermasalahController extends Controller
             'nama_orang_tua' => $mahasiswa->nama_ortu ?? $mahasiswa->nama_orang_tua ?? $request->nama_orang_tua ?? 'Tidak diketahui',
             'pelanggaran_id' => $request->pelanggaran_id,
             'sanksi_id' => $request->sanksi_id,
-            'deskripsi' => $request->deskripsi,
+            'deskripsi' => $request->deskripsi ?? '',
         ]);
 
         return redirect()->route('admin.mahasiswa-bermasalah.index')

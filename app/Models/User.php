@@ -14,7 +14,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role'
+        'role',
+        'avatar'
     ];
 
     protected $hidden = [
@@ -64,7 +65,7 @@ class User extends Authenticatable
      */
     public function isSuperAdmin()
     {
-        return $this->role === 'super_admin';
+        return strtolower((string)$this->role) === 'super_admin';
     }
 
     /**
@@ -72,7 +73,7 @@ class User extends Authenticatable
      */
     public function isAdmin()
     {
-        return $this->role === 'admin';
+        return strtolower((string)$this->role) === 'admin';
     }
 
     /**
@@ -80,7 +81,7 @@ class User extends Authenticatable
      */
     public function isMahasiswa()
     {
-        return $this->role === 'mahasiswa';
+        return strtolower((string)$this->role) === 'mahasiswa';
     }
 
     /**
@@ -88,6 +89,7 @@ class User extends Authenticatable
      */
     public function isAdministrator()
     {
-        return in_array($this->role, ['super_admin', 'admin']);
+        $role = strtolower((string)$this->role);
+        return in_array($role, ['super_admin', 'admin']);
     }
 }

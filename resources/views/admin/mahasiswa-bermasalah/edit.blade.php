@@ -48,9 +48,9 @@
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="nama_orang_tua" class="form-label">Nama Orang Tua <span class="text-danger">*</span></label>
+                            <label for="nama_orang_tua" class="form-label">Nama Orang Tua <small class="text-muted">(opsional)</small></label>
                             <input type="text" name="nama_orang_tua" id="nama_orang_tua" class="form-control" 
-                                   placeholder="Masukkan nama orang tua" value="{{ old('nama_orang_tua', $mahasiswaBermasalah->nama_orang_tua) }}" required>
+                                placeholder="Masukkan nama orang tua" value="{{ old('nama_orang_tua', $mahasiswaBermasalah->nama_orang_tua) }}">
                         </div>
                     </div>
                 </div>
@@ -85,9 +85,9 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="deskripsi" class="form-label">Deskripsi <span class="text-danger">*</span></label>
+                    <label for="deskripsi" class="form-label">Deskripsi <small class="text-muted">(opsional)</small></label>
                     <textarea name="deskripsi" id="deskripsi" class="form-control" rows="4" 
-                              placeholder="Masukkan deskripsi lengkap mengenai masalah yang terjadi..." required>{{ old('deskripsi', $mahasiswaBermasalah->deskripsi) }}</textarea>
+                              placeholder="Masukkan deskripsi lengkap mengenai masalah yang terjadi...">{{ old('deskripsi', $mahasiswaBermasalah->deskripsi) }}</textarea>
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center">

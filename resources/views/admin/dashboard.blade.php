@@ -89,6 +89,23 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Mahasiswa Aktif (new) -->
+        <div class="stats-card">
+            <div class="stats-content">
+                <div class="stats-icon info">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="stats-info">
+                    <h3 class="stats-number">{{ $mahasiswaAktif ?? 0 }}</h3>
+                    <p class="stats-label">Mahasiswa Aktif</p>
+                    <div class="stats-trend positive">
+                        <i class="fas fa-arrow-up trend-icon"></i>
+                        <span class="trend-text">Kalkulasi real-time</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Main Content Grid -->
@@ -144,6 +161,19 @@
                     
                     <div class="stat-item">
                         <div class="stat-info">
+                            <i class="fas fa-graduation-cap stat-icon info"></i>
+                            <div>
+                                <p class="stat-label">Mahasiswa Aktif</p>
+                                <span class="stat-value">{{ $mahasiswaAktif ?? 0 }}</span>
+                            </div>
+                        </div>
+                        <div class="stat-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-info">
                             <i class="fas fa-award stat-icon success"></i>
                             <div>
                                 <p class="stat-label">Prestasi Tervalidasi</p>
@@ -165,6 +195,32 @@
                         </div>
                         <div class="stat-trend warning">
                             <i class="fas fa-exclamation"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-info">
+                            <i class="fas fa-clock stat-icon danger"></i>
+                            <div>
+                                <p class="stat-label">Prestasi Pending</p>
+                                <span class="stat-value">{{ $prestasiPending ?? 0 }}</span>
+                            </div>
+                        </div>
+                        <div class="stat-trend {{ $prestasiPending > 0 ? 'danger' : 'success' }}">
+                            <i class="fas fa-{{ $prestasiPending > 0 ? 'exclamation' : 'check' }}"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-info">
+                            <i class="fas fa-hourglass stat-icon danger"></i>
+                            <div>
+                                <p class="stat-label">Pendaftaran Pending</p>
+                                <span class="stat-value">{{ $pendaftaranPending ?? 0 }}</span>
+                            </div>
+                        </div>
+                        <div class="stat-trend {{ $pendaftaranPending > 0 ? 'danger' : 'success' }}">
+                            <i class="fas fa-{{ $pendaftaranPending > 0 ? 'exclamation' : 'check' }}"></i>
                         </div>
                     </div>
                 </div>

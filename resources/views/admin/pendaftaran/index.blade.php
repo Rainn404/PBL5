@@ -27,6 +27,47 @@
         </div>
     </div>
 
+                <!-- Modal Change Status -->
+                <div class="modal fade" id="changeStatusModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title"><i class="fas fa-exchange-alt me-2"></i>Ubah Status Pendaftaran</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <form id="changeStatusForm" method="POST">
+                                @csrf
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="status_select" class="form-label">Status</label>
+                                        <select id="status_select" name="status" class="form-select" required>
+                                            <option value="submitted">submitted</option>
+                                            <option value="verifying">verifying</option>
+                                            <option value="interview">interview</option>
+                                            <option value="accepted">accepted</option>
+                                            <option value="rejected">rejected</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3" id="interviewDateGroup" style="display:none;">
+                                        <label for="interview_date" class="form-label">Interview Date</label>
+                                        <input type="datetime-local" id="interview_date" name="interview_date" class="form-control">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="status_notes" class="form-label">Notes</label>
+                                        <textarea id="status_notes" name="notes" class="form-control" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
     <!-- Pengaturan Periode dan Kontrol -->
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">
@@ -38,13 +79,13 @@
                 <div class="row">
                     <div class="col-md-4">
                         <label for="tanggal_mulai" class="form-label">Tanggal Mulai Pendaftaran</label>
-                        <input type="date" class="form-control" id="tanggal_mulai" name="tanggal_mulai" 
-                               value="{{ $settings->tanggal_mulai }}" required>
+                           <input type="date" class="form-control" id="tanggal_mulai" name="tanggal_mulai" 
+                               value="{{ \Carbon\Carbon::parse($settings->tanggal_mulai)->format('Y-m-d') }}" required>
                     </div>
                     <div class="col-md-4">
                         <label for="tanggal_selesai" class="form-label">Tanggal Selesai Pendaftaran</label>
-                        <input type="date" class="form-control" id="tanggal_selesai" name="tanggal_selesai" 
-                               value="{{ $settings->tanggal_selesai }}" required>
+                           <input type="date" class="form-control" id="tanggal_selesai" name="tanggal_selesai" 
+                               value="{{ \Carbon\Carbon::parse($settings->tanggal_selesai)->format('Y-m-d') }}" required>
                     </div>
                     <div class="col-md-2">
                         <label for="kuota" class="form-label">Kuota Penerimaan</label>
@@ -331,8 +372,8 @@
                                         <i class="fas fa-user text-white"></i>
                                     </div>
                                     <div>
-                                        <strong class="d-block">{{ $item->nama }}</strong>
-                                        <small class="text-muted">{{ $item->created_at->format('d M Y H:i') }}</small>
+                                        <strong class="d-block truncate" title="{{ $item->nama }}">{{ $item->nama }}</strong>
+                                        <small class="text-muted truncate" title="{{ $item->created_at->format('d M Y H:i') }}">{{ $item->created_at->format('d M Y H:i') }}</small>
                                     </div>
                                 </div>
                             </td>
@@ -346,17 +387,17 @@
                                 <div class="contact-info">
                                     <div class="phone">
                                         <i class="fas fa-phone me-1"></i> 
-                                        <small>{{ $item->no_hp ?? '-' }}</small>
+                                        <small class="truncate" title="{{ $item->no_hp ?? '-' }}">{{ $item->no_hp ?? '-' }}</small>
                                     </div>
                                     <div class="email">
                                         <i class="fas fa-envelope me-1"></i> 
-                                        <small>{{ $item->user->email ?? '-' }}</small>
+                                        <small class="truncate" title="{{ $item->user->email ?? '-' }}">{{ $item->user->email ?? '-' }}</small>
                                     </div>
                                 </div>
                             </td>
-                            <td>
-                                <div class="alasan-text" data-bs-toggle="tooltip" title="{{ $item->alasan_mendaftar }}">
-                                    {{ Str::limit($item->alasan_mendaftar, 40) }}
+                            <td class="text-truncate" style="max-width:220px;">
+                                <div class="alasan-text truncate" data-bs-toggle="tooltip" title="{{ $item->alasan_mendaftar }}">
+                                    {{ Str::limit($item->alasan_mendaftar, 60) }}
                                 </div>
                             </td>
                             <td>
@@ -372,43 +413,39 @@
                                 @endif
                             </td>
                             <td>
-                                <span class="status-badge badge 
-                                    @if($item->status_pendaftaran == 'pending') bg-warning
-                                    @elseif($item->status_pendaftaran == 'diterima') bg-success
-                                    @else bg-danger @endif">
-                                    <i class="fas 
-                                        @if($item->status_pendaftaran == 'pending') fa-clock
-                                        @elseif($item->status_pendaftaran == 'diterima') fa-check
-                                        @else fa-times @endif me-1">
-                                    </i>
-                                    {{ ucfirst($item->status_pendaftaran) }}
+                                @php
+                                    $status = $item->status_pendaftaran;
+                                    $badgeClass = 'badge bg-secondary';
+                                    $icon = 'fa-circle';
+                                    if ($status === 'submitted') { $badgeClass = 'badge bg-secondary'; $icon = 'fa-circle'; }
+                                    elseif ($status === 'verifying') { $badgeClass = 'badge bg-primary'; $icon = 'fa-spinner'; }
+                                    elseif ($status === 'interview') { $badgeClass = 'badge bg-warning text-dark'; $icon = 'fa-comments'; }
+                                    elseif ($status === 'accepted') { $badgeClass = 'badge bg-success'; $icon = 'fa-check'; }
+                                    elseif ($status === 'rejected') { $badgeClass = 'badge bg-danger'; $icon = 'fa-times'; }
+                                @endphp
+                                <span class="status-badge {{ $badgeClass }}">
+                                    <i class="fas {{ $icon }} me-1"></i>
+                                    {{ ucfirst($status) }}
                                 </span>
-                                @if($item->validator && $item->status_pendaftaran != 'pending')
+                                @if($item->validator && $item->status_pendaftaran != 'submitted')
                                 <br>
                                 <small class="text-muted">Oleh: {{ $item->validator->name ?? 'Admin' }}</small>
                                 @endif
                             </td>
                             <td class="text-center pe-3">
                                 <div class="action-buttons">
-                                    <button class="btn btn-sm btn-outline-info action-btn" 
-                                            onclick="viewDetail({{ $item->id }})"
+                                        <button class="btn btn-sm btn-outline-info action-btn" 
+                                            onclick="viewDetail({{ $item->id_pendaftaran }})"
                                             data-bs-toggle="tooltip" title="Detail">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    @if($item->status_pendaftaran == 'pending')
-                                    <button class="btn btn-sm btn-outline-success action-btn" 
-                                            onclick="updateStatus({{ $item->id }}, 'diterima')"
-                                            data-bs-toggle="tooltip" title="Terima">
-                                        <i class="fas fa-check"></i>
+                                    <button class="btn btn-sm btn-outline-secondary action-btn" 
+                                            onclick="openChangeStatus({{ $item->id_pendaftaran }}, '{{ $item->status_pendaftaran }}')"
+                                            data-bs-toggle="tooltip" title="Ubah Status">
+                                        <i class="fas fa-exchange-alt"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger action-btn" 
-                                            onclick="updateStatus({{ $item->id }}, 'ditolak')"
-                                            data-bs-toggle="tooltip" title="Tolak">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                    @endif
-                                    <button class="btn btn-sm btn-outline-warning action-btn" 
-                                            onclick="editPendaftaran({{ $item->id }})"
+                                        <button class="btn btn-sm btn-outline-warning action-btn" 
+                                            onclick="editPendaftaran({{ $item->id_pendaftaran }})"
                                             data-bs-toggle="tooltip" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </button>
@@ -738,6 +775,15 @@
     font-size: 0.85rem;
 }
 
+/* Utility truncate */
+.truncate {
+    display: inline-block;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* Contact Info */
 .contact-info .phone, .contact-info .email {
     margin-bottom: 0.25rem;
@@ -830,6 +876,18 @@
     
     .table-responsive {
         font-size: 0.85rem;
+    }
+
+    /* Fix pagination area spacing and ensure table doesn't create extra large bottom gap */
+    .main-card {
+        padding-bottom: 0.5rem;
+    }
+    .main-card .table-responsive {
+        overflow-x: auto;
+        overflow-y: visible;
+    }
+    .pagination {
+        justify-content: flex-end !important;
     }
 }
 
@@ -964,7 +1022,8 @@ async function tutupSesiPendaftaran(event) {
             body: JSON.stringify({})
         });
 
-        const data = await response.json();
+        const payload = await response.json();
+        const data = payload.data || payload;
 
         if (data.success) {
             showAlert('Sesi pendaftaran berhasil ditutup', 'success');
@@ -1078,9 +1137,18 @@ async function viewDetail(id) {
         if (!response.ok) {
             throw new Error('Gagal memuat data detail');
         }
+
+        const payload = await response.json();
+        const data = payload.data || payload;
         
-        const data = await response.json();
-        
+        // determine badge class for status
+        let statusClass = 'bg-secondary';
+        if (data.status_pendaftaran === 'submitted') statusClass = 'bg-secondary';
+        else if (data.status_pendaftaran === 'verifying') statusClass = 'bg-primary';
+        else if (data.status_pendaftaran === 'interview') statusClass = 'bg-warning text-dark';
+        else if (data.status_pendaftaran === 'accepted') statusClass = 'bg-success';
+        else if (data.status_pendaftaran === 'rejected') statusClass = 'bg-danger';
+
         let content = `
             <div class="row">
                 <div class="col-md-6">
@@ -1099,9 +1167,7 @@ async function viewDetail(id) {
                         <tr><td><strong>Tanggal Daftar</strong></td><td>${data.created_at ? new Date(data.created_at).toLocaleDateString('id-ID') : '-'}</td></tr>
                         <tr><td><strong>Status</strong></td>
                             <td>
-                                <span class="badge ${data.status_pendaftaran === 'pending' ? 'bg-warning' : data.status_pendaftaran === 'diterima' ? 'bg-success' : 'bg-danger'}">
-                                    ${data.status_pendaftaran || 'pending'}
-                                </span>
+                                <span class="badge ${statusClass}">${data.status_pendaftaran || '-'}</span>
                             </td>
                         </tr>
                         ${data.validator ? `<tr><td><strong>Divalidasi Oleh</strong></td><td>${data.validator.name || 'Admin'}</td></tr>` : ''}
@@ -1268,6 +1334,105 @@ document.addEventListener('DOMContentLoaded', function() {
                 e.preventDefault();
                 showAlert('Harap pilih divisi dan jabatan untuk penerimaan', 'error');
             }
+        }
+    });
+
+    // Change status modal logic
+    window.openChangeStatus = function(id, currentStatus) {
+        const form = document.getElementById('changeStatusForm');
+        form.action = `/admin/pendaftaran/${id}/status`;
+        document.getElementById('status_select').value = currentStatus || 'submitted';
+        document.getElementById('status_notes').value = '';
+        document.getElementById('interview_date').value = '';
+        document.getElementById('interviewDateGroup').style.display = (currentStatus === 'interview') ? 'block' : 'none';
+
+        // Fetch current record to populate fields (notes, interview_date) and format datetime for input
+        (async () => {
+            try {
+                const res = await fetch(`/admin/pendaftaran/${id}`);
+                if (!res.ok) throw new Error('Tidak dapat memuat data pendaftaran');
+                const payload = await res.json().catch(() => null);
+                const data = payload?.data || payload || {};
+
+                // set status if present
+                if (data.status_pendaftaran) {
+                    document.getElementById('status_select').value = data.status_pendaftaran;
+                }
+
+                // set notes
+                document.getElementById('status_notes').value = data.notes || '';
+
+                // format interview_date for <input type="datetime-local"> as YYYY-MM-DDTHH:mm
+                if (data.interview_date) {
+                    // data.interview_date may be 'YYYY-MM-DD HH:MM:SS'
+                    const normalized = data.interview_date.replace(' ', 'T');
+                    const dt = new Date(normalized);
+                    if (!isNaN(dt)) {
+                        const pad = n => String(n).padStart(2, '0');
+                        const value = `${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+                        document.getElementById('interview_date').value = value;
+                        document.getElementById('interviewDateGroup').style.display = 'block';
+                    } else {
+                        // fallback: try parsing as ISO
+                        try {
+                            const iso = new Date(data.interview_date);
+                            if (!isNaN(iso)) {
+                                const pad = n => String(n).padStart(2, '0');
+                                const value = `${iso.getFullYear()}-${pad(iso.getMonth()+1)}-${pad(iso.getDate())}T${pad(iso.getHours())}:${pad(iso.getMinutes())}`;
+                                document.getElementById('interview_date').value = value;
+                                document.getElementById('interviewDateGroup').style.display = 'block';
+                            }
+                        } catch (e) {
+                            // ignore
+                        }
+                    }
+                }
+
+            } catch (err) {
+                console.warn('openChangeStatus: could not prefill data', err);
+            } finally {
+                const modal = new bootstrap.Modal(document.getElementById('changeStatusModal'));
+                modal.show();
+            }
+        })();
+    }
+
+    document.getElementById('status_select').addEventListener('change', function() {
+        const v = this.value;
+        document.getElementById('interviewDateGroup').style.display = (v === 'interview') ? 'block' : 'none';
+    });
+
+    document.getElementById('changeStatusForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const action = form.action;
+        const formData = new FormData(form);
+        try {
+            const res = await fetch(action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            });
+            const data = await res.json().catch(() => null);
+            // If response is HTML redirect, reload page
+            if (res.ok) {
+                // Try to read JSON success message, otherwise reload
+                if (data && data.success === false) {
+                    showAlert(data.message || 'Gagal memperbarui status', 'error');
+                } else {
+                    showAlert('Status pendaftaran berhasil diperbarui', 'success');
+                    setTimeout(() => location.reload(), 800);
+                }
+            } else {
+                // Fallback: reload to see errors
+                location.reload();
+            }
+        } catch (err) {
+            console.error(err);
+            showAlert('Terjadi kesalahan saat menyimpan status', 'error');
         }
     });
 });

@@ -47,7 +47,7 @@
                         </div>
                         <div class="info-content">
                             <h4 class="info-title">Kuota Tersedia</h4>
-                            <p class="info-description">{{ $settings->kuota - \App\Models\Pendaftaran::where('status_pendaftaran', 'diterima')->count() }} dari {{ $settings->kuota }} anggota</p>
+                            <p class="info-description"><span id="kuotaTersisa">{{ $kuotaTersisa }}</span> dari {{ $settings->kuota }} anggota</p>
                         </div>
                     </div>
                     <div class="info-card">
@@ -245,7 +245,7 @@
                         <i class="fas fa-arrow-left button-icon"></i>
                         <span class="button-text">Kembali</span>
                     </a>
-                    <button type="submit" class="submit-button primary">
+                    <button type="submit" class="submit-button primary" id="submitBtn">
                         <i class="fas fa-paper-plane button-icon"></i>
                         <span class="button-text">Kirim Pendaftaran</span>
                     </button>
@@ -809,14 +809,13 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Character counter for alasan_mendaftar
     const alasanTextarea = document.getElementById('alasan_mendaftar');
     const charCount = document.querySelector('.char-count');
     
+    // Character counter
     function updateCharCount() {
         const count = alasanTextarea.value.length;
         charCount.textContent = count;
-        
         if (count < 50) {
             charCount.classList.add('low');
             charCount.classList.remove('good');
@@ -829,72 +828,85 @@ document.addEventListener('DOMContentLoaded', function() {
     alasanTextarea.addEventListener('input', updateCharCount);
     updateCharCount();
     
-    // File upload styling
+    // File upload label
     const fileInput = document.getElementById('dokumen');
     const fileText = document.querySelector('.file-text');
-    
     if (fileInput) {
         fileInput.addEventListener('change', function() {
-            if (this.files.length > 0) {
-                fileText.textContent = this.files[0].name;
-            } else {
-                fileText.textContent = 'Pilih File';
-            }
+            fileText.textContent = this.files.length > 0 ? this.files[0].name : 'Pilih File';
         });
     }
     
-    // Form validation
+    // ✅ SIMPLE FORM VALIDATION
     const form = document.querySelector('.pendaftaran-form');
-    const agreeCheckbox = document.getElementById('agree');
+    const submitBtn = document.getElementById('submitBtn');
+    let isSubmitting = false;
+    let formSubmitted = false; // Global flag for quota polling
     
     form.addEventListener('submit', function(e) {
-        let valid = true;
+        console.log('%c>>> FORM SUBMIT STARTED', 'color: blue; font-weight: bold;');
         
-        // Check required fields
+        // Prevent double submission
+        if (isSubmitting) {
+            console.log('%c>>> PREVENTING DOUBLE SUBMIT', 'color: red;');
+            e.preventDefault();
+            return;
+        }
+        
+        // VALIDATION
+        let valid = true;
         const requiredFields = form.querySelectorAll('[required]');
+        
         requiredFields.forEach(field => {
-            if (!field.value.trim()) {
+            const isEmpty = field.type === 'checkbox' ? !field.checked : !field.value.trim();
+            
+            if (isEmpty) {
+                console.log('%c>>> VALIDATION ERROR: ' + field.name, 'color: orange;');
                 valid = false;
                 field.style.borderColor = 'var(--error-color)';
-                
-                // Add shake animation
-                field.style.animation = 'shake 0.5s ease-in-out';
-                setTimeout(() => {
-                    field.style.animation = '';
-                }, 500);
+            } else {
+                console.log('%c>>> FIELD OK: ' + field.name, 'color: green;');
+                field.style.borderColor = '';
             }
         });
         
-        // Check character count
+        // Check alasan length
         if (alasanTextarea.value.length < 50) {
+            console.log('%c>>> VALIDATION ERROR: alasan too short', 'color: orange;');
             valid = false;
             alasanTextarea.style.borderColor = 'var(--error-color)';
             alert('Alasan mendaftar harus minimal 50 karakter');
         }
         
         if (!valid) {
+            console.log('%c>>> VALIDATION FAILED - NOT SUBMITTING', 'color: red; font-weight: bold;');
             e.preventDefault();
-            
-            // Scroll to first error
-            const firstError = form.querySelector('[required]:invalid');
-            if (firstError) {
-                firstError.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'center' 
-                });
-            }
+            return;
         }
+        
+        // ✅ VALIDATION PASSED
+        console.log('%c>>> VALIDATION PASSED - ALLOWING FORM SUBMIT', 'color: green; font-weight: bold;');
+        
+        // Mark as submitting
+        isSubmitting = true;
+        formSubmitted = true;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin button-icon"></i><span class="button-text">Mengirim...</span>';
+        
+        console.log('%c>>> FLAGS SET: isSubmitting=true, formSubmitted=true', 'color: blue;');
+        console.log('%c>>> BUTTON DISABLED AND LOADING SHOWN', 'color: blue;');
+        console.log('%c>>> FORM WILL NOW SUBMIT NORMALLY TO SERVER', 'color: green; font-weight: bold;');
+        
+        // ✅ DO NOT PREVENT DEFAULT - Let form submit naturally!
+        // This is key: we only preventDefault if validation fails
     });
     
-    // Real-time validation
+    // Real-time field validation
     const inputs = form.querySelectorAll('input, select, textarea');
     inputs.forEach(input => {
         input.addEventListener('blur', function() {
-            if (this.hasAttribute('required') && !this.value.trim()) {
-                this.style.borderColor = 'var(--error-color)';
-            } else {
-                this.style.borderColor = '';
-            }
+            const isEmpty = this.type === 'checkbox' ? !this.checked : !this.value.trim();
+            this.style.borderColor = isEmpty ? 'var(--error-color)' : '';
         });
         
         input.addEventListener('input', function() {
@@ -904,7 +916,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Add shake animation
+    // Animation styles
     const style = document.createElement('style');
     style.textContent = `
         @keyframes shake {
@@ -914,6 +926,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     `;
     document.head.appendChild(style);
+
+    // ✅ QUOTA POLLING
+    function updateKuota() {
+        if (formSubmitted) {
+            console.log('%c>>> QUOTA POLLING SKIPPED: formSubmitted=true', 'color: gray;');
+            return;
+        }
+        
+        fetch('{{ route("api.pendaftaran-status") }}')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const elem = document.getElementById('kuotaTersisa');
+                    if (elem) {
+                        elem.textContent = data.sisa_kuota;
+                        console.log('%c>>> QUOTA UPDATED: ' + data.sisa_kuota, 'color: blue;');
+                        
+                        if (data.is_quota_full && !formSubmitted) {
+                            console.log('%c>>> QUOTA FULL - REDIRECTING', 'color: red; font-weight: bold;');
+                            window.location.href = '{{ route("pendaftaran.quota-full") }}';
+                        }
+                    }
+                }
+            })
+            .catch(error => console.log('%c>>> QUOTA ERROR: ' + error, 'color: red;'));
+    }
+
+    setInterval(updateKuota, 5000);
+    console.log('%c>>> QUOTA POLLING INITIALIZED (every 5 seconds)', 'color: blue;');
 });
 </script>
 @endsection

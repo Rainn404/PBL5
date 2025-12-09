@@ -1,101 +1,84 @@
 @extends('layouts.admin.app')
 
-@section('title', 'Export Data Mahasiswa - HIMA-TI')
+@section('title', 'Export Data Mahasiswa')
 
 @section('content')
 <div class="container-fluid">
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Export Data Mahasiswa</h1>
-        <a href="{{ route('admin.mahasiswa.index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
-            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Kembali ke Daftar
-        </a>
-    </div>
-
-    <!-- Content Row -->
     <div class="row">
         <div class="col-12">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
-                        <i class="fas fa-file-export me-2"></i>Pilihan Export
-                    </h6>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-download mr-2"></i>Export Data Mahasiswa
+                    </h3>
+                    <div class="card-tools">
+                        <a href="{{ route('admin.mahasiswa.index') }}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-arrow-left"></i> Kembali
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <!-- Export Semua Data -->
-                        <div class="col-md-4 mb-4">
-                            <div class="card border-left-success h-100">
+                        <div class="col-md-8">
+                            <div class="card border-info">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0"><i class="fas fa-filter"></i> Filter & Export Data</h5>
+                                </div>
                                 <div class="card-body">
-                                    <div class="text-center">
-                                        <i class="fas fa-database fa-3x text-success mb-3"></i>
-                                        <h5 class="font-weight-bold text-success">Semua Data</h5>
-                                        <p class="text-muted">Export seluruh data mahasiswa</p>
-                                        <a href="{{ route('admin.mahasiswa.export') }}" class="btn btn-success">
-                                            <i class="fas fa-download me-2"></i>Export Semua
-                                        </a>
-                                    </div>
+                                    <form action="{{ route('admin.mahasiswa.export') }}" method="GET">
+                                        <div class="form-group">
+                                            <label for="status">Filter berdasarkan Status</label>
+                                            <select class="form-control" id="status" name="status">
+                                                <option value="">Semua Status</option>
+                                                <option value="Aktif" {{ request('status') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                                                <option value="Non-Aktif" {{ request('status') == 'Non-Aktif' ? 'selected' : '' }}>Non-Aktif</option>
+                                                <option value="Cuti" {{ request('status') == 'Cuti' ? 'selected' : '' }}>Cuti</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <small class="form-text text-muted">
+                                                Pilih status untuk memfilter data yang akan diekspor. Kosongkan untuk mengekspor semua data.
+                                            </small>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-info btn-lg">
+                                            <i class="fas fa-download"></i> Export Data Excel
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Export Mahasiswa Aktif -->
-                        <div class="col-md-4 mb-4">
-                            <div class="card border-left-primary h-100">
+                        <div class="col-md-4">
+                            <div class="card border-warning">
+                                <div class="card-header bg-warning text-white">
+                                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Informasi</h5>
+                                </div>
                                 <div class="card-body">
-                                    <div class="text-center">
-                                        <i class="fas fa-user-check fa-3x text-primary mb-3"></i>
-                                        <h5 class="font-weight-bold text-primary">Mahasiswa Aktif</h5>
-                                        <p class="text-muted">Export data mahasiswa aktif saja</p>
-                                        <a href="{{ route('admin.mahasiswa.export', ['status' => 'Aktif']) }}" class="btn btn-primary">
-                                            <i class="fas fa-download me-2"></i>Export Aktif
-                                        </a>
-                                    </div>
+                                    <h6>Kolom yang akan diekspor:</h6>
+                                    <ul class="mb-3">
+                                        <li>NIM</li>
+                                        <li>Nama Mahasiswa</li>
+                                        <li>Status</li>
+                                        <li>Tanggal Dibuat</li>
+                                        <li>Tanggal Diperbarui</li>
+                                    </ul>
+
+                                    <h6>Format file:</h6>
+                                    <p class="mb-0">Microsoft Excel (.xlsx)</p>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Export Mahasiswa Tidak Aktif -->
-                        <div class="col-md-4 mb-4">
-                            <div class="card border-left-warning h-100">
-                                <div class="card-body">
-                                    <div class="text-center">
-                                        <i class="fas fa-user-times fa-3x text-warning mb-3"></i>
-                                        <h5 class="font-weight-bold text-warning">Mahasiswa Tidak Aktif</h5>
-                                        <p class="text-muted">Export data mahasiswa tidak aktif</p>
-                                        <a href="{{ route('admin.mahasiswa.export', ['status' => 'Tidak Aktif']) }}" class="btn btn-warning">
-                                            <i class="fas fa-download me-2"></i>Export Tidak Aktif
-                                        </a>
-                                    </div>
+                            <div class="card border-primary mt-3">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0"><i class="fas fa-download"></i> Template Import</h5>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Info Card -->
-            <div class="card border-left-info shadow">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-md-1 text-center">
-                            <i class="fas fa-info-circle fa-2x text-info"></i>
-                        </div>
-                        <div class="col-md-11">
-                            <div class="text-info font-weight-bold mb-2">
-                                Informasi Export
-                            </div>
-                            <div class="text-gray-800">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <p class="mb-2"><i class="fas fa-file-excel text-success me-2"></i>Format file: Excel (.xlsx)</p>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <p class="mb-2"><i class="fas fa-columns text-primary me-2"></i>Data terstruktur dengan kolom lengkap</p>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <p class="mb-2"><i class="fas fa-clock text-warning me-2"></i>Nama file include timestamp</p>
-                                    </div>
+                                <div class="card-body text-center">
+                                    <p class="mb-2">Download template untuk import data</p>
+                                    <a href="{{ route('admin.mahasiswa.template') }}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-download"></i> Download Template
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -105,38 +88,23 @@
         </div>
     </div>
 </div>
+@endsection
 
-<style>
-.card {
-    border-radius: 0.5rem;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
+@section('scripts')
+<script>
+$(document).ready(function() {
+    // Form submission with loading
+    $('form').submit(function() {
+        var submitBtn = $(this).find('button[type="submit"]');
+        var originalText = submitBtn.html();
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
+        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Menyiapkan file...');
 
-.border-left-success {
-    border-left: 4px solid #1cc88a !important;
-}
-
-.border-left-primary {
-    border-left: 4px solid #4e73df !important;
-}
-
-.border-left-warning {
-    border-left: 4px solid #f6c23e !important;
-}
-
-.btn {
-    border-radius: 0.35rem;
-    padding: 0.5rem 1.5rem;
-    font-weight: 600;
-}
-
-.fa-3x {
-    font-size: 3em;
-}
-</style>
+        // Re-enable button after 10 seconds as fallback
+        setTimeout(function() {
+            submitBtn.prop('disabled', false).html(originalText);
+        }, 10000);
+    });
+});
+</script>
 @endsection

@@ -56,7 +56,7 @@
                                 </tr>
                                 <tr>
                                     <th>Tanggal Input</th>
-                                    <td>{{ $mahasiswa->created_at->format('d M Y H:i') }}</td>
+                                    <td>{{ $mahasiswa->created_at ? $mahasiswa->created_at->format('d M Y H:i') : '-' }}</td>
                                 </tr>
                             </table>
                         </div>

@@ -23,11 +23,17 @@ class Pendaftaran extends Model
         'dokumen',
         'no_hp',
         'status_pendaftaran',
-        'submitted_at'
+        'submitted_at',
+        'divalidasi_oleh',
+        'validated_at',
+        'interview_date',
+        'notes'
     ];
 
     protected $casts = [
         'submitted_at' => 'datetime',
+        'validated_at' => 'datetime',
+        'interview_date' => 'datetime',
     ];
 
     /**
@@ -68,12 +74,14 @@ class Pendaftaran extends Model
     public function getStatusBadgeAttribute()
     {
         $statuses = [
-            'pending' => 'bg-yellow-100 text-yellow-800',
-            'diterima' => 'bg-green-100 text-green-800',
-            'ditolak' => 'bg-red-100 text-red-800',
+            'submitted' => 'bg-secondary text-white', // gray
+            'verifying' => 'bg-primary text-white', // blue
+            'interview' => 'bg-warning text-dark', // yellow
+            'accepted' => 'bg-success text-white', // green
+            'rejected' => 'bg-danger text-white', // red
         ];
 
-        return $statuses[$this->status_pendaftaran] ?? 'bg-gray-100 text-gray-800';
+        return $statuses[$this->status_pendaftaran] ?? 'bg-secondary text-white';
     }
 
     /**
@@ -82,9 +90,11 @@ class Pendaftaran extends Model
     public function getStatusLabelAttribute()
     {
         $labels = [
-            'pending' => 'Menunggu',
-            'diterima' => 'Diterima',
-            'ditolak' => 'Ditolak',
+            'submitted' => 'Submitted',
+            'verifying' => 'Verifying',
+            'interview' => 'Interview',
+            'accepted' => 'Accepted',
+            'rejected' => 'Rejected',
         ];
 
         return $labels[$this->status_pendaftaran] ?? 'Tidak Diketahui';

@@ -25,13 +25,13 @@ return new class extends Migration
             $table->string('kategori');
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
-            $table->string('email');
-            $table->string('no_hp', 15);
+            $table->string('email')->nullable();
+            $table->string('no_hp', 15)->nullable();
             $table->decimal('ipk', 3, 2)->nullable();
             $table->string('bukti_prestasi')->nullable();
             $table->text('deskripsi');
-            $table->string('nim', 20);
-            $table->integer('semester');
+            $table->string('nim', 20)->nullable();
+            $table->integer('semester')->nullable();
 
             // Kolom untuk validasi
             $table->enum('status_validasi', ['pending', 'disetujui', 'ditolak'])

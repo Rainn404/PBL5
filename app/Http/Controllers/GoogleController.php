@@ -19,7 +19,7 @@ class GoogleController extends Controller
     public function handleGoogleCallback()
     {
         try {
-            $googleUser = Socialite::driver('google')->stateless()->user();
+            $googleUser = Socialite::driver('google')->user();
 
             // Cek apakah user sudah ada berdasarkan email
             $user = User::updateOrCreate(
@@ -29,6 +29,7 @@ class GoogleController extends Controller
                     'google_id' => $googleUser->getId(),
                     'avatar' => $googleUser->getAvatar(),
                     'password' => bcrypt('google_login'),
+                    'role' => 'mahasiswa', // Default role untuk user Google baru
                 ]
             );
 

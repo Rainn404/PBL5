@@ -19,26 +19,9 @@
                         <span class="badge bg-light text-dark">
                             <i class="fas fa-user-shield me-1"></i>Administrator
                         </span>
+                        <div class="badge-subtext text-muted small">Panel Admin</div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container">
-        <!-- Quick Stats -->
-        <div class="row mb-4">
-            <div class="col-md-2 col-6 mb-3">
-                <div class="admin-stat-card">
-                    <div class="stat-icon bg-primary">
-                        <i class="fas fa-trophy"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-number">{{ $totalPrestasi }}</div>
-                        <div class="stat-label">Total</div>
-                    </div>
-                </div>
-            </div>
             <div class="col-md-2 col-6 mb-3">
                 <div class="admin-stat-card">
                     <div class="stat-icon bg-warning">
@@ -245,18 +228,18 @@
                                 <td>
                                     <div class="d-flex flex-column gap-1">
                                         <!-- Badge Status -->
-                                        @if($item->status)
+                                        @if($item->status_validasi)
                                             <span class="badge status-badge 
-                                                {{ $item->status == 'Tervalidasi' ? 'bg-success' : 
-                                                   ($item->status == 'Ditolak' ? 'bg-danger' : 'bg-warning') }}">
-                                                {{ $item->status }}
+                                                {{ $item->status_validasi == 'disetujui' ? 'bg-success' : 
+                                                   ($item->status_validasi == 'ditolak' ? 'bg-danger' : 'bg-warning') }}">
+                                                @if($item->status_validasi == 'disetujui') Tervalidasi @elseif($item->status_validasi == 'ditolak') Ditolak @else Menunggu Validasi @endif
                                             </span>
                                         @else
                                             <span class="badge bg-secondary">Belum Ada Status</span>
                                         @endif
-                                        
+
                                         <!-- Tombol Validasi Cepat -->
-                                        @if(!$item->status || $item->status == 'Menunggu Validasi')
+                                        @if($item->status_validasi == 'pending' || !$item->status_validasi)
                                         <div class="d-flex gap-1 mt-1">
                                             <form action="{{ route('admin.prestasi.validasi', $item->id_prestasi ?? $item->id) }}" method="POST" class="d-inline">
                                                 @csrf
@@ -279,7 +262,7 @@
                                                 </button>
                                             </form>
                                         </div>
-                                        @elseif($item->status == 'Tervalidasi')
+                                        @elseif($item->status_validasi == 'disetujui')
                                         <div class="d-flex gap-1 mt-1">
                                             <form action="{{ route('admin.prestasi.validasi', $item->id_prestasi ?? $item->id) }}" method="POST" class="d-inline">
                                                 @csrf
@@ -292,7 +275,7 @@
                                                 </button>
                                             </form>
                                         </div>
-                                        @elseif($item->status == 'Ditolak')
+                                        @elseif($item->status_validasi == 'ditolak')
                                         <div class="d-flex gap-1 mt-1">
                                             <form action="{{ route('admin.prestasi.validasi', $item->id_prestasi ?? $item->id) }}" method="POST" class="d-inline">
                                                 @csrf
@@ -323,7 +306,7 @@
                                         </a>
                                         
                                         <!-- Button Hapus -->
-                                        @if($item->status == 'Tervalidasi' || $item->status == 'Ditolak' || !$item->status)
+                                        @if($item->status_validasi == 'disetujui' || $item->status_validasi == 'ditolak' || !$item->status_validasi)
                                         <button type="button" class="btn btn-sm btn-outline-danger mx-1 delete-btn" 
                                                 title="Hapus Prestasi"
                                                 data-id="{{ $item->id_prestasi ?? $item->id }}"

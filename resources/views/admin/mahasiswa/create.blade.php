@@ -34,10 +34,10 @@
                                 <label for="nama" class="form-label fw-bold text-gray-700 mb-3">
                                     Nama Mahasiswa <span class="text-danger">*</span>
                                 </label>
-                                <input 
-                                    type="text" 
-                                    id="nama" 
-                                    name="nama" 
+                                <input
+                                    type="text"
+                                    id="nama"
+                                    name="nama"
                                     value="{{ old('nama') }}"
                                     class="form-control form-control-lg @error('nama') is-invalid @enderror"
                                     placeholder="Masukkan nama lengkap mahasiswa"
@@ -55,10 +55,10 @@
                                 <label for="nim" class="form-label fw-bold text-gray-700 mb-3">
                                     NIM (Nomor Induk Mahasiswa) <span class="text-danger">*</span>
                                 </label>
-                                <input 
-                                    type="text" 
-                                    id="nim" 
-                                    name="nim" 
+                                <input
+                                    type="text"
+                                    id="nim"
+                                    name="nim"
                                     value="{{ old('nim') }}"
                                     class="form-control form-control-lg @error('nim') is-invalid @enderror"
                                     placeholder="Masukkan NIM mahasiswa"
@@ -72,21 +72,44 @@
                             </div>
                         </div>
 
-                        <!-- Status Field - Full Width -->
                         <div class="row">
-                            <div class="col-12 mb-4">
+                            <!-- Angkatan Field -->
+                            <div class="col-md-6 mb-4">
+                                <label for="angkatan" class="form-label fw-bold text-gray-700 mb-3">
+                                    Angkatan
+                                </label>
+                                <input
+                                    type="number"
+                                    id="angkatan"
+                                    name="angkatan"
+                                    value="{{ old('angkatan') }}"
+                                    class="form-control form-control-lg @error('angkatan') is-invalid @enderror"
+                                    placeholder="Masukkan tahun angkatan"
+                                    min="2000"
+                                    max="{{ date('Y') + 1 }}"
+                                >
+                                @error('angkatan')
+                                    <div class="invalid-feedback d-block mt-2">
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+
+                            <!-- Status Field -->
+                            <div class="col-md-6 mb-4">
                                 <label for="status" class="form-label fw-bold text-gray-700 mb-3">
                                     Status Mahasiswa <span class="text-danger">*</span>
                                 </label>
-                                <select 
-                                    id="status" 
+                                <select
+                                    id="status"
                                     name="status"
                                     class="form-select form-select-lg @error('status') is-invalid @enderror"
                                     required
                                 >
                                     <option value="">Pilih status mahasiswa</option>
                                     <option value="Aktif" {{ old('status') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
-                                    <option value="Tidak Aktif" {{ old('status') == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+                                    <option value="Non-Aktif" {{ old('status') == 'Non-Aktif' ? 'selected' : '' }}>Non-Aktif</option>
+                                    <option value="Cuti" {{ old('status') == 'Cuti' ? 'selected' : '' }}>Cuti</option>
                                 </select>
                                 @error('status')
                                     <div class="invalid-feedback d-block mt-2">
@@ -95,6 +118,8 @@
                                 @enderror
                             </div>
                         </div>
+
+
 
                         <!-- Divider -->
                         <hr class="my-5">
@@ -125,13 +150,16 @@
                             </div>
                             <div class="text-gray-800">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Pastikan data yang dimasukkan valid</p>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <p class="mb-2"><i class="fas fa-check text-success me-2"></i>NIM harus unik dan tidak boleh duplikat</p>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
+                                        <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Angkatan berdasarkan tahun masuk</p>
+                                    </div>
+                                    <div class="col-md-3">
                                         <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Status mempengaruhi tampilan di sistem</p>
                                     </div>
                                 </div>

@@ -21,33 +21,28 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
     */
     public function model(array $row)
     {
+        // Pastikan NIM selalu berupa string
+        $nim = (string) $row['nim'];
+
         // Cek apakah NIM sudah ada, jika ya update, jika tidak create
-        $mahasiswa = Mahasiswa::where('nim', $row['nim'])->first();
+        $mahasiswa = Mahasiswa::where('nim', $nim)->first();
 
         if ($mahasiswa) {
             // Update data yang sudah ada
             $mahasiswa->update([
                 'nama' => $row['nama'],
-                'email' => $row['email'] ?? $mahasiswa->email,
-                'prodi' => $row['prodi'] ?? $mahasiswa->prodi,
-                'angkatan' => $row['angkatan'] ?? $mahasiswa->angkatan,
-                'no_hp' => $row['no_hp'] ?? $mahasiswa->no_hp,
-                'alamat' => $row['alamat'] ?? $mahasiswa->alamat,
-                'status' => $row['status'] ?? $mahasiswa->status,
+                'angkatan' => $row['angkatan'],
+                'status' => $row['status'],
             ]);
             return null;
         }
 
         // Create data baru
         return new Mahasiswa([
-            'nim' => $row['nim'],
+            'nim' => $nim,
             'nama' => $row['nama'],
-            'email' => $row['email'] ?? null,
-            'prodi' => $row['prodi'] ?? null,
-            'angkatan' => $row['angkatan'] ?? null,
-            'no_hp' => $row['no_hp'] ?? null,
-            'alamat' => $row['alamat'] ?? null,
-            'status' => $row['status'] ?? 'Aktif',
+            'angkatan' => $row['angkatan'],
+            'status' => $row['status'],
         ]);
     }
 
@@ -56,37 +51,28 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
         return [
             'nim' => [
                 'required',
-                'string',
                 'max:20',
+                function ($attribute, $value, $fail) {
+                    // Ensure NIM is treated as string and validate it
+                    $nimString = (string) $value;
+                    if (strlen($nimString) > 20) {
+                        $fail('NIM tidak boleh lebih dari 20 karakter');
+                    }
+                    if (empty(trim($nimString))) {
+                        $fail('NIM wajib diisi');
+                    }
+                },
             ],
             'nama' => [
                 'required',
                 'string',
                 'max:255'
             ],
-            'email' => [
-                'nullable',
-                'email',
-                'max:255'
-            ],
-            'prodi' => [
-                'nullable',
-                'string',
-                'max:100'
-            ],
             'angkatan' => [
                 'nullable',
-                'string',
-                'max:4'
-            ],
-            'no_hp' => [
-                'nullable',
-                'string',
-                'max:15'
-            ],
-            'alamat' => [
-                'nullable',
-                'string'
+                'integer',
+                'min:2000',
+                'max:' . (date('Y') + 10)
             ],
             'status' => [
                 'nullable',

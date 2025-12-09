@@ -100,13 +100,19 @@
                     <div class="dropdown">
                         <button class="btn btn-link text-dark text-decoration-none dropdown-toggle d-flex align-items-center" 
                                 type="button" data-bs-toggle="dropdown">
-                            <img src="https://ui-avatars.com/api/?name=Admin&background=3B82F6&color=fff" 
-                                 alt="Admin" class="rounded-circle me-2" width="32" height="32">
-                            <span class="d-none d-md-inline">Admin</span>
+                            @if(Auth::user()->avatar)
+                                <img src="{{ asset('storage/avatars/' . Auth::user()->avatar) }}" 
+                                     alt="{{ Auth::user()->name }}" class="rounded-circle me-2" width="32" height="32">
+                            @else
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=3B82F6&color=fff" 
+                                     alt="{{ Auth::user()->name }}" class="rounded-circle me-2" width="32" height="32">
+                            @endif
+                            <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profil</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Pengaturan</a></li>
+                            <li><a class="dropdown-item" href="{{ route('profile.show') }}"><i class="fas fa-user me-2"></i>Profil</a></li>
+                            <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="fas fa-edit me-2"></i>Edit Profil</a></li>
+                            <li><a class="dropdown-item" href="{{ route('profile.password') }}"><i class="fas fa-lock me-2"></i>Ubah Password</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form action="{{ route('logout') }}" method="POST" class="m-0 p-0">

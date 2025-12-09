@@ -1,12 +1,11 @@
 <?php
-// app/Http/Controllers/MahasiswaController.php
-
-namespace App\Http\Controllers;
+namespace app\Http\Controllers;
 
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 
 class MahasiswaController extends Controller
+
 {
     // ==================== METHOD UNTUK FRONTEND (PUBLIC) ====================
     

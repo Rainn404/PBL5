@@ -16,17 +16,19 @@ class RoleMiddleware
      * @param  string  $role
      * @return mixed
      */
-    public function handle(Request $request, Closure $next, $role)
+    public function handle($request, Closure $next, $role)
     {
         // Cek jika user tidak terautentikasi
         if (!Auth::check()) {
             return redirect()->route('login');
         }
 
-        // Cek role user
+        // Cek role user dengan case-insensitive comparison
         $user = Auth::user();
+        $userRole = strtolower((string)$user->role);
+        $requiredRole = strtolower($role);
         
-        if ($user->role != $role) {
+        if ($userRole !== $requiredRole) {
             abort(403, 'Unauthorized action.');
         }
 

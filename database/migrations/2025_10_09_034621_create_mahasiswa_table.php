@@ -12,7 +12,7 @@ class CreateMahasiswaTable extends Migration
             $table->id();
             $table->string('nim')->unique();
             $table->string('nama');
-            $table->enum('status', ['Aktif', 'Tidak Aktif'])->default('Aktif');
+            $table->enum('status', ['Aktif', 'Non-Aktif', 'Cuti'])->default('Aktif');
             $table->timestamps();
         });
     }
