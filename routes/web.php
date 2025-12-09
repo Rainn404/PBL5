@@ -299,8 +299,13 @@ Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallb
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
+// ========================
+// User Dashboard Routes
+// ========================
+Route::middleware('auth')->group(function () {
+    Route::get('/profil', [UserDashboardController::class, 'profil'])->name('user.profil');
+    Route::get('/pesan', [UserDashboardController::class, 'pesan'])->name('user.pesan');
+    Route::get('/statistik', [UserDashboardController::class, 'statistik'])->name('user.statistik');
 });
 
 // ========================
@@ -310,5 +315,3 @@ Route::redirect('/admin', '/admin/dashboard');
 Route::fallback(function () {
     return view('errors.404');
 });
-
-// Move these routes inside the admin middleware group above

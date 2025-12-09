@@ -9,19 +9,16 @@ use App\Models\User;
 
 class GoogleController extends Controller
 {
-    // Redirect user ke halaman login Google
     public function redirectToGoogle()
     {
         return Socialite::driver('google')->redirect();
     }
 
-    // Callback setelah login Google berhasil
     public function handleGoogleCallback()
     {
         try {
             $googleUser = Socialite::driver('google')->user();
 
-            // Cek apakah user sudah ada berdasarkan email
             $user = User::updateOrCreate(
                 ['email' => $googleUser->getEmail()],
                 [
@@ -35,9 +32,22 @@ class GoogleController extends Controller
 
             Auth::login($user);
 
-            return redirect()->intended('/dashboard');
+            // 🔥 Jika email admin HIMA
+            if ($user->email === 'himapolitala.ti@gmail.com') {
+
+                // Pastikan role admin disimpan
+                if ($user->role !== 'admin') {
+                    $user->role = 'admin';
+                    $user->save();
+                }
+
+                return redirect()->route('admin.dashboard');
+            }
+
+            // 🔥 User biasa ke beranda
+            return redirect()->route('home');
+
         } catch (\Exception $e) {
-            // Kalau gagal, balik ke login
             return redirect('/login')->with('error', 'Login dengan Google gagal. Silakan coba lagi.');
         }
     }
