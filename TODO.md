@@ -10,11 +10,13 @@
 - [x] Add default role 'mahasiswa' for new Google users
 
 ### 🔄 Current Tasks
-- [ ] Test Google login functionality
+- [ ] Set Google OAuth environment variables
+- [ ] Test Google login functionality manually
 - [ ] Verify role assignment works correctly
-- [ ] Ensure existing users retain their roles
 
 ### 📋 Next Steps
-- Test the login flow with Google OAuth
-- Check if users can access role-based features after login
-- Verify dashboard redirection works properly
+- Set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and GOOGLE_REDIRECT_URI in .env file
+- Start Laravel server: php artisan serve
+- Test login flow: visit /login -> click "Login dengan Google" -> complete OAuth -> verify dashboard access
+- Check database: confirm new users get 'mahasiswa' role
+- Verify existing users retain their roles

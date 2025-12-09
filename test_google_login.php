@@ -6,6 +6,10 @@
 
 require_once 'vendor/autoload.php';
 
+// Bootstrap Laravel application
+$app = require_once 'bootstrap/app.php';
+$app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
+
 use Illuminate\Http\Request;
 use App\Models\User;
 use Laravel\Socialite\Facades\Socialite;
