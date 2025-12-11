@@ -32,19 +32,23 @@ class GoogleController extends Controller
 
             Auth::login($user);
 
-            // 🔥 Jika email admin HIMA
+            // SUPERADMIN
             if ($user->email === 'himapolitala.ti@gmail.com') {
+                $user->role = 'superadmin';
+                $user->save();
 
-                // Pastikan role admin disimpan
-                if ($user->role !== 'admin') {
-                    $user->role = 'admin';
-                    $user->save();
-                }
-
-                return redirect()->route('admin.dashboard');
+                return redirect('/admin/dashboard-admin');
             }
 
-            // 🔥 User biasa ke beranda
+            // ADMIN BIASA
+            if ($user->email === 'tipolitalaa@gmail.com') {
+                $user->role = 'admin';
+                $user->save();
+
+                return redirect('/admin/dashboard-admin');
+            }
+
+            // USER BIASA
             return redirect()->route('home');
 
         } catch (\Exception $e) {
