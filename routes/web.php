@@ -59,7 +59,6 @@ Route::get('/home', function () {
 // Berita Routes (Public)
 Route::prefix('berita')->name('berita.')->group(function () {
     Route::get('/', [BeritaController::class, 'publicIndex'])->name('index');
-    Route::get('/lainnya', [BeritaController::class, 'lainnya'])->name('lainnya');
     Route::get('/{id}', [BeritaController::class, 'publicShow'])->name('show');
 
     // Komentar Routes

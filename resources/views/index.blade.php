@@ -85,50 +85,57 @@
         </div>
     </section>
 
-    <!-- Berita Terbaru Section -->
-    <section class="berita">
-        <div class="container">
-            <h2 class="section-title">Berita Terbaru</h2>
-            <div class="berita-grid">
-                <div class="berita-card">
-                    <div class="berita-image">
-                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Workshop HIMA-TI">
-                    </div>
-                    <div class="berita-content">
-                        <span class="berita-date">15 Oktober 2023</span>
-                        <h3>Workshop Web Development Modern</h3>
-                        <p>HIMA-TI menyelenggarakan workshop web development dengan teknologi terkini untuk meningkatkan kompetensi anggota.</p>
-                        <a href="#" class="berita-link">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                <div class="berita-card">
-                    <div class="berita-image">
-                        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Prestasi HIMA-TI">
-                    </div>
-                    <div class="berita-content">
-                        <span class="berita-date">10 Oktober 2023</span>
-                        <h3>Anggota HIMA-TI Raih Juara 1 Hackathon Nasional</h3>
-                        <p>Tim dari HIMA-TI berhasil meraih juara 1 dalam kompetisi hackathon tingkat nasional yang diadakan di Jakarta.</p>
-                        <a href="#" class="berita-link">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                <div class="berita-card">
-                    <div class="berita-image">
-                        <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Kegiatan Sosial HIMA-TI">
-                    </div>
-                    <div class="berita-content">
-                        <span class="berita-date">5 Oktober 2023</span>
-                        <h3>HIMA-TI Gelar Bakti Sosial di Desa Tertinggal</h3>
-                        <p>Sebagai bentuk pengabdian masyarakat, HIMA-TI mengadakan kegiatan bakti sosial dan pelatihan komputer dasar.</p>
-                        <a href="#" class="berita-link">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="berita-more">
-                <a href="{{ url('/berita') }}" class="btn btn-outline">Lihat Semua Berita</a>
+<section class="berita">
+    <div class="container berita-wrapper">
+
+       <div class="berita-slider" id="beritaSlider">
+    @foreach($beritaSlider as $berita)
+        <div class="slider-item">
+            <img src="{{ Storage::url($berita->foto) }}" alt="{{ $berita->judul }}">
+
+            <div class="slider-overlay">
+                <span>{{ \Carbon\Carbon::parse($berita->tanggal)->format('d F Y') }}</span>
+                <h3>{{ $berita->judul }}</h3>
+                <p>{{ \Str::limit(strip_tags($berita->isi), 160) }}</p>
+                <a href="{{ route('berita.show', $berita->id_berita) }}" class="btn-berita-slider">
+    Baca Selengkapnya
+</a>
+
             </div>
         </div>
-    </section>
+    @endforeach
+</div>
+
+              <div class="berita-bawah">
+            @foreach($beritaBawah as $berita)
+                <div class="berita-kecil">
+                    <img src="{{ Storage::url($berita->foto) }}" alt="{{ $berita->judul }}">
+
+                    <div>
+                        <span>
+                            {{ \Carbon\Carbon::parse($berita->tanggal)->format('d M Y') }}
+                        </span>
+
+                        <h4>{{ $berita->judul }}</h4>
+
+                        <a href="{{ route('berita.show', $berita->id_berita) }}" class="btn-berita-mini">
+    Baca
+</a>
+
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        <div class="berita-action">
+           <a href="{{ route('berita.index') }}" class="btn-lihat-semua">
+    Lihat Semua Berita
+</a>
+
+        </div>
+
+    </div>
+</section>
 
     <!-- Prestasi Section -->
     <section class="prestasi">

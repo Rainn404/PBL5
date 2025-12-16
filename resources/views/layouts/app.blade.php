@@ -204,11 +204,299 @@
             font-size: 0.9rem;
             margin-top: 20px;
         }
+/* ==========================
+   BERITA TERBARU LAYOUT
+========================== */
+
+.berita-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.berita-slider {
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.berita-bawah {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.berita-bawah .berita-card {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    min-height: 90px;
+}
+
+.berita-bawah img {
+    width: 90px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.berita-bawah h4 {
+    font-size: 14px;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.berita-bawah span {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.berita-action {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.btn-lihat {
+    display: inline-block;
+    padding: 12px 28px;
+    border: 1.8px solid #2563eb;
+    color: #2563eb;
+    border-radius: 999px;
+    font-weight: 600;
+    transition: .25s ease;
+}
+
+.btn-lihat:hover {
+    background: #2563eb;
+    color: white;
+}
+/* SLIDER */
+.berita-slider {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+
+    display: flex;              /* 🔥 INI KUNCINYA */
+    scroll-behavior: smooth;
+}
+
+.slider-item {
+    flex: 0 0 100%;              /* 🔥 PAKSA 1 SLIDE = 1 LAYAR */
+    height: 420px;
+    position: relative;
+}
+
+
+.slider-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.slider-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 24px;
+    background: linear-gradient(to top, rgba(0,0,0,.75), transparent);
+    color: white;
+}
+
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,.5);
+    color: white;
+    border: none;
+    font-size: 28px;
+    padding: 10px 14px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.slider-btn.prev { left: 16px; }
+.slider-btn.next { right: 16px; }
+
+@media (max-width: 768px) {
+    .slider-item {
+        height: 260px;
+    }
+}
+/* === CAPTION SLIDER === */
+.slider-caption {
+    position: absolute;
+    bottom: 32px;
+    left: 40px;
+    right: 40px;
+    z-index: 15;
+    color: #ffffff;
+    max-width: 900px;
+}
+
+/* TANGGAL */
+.slider-date {
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.9;
+    margin-bottom: 6px;
+    display: block;
+}
+
+/* JUDUL */
+.slider-title {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1.25;
+    margin-bottom: 12px;
+    text-shadow: 0 3px 12px rgba(0,0,0,0.6);
+}
+
+/* DESKRIPSI */
+.slider-desc {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.7;
+    text-align: justify;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+    max-width: 820px;
+}
+
+/* BERITA BAWAH */
+.berita-bawah {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.berita-kecil {
+    display: flex;
+    gap: 12px;
+    background: white;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.berita-kecil img {
+    width: 90px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+.btn-berita-mini {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 6px 14px;
+    border: 1.5px solid #2563eb;
+    color: #2563eb;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all .2s ease;
+}
+
+.btn-berita-mini:hover {
+    background: #2563eb;
+    color: #fff;
+}
+/* === FIX BUTTON SLIDER === */
+.btn-berita-slider {
+    position: relative;
+    z-index: 20;
+    display: inline-block;
+    margin-top: 14px;
+    padding: 10px 22px;
+    background: #2563eb;
+    color: #ffffff !important;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,.25);
+    transition: all .25s ease;
+}
+
+.btn-berita-slider:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+}
+/* === BUTTON LIHAT SEMUA BERITA === */
+.btn-lihat-semua {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 28px;
+    border-radius: 50px;
+    border: 2px solid #2563eb;
+    color: #2563eb;
+    background: transparent;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-lihat-semua:hover {
+    background: #2563eb;
+    color: white;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
     </style>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
 </head>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const slider = document.getElementById("beritaSlider");
+    let index = 0;
+
+    function slideNext() {
+        const total = slider.children.length;
+        index = (index + 1) % total;
+        slider.scrollTo({
+            left: slider.clientWidth * index,
+            behavior: "smooth"
+        });
+    }
+
+    // AUTO SLIDE
+    setInterval(slideNext, 5000);
+
+    // SWIPE SUPPORT
+    let startX = 0;
+
+    slider.addEventListener("mousedown", e => startX = e.pageX);
+    slider.addEventListener("mouseup", e => {
+        if (e.pageX < startX - 50) slideNext();
+        if (e.pageX > startX + 50) {
+            index = Math.max(index - 1, 0);
+            slider.scrollTo({
+                left: slider.clientWidth * index,
+                behavior: "smooth"
+            });
+        }
+    });
+
+    slider.addEventListener("touchstart", e => startX = e.touches[0].clientX);
+    slider.addEventListener("touchend", e => {
+        const endX = e.changedTouches[0].clientX;
+        if (endX < startX - 50) slideNext();
+        if (endX > startX + 50) {
+            index = Math.max(index - 1, 0);
+            slider.scrollTo({
+                left: slider.clientWidth * index,
+                behavior: "smooth"
+            });
+        }
+    });
+});
+</script>
+
 
 <body>
 <nav class="navbar">

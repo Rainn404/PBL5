@@ -8,9 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    /**
-     * Tampilkan halaman login
-     */
     public function showLoginForm()
     {
         return view('auth.login');
@@ -23,20 +20,26 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        // Coba login dengan guard web (untuk semua user)
-        if (Auth::guard('web')->attempt($credentials)) {
+        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            $user = Auth::guard('web')->user();
+            // 🔥 HAPUS redirect lama Laravel
+            $request->session()->forget('url.intended');
 
-            // Redirect berdasarkan role
-            if ($user->role === 'super_admin') {
-                return redirect()->intended('/admin/pendaftaran');
-            } elseif ($user->role === 'admin') {
-                return redirect()->intended('/admin/dashboard');
-            } else {
-                return redirect()->intended('/dashboard');
+            $user = Auth::user();
+
+            // 🔐 SUPER ADMIN
+            if ($user->role === 'superadmin' || $user->role === 'super_admin') {
+                return redirect('/admin/dashboard');
             }
+
+            // 🔐 ADMIN
+            if ($user->role === 'admin') {
+                return redirect('/admin/dashboard');
+            }
+
+            // 👤 USER / MAHASISWA
+            return redirect('/'); // BERANDA
         }
 
         return back()->withErrors([
@@ -46,7 +49,7 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::guard('web')->logout();
+        Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

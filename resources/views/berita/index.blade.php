@@ -40,14 +40,13 @@
   }
 
   /* ===== SECTION BERITA ===== */
-  .news-section {
-    background: 
-      linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
-      url('https://maukuliah.ap-south-1.linodeobjects.com/gallery/005039/Gedung%202%20Politala-thumbnail.jpg')
-      no-repeat center center fixed;
-    background-size: cover;
-    padding: 60px 0;
-  }
+.news-section {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+    url('https://maukuliah.ap-south-1.linodeobjects.com/gallery/005039/Gedung%202%20Politala-thumbnail.jpg')
+    no-repeat center center;
+  background-size: cover;
+}
 
   /* ===== JUDUL SECTION ===== */
   .section-title {
@@ -173,62 +172,91 @@ body.page-berita {
 
 <main class="content">
   <!-- ===== HERO ===== -->
-  <section class="hero {{ $mode === 'utama' ? 'hero-utama' : 'hero-berita' }}">
-    @if(isset($mode) && $mode === 'utama')
-      <h1>HIMPUNAN MAHASISWA TEKNIK INFORMATIKA</h1>
-      <p>Wadah pengembangan potensi mahasiswa Teknik Informatika dalam bidang teknologi, kepemimpinan, dan sosial.</p>
-    @else
-      <h1>BERITA HIMA-TI</h1>
-      <p>Kumpulan berita, kegiatan, dan prestasi terkini dari Himpunan Mahasiswa Teknik Informatika Politeknik Negeri Tanah Laut.</p>
-    @endif
-  </section>
+<section class="hero">
+  <h1>BERITA HIMA-TI</h1>
+  <p>
+    Kumpulan berita, kegiatan, dan prestasi terkini dari
+    Himpunan Mahasiswa Teknik Informatika Politeknik Negeri Tanah Laut.
+  </p>
+</section>
 </main>
 
-  <!-- ===== BERITA SECTION ===== -->
-  <section class="news-section" style="margin-top: -30px;">
+<section class="news-section">
   <div class="container">
 
-    @if(isset($mode) && $mode === 'utama')
-      <h3 class="section-title">BERITA TERKINI</h3>
-    @else
-      <h3 class="section-title">BERITA LAINNYA</h3>
-    @endif
+    <h3 class="section-title">DAFTAR BERITA</h3>
 
-    @forelse($highlight as $b)
-      <div class="card-news">
-        <!-- Gambar di kiri -->
-        @if($b->foto)
-          <img src="{{ Storage::url($b->foto) }}" alt="Foto Berita">
-        @else
-          <img src="https://via.placeholder.com/250x180?text=No+Image" alt="Tidak ada foto">
-        @endif
+   @php
+  $featured = $berita->take(4);
+  $utama = $featured->first();
+  $samping = $featured->slice(1);
+  $rest = $berita->skip(4);
+@endphp
 
-        <!-- Teks di kanan -->
-        <div class="card-body">
-          <h5>{{ $b->judul }}</h5>
-          <p class="text-muted mb-1">
-            Posted by <strong>{{ $b->nama_penulis ?? 'Anonim' }}</strong> — {{ $b->created_at?->format('d M Y') }}
-          </p>
-          <p>{{ Str::limit(strip_tags($b->isi), 180, '...') }}</p>
-<a href="{{ route('berita.show', $b->id_berita) }}" 
-   class="btn px-3 py-2 text-white" 
-   style="background-color: #1f2942;">
-  READ MORE
-</a>
+{{-- ===============================
+     FEATURED (1 KIRI + 3 KANAN)
+================================ --}}
+<div class="news-featured">
 
+  {{-- KIRI --}}
+  <div class="news-featured-main">
+    <img src="{{ Storage::url($utama->foto) }}" alt="">
+    <div class="news-content">
+      <span class="news-category">{{ strtoupper($utama->kategori) }}</span>
+      <h3>{{ $utama->judul }}</h3>
+      <p>{{ Str::limit(strip_tags($utama->isi), 180) }}</p>
+
+      <a href="{{ route('berita.show', $utama->id_berita) }}"
+         class="btn-readmore">
+        READ MORE
+      </a>
+    </div>
+  </div>
+
+  {{-- KANAN --}}
+  <div class="news-featured-side">
+    @foreach($samping as $item)
+      <div class="news-side-item">
+        <img src="{{ Storage::url($item->foto) }}" alt="">
+        <div>
+          <span class="news-category">{{ strtoupper($item->kategori) }}</span>
+          <h4>{{ Str::limit($item->judul, 60) }}</h4>
+          <a href="{{ route('berita.show', $item->id_berita) }}"
+             class="btn-readmore-sm">
+            READ MORE
           </a>
         </div>
       </div>
-    @empty
-      <p class="text-center text-muted mt-4 mb-5">Belum ada berita yang tersedia.</p>
-    @endforelse
+    @endforeach
+  </div>
+
+</div>
+
+{{-- ===============================
+     GRID BAWAH (SISA BERITA)
+================================ --}}
+<div class="news-grid">
+  @foreach($rest as $item)
+    <div class="news-card">
+      <img src="{{ Storage::url($item->foto) }}" alt="">
+      <div class="news-body">
+        <span class="news-category">{{ strtoupper($item->kategori) }}</span>
+        <h5>{{ $item->judul }}</h5>
+        <p>{{ Str::limit(strip_tags($item->isi), 100) }}</p>
+      </div>
+      <div class="news-footer">
+        <a href="{{ route('berita.show', $item->id_berita) }}"
+           class="btn-readmore">
+          READ MORE
+        </a>
+      </div>
+    </div>
+  @endforeach
+</div>
 
 <!-- Tombol lihat semua (hanya muncul di halaman utama) -->
 @if(isset($mode) && $mode === 'utama')
   <div class="text-center mt-4 mb-5">
-    <a href="{{ route('berita.lainnya') }}" class="btn btn-berita px-4 py-2">
-      <i class="fas fa-layer-group me-2"></i> Lihat Semua Berita
-    </a>
   </div>
 @endif
   </div>

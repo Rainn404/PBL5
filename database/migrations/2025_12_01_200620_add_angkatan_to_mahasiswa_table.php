@@ -4,25 +4,24 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class AddAngkatanToMahasiswaTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
-        Schema::table('mahasiswa', function (Blueprint $table) {
-            $table->integer('angkatan')->nullable()->after('status');
+        // FIX: ganti mahasiswa -> mahasiswas
+        Schema::table('mahasiswas', function (Blueprint $table) {
+            if (!Schema::hasColumn('mahasiswas', 'angkatan')) {
+                $table->integer('angkatan')->nullable()->after('status');
+            }
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
-        Schema::table('mahasiswa', function (Blueprint $table) {
-            $table->dropColumn('angkatan');
+        Schema::table('mahasiswas', function (Blueprint $table) {
+            if (Schema::hasColumn('mahasiswas', 'angkatan')) {
+                $table->dropColumn('angkatan');
+            }
         });
     }
-};
+}

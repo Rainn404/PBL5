@@ -53,7 +53,7 @@
   <!-- NAVBAR -->
   <nav class="navbar">
     <div class="nav-wrap">
-      <a href="{{ route('berita.lainnya') }}" class="brand-logo">
+      <a href="{{ route('berita.index') }}" class="brand-logo">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M4 17.3V6.7A.9.9 0 0 1 4.9 5.8H19.1A.9.9 0 0 1 20 6.7V17.3A.9.9 0 0 1 19.1 18.2H4.9A.9.9 0 0 1 4 17.3Z" stroke="#1f2937" stroke-width="1.5"/>
           <path d="M14.55 12L9.45 9.18V14.82L14.55 12Z" stroke="#1f2937" stroke-width="1.5" stroke-linejoin="round"/>
@@ -67,10 +67,27 @@
   <main class="page">
 
     <!-- Artikel berita -->
-    <article class="article">
-      <a href="{{ route('berita.lainnya') }}" style="text-decoration:none;color:#007BFF;font-weight:700">&larr; Kembali ke Berita Lainnya</a>
+    <a href="{{ route('berita.index') }}" style="text-decoration:none;color:#007BFF;font-weight:700">
+  &larr; Kembali ke Daftar Berita
+</a>
 
       <h1>{{ $berita->judul }}</h1>
+      @if(!empty($berita->kategori))
+  <div style="margin-bottom:10px">
+    <span style="
+      display:inline-block;
+      padding:4px 10px;
+      font-size:12px;
+      font-weight:600;
+      color:#1d4ed8;
+      background:#e0ecff;
+      border-radius:999px;
+    ">
+      {{ strtoupper($berita->kategori) }}
+    </span>
+  </div>
+@endif
+
       <div class="meta">
         @php
           $tgl = $berita->tanggal ?? $berita->Tanggal_berita ?? $berita->created_at;
@@ -79,9 +96,12 @@
         @if($berita->nama_penulis) • Penulis: {{ $berita->nama_penulis }} @endif
       </div>
 
-      @if($berita->foto)
-        <img src="{{ Storage::url($berita->foto) }}" alt="{{ $berita->judul }}">
-      @endif
+    <img 
+  src="{{ $berita->foto_url }}" 
+  alt="{{ $berita->judul }}" 
+  loading="lazy"
+/>
+
 
       <div class="content">
         {!! nl2br(e($berita->isi)) !!}

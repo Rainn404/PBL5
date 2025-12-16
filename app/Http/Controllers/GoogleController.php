@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -17,42 +16,47 @@ class GoogleController extends Controller
     public function handleGoogleCallback()
     {
         try {
-            $googleUser = Socialite::driver('google')->user();
+            $googleUser = Socialite::driver('google')->stateless()->user();
 
-            $user = User::updateOrCreate(
+            // Ambil atau buat user
+            $user = User::firstOrCreate(
                 ['email' => $googleUser->getEmail()],
                 [
-                    'name' => $googleUser->getName(),
+                    'name'      => $googleUser->getName(),
                     'google_id' => $googleUser->getId(),
-                    'avatar' => $googleUser->getAvatar(),
-                    'password' => bcrypt('google_login'),
-                    'role' => 'mahasiswa', // Default role untuk user Google baru
+                    'avatar'    => $googleUser->getAvatar(),
+                    'password'  => bcrypt('google_login'),
+                    'role'      => 'mahasiswa',
                 ]
             );
 
-            Auth::login($user);
-
-            // SUPERADMIN
-            if ($user->email === 'himapolitala.ti@gmail.com') {
-                $user->role = 'superadmin';
-                $user->save();
-
-                return redirect('/admin/dashboard-admin');
-            }
-
-            // ADMIN BIASA
-            if ($user->email === 'tipolitalaa@gmail.com') {
+            // =========================
+            // ROLE BERDASARKAN EMAIL
+            // =========================
+            if ($user->email === 'superadmn.himati@gmail.com') {
+                $user->role = 'super_admin';
+            } elseif ($user->email === 'tipolitalaa@gmail.com') {
                 $user->role = 'admin';
-                $user->save();
-
-                return redirect('/admin/dashboard-admin');
+            } else {
+                $user->role = 'mahasiswa';
             }
 
-            // USER BIASA
-            return redirect()->route('home');
+            $user->save();
+
+            Auth::login($user, true);
+
+            // =========================
+            // REDIRECT YANG BENAR
+            // =========================
+            if (in_array($user->role, ['admin', 'super_admin'])) {
+                return redirect()->route('admin.dashboard');
+            }
+
+            return redirect()->route('dashboard');
 
         } catch (\Exception $e) {
-            return redirect('/login')->with('error', 'Login dengan Google gagal. Silakan coba lagi.');
+            return redirect('/login')
+                ->with('error', 'Login dengan Google gagal. Silakan coba lagi.');
         }
     }
 }

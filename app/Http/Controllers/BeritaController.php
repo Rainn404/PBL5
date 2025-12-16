@@ -32,7 +32,8 @@ class BeritaController extends Controller
         $validated = $request->validate([
             'judul'        => 'required|string|max:200',
             'isi'          => 'required|string',
-            'nama_penulis' => 'nullable|string|max:100',
+            'kategori'     => 'required|string|max:50',
+            'penulis'      => 'nullable|string|max:100',
             'tanggal'      => 'nullable|date',
             'foto'         => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -69,7 +70,8 @@ class BeritaController extends Controller
         $validated = $request->validate([
             'judul'        => 'required|string|max:200',
             'isi'          => 'required|string',
-            'nama_penulis' => 'nullable|string|max:100',
+            'kategori'     => 'required|string|max:50',
+            'penulis' => 'nullable|string|max:100',
             'tanggal'      => 'nullable|date',
             'foto'         => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -101,27 +103,14 @@ class BeritaController extends Controller
         return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil dihapus.');
     }
 
-    public function publicIndex()
-    {
-        $highlight = Berita::orderByDesc('Tanggal_berita')
-                            ->orderByDesc('Id_berita')
-                            ->take(3)
-                            ->get();
-                            
+public function publicIndex()
+{
+    $berita = Berita::orderByDesc('tanggal')
+        ->orderByDesc('id_berita')
+        ->get();
 
-        $mode = 'utama'; // penanda halaman utama
-        return view('berita.index', compact('highlight', 'mode'));
-    }
-
-    public function lainnya()
-    {
-        $beritaLainnya = Berita::orderByDesc('Tanggal_berita')
-                                ->orderByDesc('Id_berita')
-                                ->take(PHP_INT_MAX)
-                                ->get();
-
-        return view('berita.lainnya', compact('beritaLainnya'));
-    }
+    return view('berita.index', compact('berita'));
+}
 
     public function publicShow($id)
     {
