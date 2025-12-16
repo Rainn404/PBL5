@@ -88,7 +88,10 @@
        <div class="berita-slider" id="beritaSlider">
     @foreach($beritaSlider as $berita)
         <div class="slider-item">
-            <img src="{{ Storage::url($berita->foto) }}" alt="{{ $berita->judul }}">
+           <img src="{{ $berita->foto 
+    ? Storage::url($berita->foto) 
+    : asset('images/default-berita.jpg') }}" 
+alt="{{ $berita->judul }}">
 
             <div class="slider-overlay">
                 <span>{{ \Carbon\Carbon::parse($berita->tanggal)->format('d F Y') }}</span>
@@ -106,7 +109,10 @@
               <div class="berita-bawah">
             @foreach($beritaBawah as $berita)
                 <div class="berita-kecil">
-                    <img src="{{ Storage::url($berita->foto) }}" alt="{{ $berita->judul }}">
+                    <img src="{{ $berita->foto 
+    ? Storage::url($berita->foto) 
+    : asset('images/default-berita.jpg') }}" 
+alt="{{ $berita->judul }}">
 
                     <div>
                         <span>
