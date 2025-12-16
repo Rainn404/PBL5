@@ -13,11 +13,11 @@
 
     <style>
         /* === Navbar Fix === */
-        body {
-            margin: 0;
-            padding-top: 80px; /* Memberi ruang untuk navbar fixed */
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8fafc;
+       body{
+            margin:0;
+            padding-top:50px;
+            font-family:'Poppins',sans-serif;
+            background:#f8fafc;
         }
 
         .navbar {
@@ -26,7 +26,7 @@
             left: 0;
             right: 0;
             z-index: 1000;
-            background: #fff;
+            background: #5688de;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
@@ -56,9 +56,9 @@
 }
 
         .nav-container {
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 0 auto;
-            padding: 12px 20px;
+            padding: 10px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -78,34 +78,38 @@
             font-size: 1.4rem;
         }
 
-        .nav-menu {
-            display: flex;
-            gap: 24px;
-            align-items: center;
+        .nav-menu{
+            display:flex;
+            align-items:center;
+            gap:8px;
         }
 
-        .nav-link {
-            text-decoration: none;
-            color: #1e293b;
-            font-weight: 500;
-            transition: color 0.2s ease;
+        .nav-link{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            padding:8px 14px;
+            border-radius:8px;
+            text-decoration:none;
+            color:#fff;
+            font-weight:500;
+            transition:.2s;
         }
 
-        .nav-link:hover {
-            color: #0d6efd;
+       .nav-link:hover{
+            background:rgba(255,255,255,.18);
         }
 
-        .login-btn {
-            background: #0d6efd;
-            color: #fff !important;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: 600;
-            transition: background 0.3s;
+        .login-btn{
+            background:#ffc107;
+            color:#1e293b !important;
+            padding:8px 16px;
+            border-radius:8px;
+            font-weight:600;
         }
 
-        .login-btn:hover {
-            background: #2563eb;
+        .login-btn:hover{
+            background:#ffb300;
         }
 
         /* === Responsive Navbar === */
@@ -204,6 +208,105 @@
             font-size: 0.9rem;
             margin-top: 20px;
         }
+       .logo-wrap{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            text-decoration:none;
+            color:#fff;
+            font-weight:700;
+            font-size:1.2rem;
+        }
+
+
+.logo-wrap img{
+    width:42px;
+    height:42px;
+    object-fit:contain;
+}
+
+.logo-wrap span{
+    font-weight:700;
+    font-size:1.3rem;
+    color:#0d6efd;
+}
+.hero {
+    min-height: 100vh;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.hero-content {
+    max-width: 1100px;
+    width: 100%;
+    padding: 0 24px;
+}
+
+.hero-content p {
+    max-width: 900px;
+    margin: 0 auto 32px;
+}
+
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+/* Base button */
+.hero-buttons .btn {
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    display: inline-block;
+}
+
+/* OUTLINE PUTIH */
+.hero-buttons .btn-primary,
+.hero-buttons .btn-secondary {
+    background: transparent;        /* NO FILL */
+    border: 2px solid #ffffff;       /* GARIS PUTIH */
+    color: #ffffff;                  /* TEKS PUTIH */
+}
+
+/* Hover effect */
+.hero-buttons .btn-primary:hover,
+.hero-buttons .btn-secondary:hover {
+    background: #ffffff;
+    color: #2563eb;                  /* biru kontras */
+}
+.hero-buttons .btn {
+    padding: 12px 32px;
+    border-radius: 999px;        /* 👉 BULAT HALUS (PILL) */
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    display: inline-block;
+}
+
+/* Outline putih */
+.hero-buttons .btn-primary,
+.hero-buttons .btn-secondary {
+    background: transparent;
+    border: 2px solid #ffffff;
+    color: #ffffff;
+}
+
+/* Hover */
+.hero-buttons .btn-primary:hover,
+.hero-buttons .btn-secondary:hover {
+    background: #ffffff;
+    color: #2563eb;
+}
+
+
+
     </style>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -213,21 +316,20 @@
 <body>
 <nav class="navbar">
     <div class="nav-container">
-        <div class="nav-logo">
-            <a href="{{ url('/') }}">
-                <i class="fas fa-laptop-code"></i>
-                <span>HIMA-TI</span>
-            </a>
-        </div>
+
+        <a href="{{ url('/') }}" class="logo-wrap">
+            <img src="{{ asset('images/logo-ti.png') }}" alt="Logo">
+            SIMAWA
+        </a>
 
         <div class="nav-menu" id="navMenu">
-            <a href="{{ url('/home') }}" class="nav-link">Home</a>
-            <a href="{{ url('/divisi') }}" class="nav-link">Divisi</a>
-            <a href="{{ url('/jabatan') }}" class="nav-link">Jabatan</a>
-            <a href="{{ url('/anggota') }}" class="nav-link">Profil Anggota</a>
-            <a href="{{ url('/berita') }}" class="nav-link">Berita</a>
-            <a href="{{ url('/pendaftaran') }}" class="nav-link">Pendaftaran</a>
-            <a href="{{ url('/prestasi') }}" class="nav-link">Prestasi</a>
+            <a href="/home" class="nav-link active"><i class="fa fa-house"></i>Home</a>
+            <a href="/divisi" class="nav-link"><i class="fa fa-layer-group"></i>Divisi</a>
+            <a href="/jabatan" class="nav-link"><i class="fa fa-sitemap"></i>Jabatan</a>
+            <a href="/anggota" class="nav-link"><i class="fa fa-users"></i>Profil Anggota</a>
+            <a href="/berita" class="nav-link"><i class="fa fa-newspaper"></i>Berita</a>
+            <a href="/pendaftaran" class="nav-link"><i class="fa fa-clipboard-list"></i>Pendaftaran</a>
+            <a href="/prestasi" class="nav-link"><i class="fa fa-award"></i>Prestasi</a>
 
             @guest
                 <!-- Jika belum login -->
