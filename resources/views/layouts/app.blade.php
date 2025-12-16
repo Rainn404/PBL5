@@ -13,11 +13,11 @@
 
     <style>
         /* === Navbar Fix === */
-        body {
-            margin: 0;
-            padding-top: 80px; /* Memberi ruang untuk navbar fixed */
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8fafc;
+       body{
+            margin:0;
+            padding-top:50px;
+            font-family:'Poppins',sans-serif;
+            background:#f8fafc;
         }
 
         .navbar {
@@ -26,7 +26,7 @@
             left: 0;
             right: 0;
             z-index: 1000;
-            background: #fff;
+            background: #5688de;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
@@ -56,9 +56,9 @@
 }
 
         .nav-container {
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 0 auto;
-            padding: 12px 20px;
+            padding: 10px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -78,34 +78,38 @@
             font-size: 1.4rem;
         }
 
-        .nav-menu {
-            display: flex;
-            gap: 24px;
-            align-items: center;
+        .nav-menu{
+            display:flex;
+            align-items:center;
+            gap:8px;
         }
 
-        .nav-link {
-            text-decoration: none;
-            color: #1e293b;
-            font-weight: 500;
-            transition: color 0.2s ease;
+        .nav-link{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            padding:8px 14px;
+            border-radius:8px;
+            text-decoration:none;
+            color:#fff;
+            font-weight:500;
+            transition:.2s;
         }
 
-        .nav-link:hover {
-            color: #0d6efd;
+       .nav-link:hover{
+            background:rgba(255,255,255,.18);
         }
 
-        .login-btn {
-            background: #0d6efd;
-            color: #fff !important;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: 600;
-            transition: background 0.3s;
+        .login-btn{
+            background:#ffc107;
+            color:#1e293b !important;
+            padding:8px 16px;
+            border-radius:8px;
+            font-weight:600;
         }
 
-        .login-btn:hover {
-            background: #2563eb;
+        .login-btn:hover{
+            background:#ffb300;
         }
 
         /* === Responsive Navbar === */
@@ -204,247 +208,107 @@
             font-size: 0.9rem;
             margin-top: 20px;
         }
-/* ==========================
-   BERITA TERBARU LAYOUT
-========================== */
 
-.berita-wrapper {
+       .logo-wrap{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            text-decoration:none;
+            color:#fff;
+            font-weight:700;
+            font-size:1.2rem;
+        }
+
+
+.logo-wrap img{
+    width:42px;
+    height:42px;
+    object-fit:contain;
+}
+
+.logo-wrap span{
+    font-weight:700;
+    font-size:1.3rem;
+    color:#0d6efd;
+}
+.hero {
+    min-height: 100vh;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+
     display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.berita-slider {
-    border-radius: 16px;
-    overflow: hidden;
-}
-
-.berita-bawah {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-}
-
-.berita-bawah .berita-card {
-    display: flex;
-    gap: 12px;
-    padding: 12px;
-    min-height: 90px;
-}
-
-.berita-bawah img {
-    width: 90px;
-    height: 70px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-.berita-bawah h4 {
-    font-size: 14px;
-    line-height: 1.4;
-    margin: 0;
-}
-
-.berita-bawah span {
-    font-size: 12px;
-    color: #64748b;
-}
-
-.berita-action {
-    margin-top: 10px;
+    justify-content: center;
+    align-items: center;
     text-align: center;
 }
 
-.btn-lihat {
-    display: inline-block;
-    padding: 12px 28px;
-    border: 1.8px solid #2563eb;
-    color: #2563eb;
-    border-radius: 999px;
-    font-weight: 600;
-    transition: .25s ease;
-}
-
-.btn-lihat:hover {
-    background: #2563eb;
-    color: white;
-}
-/* SLIDER */
-.berita-slider {
-    position: relative;
-    overflow: hidden;
-    border-radius: 16px;
-
-    display: flex;              /* 🔥 INI KUNCINYA */
-    scroll-behavior: smooth;
-}
-
-.slider-item {
-    flex: 0 0 100%;              /* 🔥 PAKSA 1 SLIDE = 1 LAYAR */
-    height: 420px;
-    position: relative;
-}
-
-
-.slider-item img {
+.hero-content {
+    max-width: 1100px;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    padding: 0 24px;
 }
 
-.slider-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 24px;
-    background: linear-gradient(to top, rgba(0,0,0,.75), transparent);
-    color: white;
-}
-
-.slider-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0,0,0,.5);
-    color: white;
-    border: none;
-    font-size: 28px;
-    padding: 10px 14px;
-    cursor: pointer;
-    z-index: 10;
-}
-
-.slider-btn.prev { left: 16px; }
-.slider-btn.next { right: 16px; }
-
-@media (max-width: 768px) {
-    .slider-item {
-        height: 260px;
-    }
-}
-/* === CAPTION SLIDER === */
-.slider-caption {
-    position: absolute;
-    bottom: 32px;
-    left: 40px;
-    right: 40px;
-    z-index: 15;
-    color: #ffffff;
+.hero-content p {
     max-width: 900px;
+    margin: 0 auto 32px;
 }
 
-/* TANGGAL */
-.slider-date {
-    font-size: 14px;
-    font-weight: 600;
-    opacity: 0.9;
-    margin-bottom: 6px;
-    display: block;
-}
-
-/* JUDUL */
-.slider-title {
-    font-size: 30px;
-    font-weight: 800;
-    line-height: 1.25;
-    margin-bottom: 12px;
-    text-shadow: 0 3px 12px rgba(0,0,0,0.6);
-}
-
-/* DESKRIPSI */
-.slider-desc {
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 1.7;
-    text-align: justify;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.6);
-    max-width: 820px;
-}
-
-/* BERITA BAWAH */
-.berita-bawah {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    margin-top: 30px;
-}
-
-.berita-kecil {
+.hero-buttons {
     display: flex;
-    gap: 12px;
-    background: white;
-    border-radius: 12px;
-    padding: 12px;
-}
-
-.berita-kecil img {
-    width: 90px;
-    height: 70px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-.btn-berita-mini {
-    display: inline-block;
-    margin-top: 6px;
-    padding: 6px 14px;
-    border: 1.5px solid #2563eb;
-    color: #2563eb;
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all .2s ease;
-}
-
-.btn-berita-mini:hover {
-    background: #2563eb;
-    color: #fff;
-}
-/* === FIX BUTTON SLIDER === */
-.btn-berita-slider {
-    position: relative;
-    z-index: 20;
-    display: inline-block;
-    margin-top: 14px;
-    padding: 10px 22px;
-    background: #2563eb;
-    color: #ffffff !important;
-    border-radius: 999px;
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none;
-    box-shadow: 0 8px 20px rgba(0,0,0,.25);
-    transition: all .25s ease;
-}
-
-.btn-berita-slider:hover {
-    background: #1d4ed8;
-    transform: translateY(-2px);
-}
-/* === BUTTON LIHAT SEMUA BERITA === */
-.btn-lihat-semua {
-    display: inline-flex;
-    align-items: center;
     justify-content: center;
+    gap: 16px;
+}
+/* Base button */
+.hero-buttons .btn {
     padding: 12px 28px;
-    border-radius: 50px;
-    border: 2px solid #2563eb;
-    color: #2563eb;
-    background: transparent;
+    border-radius: 10px;
     font-weight: 600;
-    font-size: 14px;
     text-decoration: none;
-    transition: all 0.3s ease;
-    cursor: pointer;
+    transition: all 0.25s ease;
+    display: inline-block;
 }
 
-.btn-lihat-semua:hover {
-    background: #2563eb;
-    color: white;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+/* OUTLINE PUTIH */
+.hero-buttons .btn-primary,
+.hero-buttons .btn-secondary {
+    background: transparent;        /* NO FILL */
+    border: 2px solid #ffffff;       /* GARIS PUTIH */
+    color: #ffffff;                  /* TEKS PUTIH */
 }
 
+/* Hover effect */
+.hero-buttons .btn-primary:hover,
+.hero-buttons .btn-secondary:hover {
+    background: #ffffff;
+    color: #2563eb;                  /* biru kontras */
+}
+.hero-buttons .btn {
+    padding: 12px 32px;
+    border-radius: 999px;        /* 👉 BULAT HALUS (PILL) */
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    display: inline-block;
+}
+
+/* Outline putih */
+.hero-buttons .btn-primary,
+.hero-buttons .btn-secondary {
+    background: transparent;
+    border: 2px solid #ffffff;
+    color: #ffffff;
+}
+
+/* Hover */
+.hero-buttons .btn-primary:hover,
+.hero-buttons .btn-secondary:hover {
+    background: #ffffff;
+    color: #2563eb;
+}
+
+
+
+>>>>>>> a0053e8099db0ecdcfc821fda7d5bf38f17a2adb
     </style>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -501,21 +365,20 @@ document.addEventListener("DOMContentLoaded", () => {
 <body>
 <nav class="navbar">
     <div class="nav-container">
-        <div class="nav-logo">
-            <a href="{{ url('/') }}">
-                <i class="fas fa-laptop-code"></i>
-                <span>HIMA-TI</span>
-            </a>
-        </div>
+
+        <a href="{{ url('/') }}" class="logo-wrap">
+            <img src="{{ asset('images/logo-ti.png') }}" alt="Logo">
+            SIMAWA
+        </a>
 
         <div class="nav-menu" id="navMenu">
-            <a href="{{ url('/home') }}" class="nav-link">Home</a>
-            <a href="{{ url('/divisi') }}" class="nav-link">Divisi</a>
-            <a href="{{ url('/jabatan') }}" class="nav-link">Jabatan</a>
-            <a href="{{ url('/anggota') }}" class="nav-link">Profil Anggota</a>
-            <a href="{{ url('/berita') }}" class="nav-link">Berita</a>
-            <a href="{{ url('/pendaftaran') }}" class="nav-link">Pendaftaran</a>
-            <a href="{{ url('/prestasi') }}" class="nav-link">Prestasi</a>
+            <a href="/home" class="nav-link active"><i class="fa fa-house"></i>Home</a>
+            <a href="/divisi" class="nav-link"><i class="fa fa-layer-group"></i>Divisi</a>
+            <a href="/jabatan" class="nav-link"><i class="fa fa-sitemap"></i>Jabatan</a>
+            <a href="/anggota" class="nav-link"><i class="fa fa-users"></i>Profil Anggota</a>
+            <a href="/berita" class="nav-link"><i class="fa fa-newspaper"></i>Berita</a>
+            <a href="/pendaftaran" class="nav-link"><i class="fa fa-clipboard-list"></i>Pendaftaran</a>
+            <a href="/prestasi" class="nav-link"><i class="fa fa-award"></i>Prestasi</a>
 
             @guest
                 <!-- Jika belum login -->

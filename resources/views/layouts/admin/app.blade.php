@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin - HIMA Dashboard')</title>
-    
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -13,249 +13,157 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <style>
-        :root {
-            --primary-color: #0d6efd;
-            --secondary-color: #030304;
-            --success-color: #1cc88a;
-            --info-color: #36b9cc;
-            --warning-color: #f6c23e;
-            --danger-color: #e74a3b;
-            --light-color: #f8f9fc;
-            --black-color: #020203;
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8f9fc;
-        }
-        
-        #wrapper {
-            display: flex;
-            width: 100%;
-            min-height: 100vh;
-            flex-wrap: nowrap;
-        }
-        
-        /* Sidebar Styles */
-        #sidebar {
-            flex: 0 0 280px;
-            min-width: 280px;
-            max-width: 280px;
-            width: 280px;
-            background: #fff;
-            color: #000000;
-            transition: all 0.3s;
-            min-height: 100vh;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-            overflow-y: auto;
-            position: relative;
-            z-index: 1;
-        }
-        
-        #sidebar .sidebar-header {
-            padding: 25px 20px;
-            background: linear-gradient(180deg, var(--primary-color) 0%, #224abe 100%);
-            color: #fff;
-            text-align: center;
-        }
-        
-        #sidebar .sidebar-header h4 {
-            font-weight: 700;
-            margin-bottom: 5px;
-            font-size: 1.5rem;
-        }
-        
-        #sidebar .sidebar-header small {
-            font-size: 0.85rem;
-            opacity: 0.9;
-        }
-        
-        .sidebar-nav {
-            padding: 20px 0;
-        }
-        
-        .sidebar-nav .nav-section {
-            padding: 0 20px;
-            margin-bottom: 25px;
-        }
-        
-        .sidebar-nav .nav-section-title {
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--secondary-color);
-            margin-bottom: 15px;
-            letter-spacing: 0.5px;
-        }
-        
-        .sidebar-nav .nav-item {
-            margin-bottom: 8px;
-        }
-        
-        .sidebar-nav .nav-link {
-            color: #010202;
-            padding: 12px 15px;
-            border-radius: 8px;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        
-        .sidebar-nav .nav-link:hover {
-            color: var(--primary-color);
-            background-color: #f8f9fa;
-        }
-        
-        .sidebar-nav .nav-link.active {
-            color: var(--primary-color);
-            background-color: #eef2ff;
-            font-weight: 600;
-        }
-        
-        .sidebar-nav .nav-link i {
-            width: 20px;
-            text-align: center;
-            margin-right: 12px;
-            font-size: 1rem;
-        }
-        
-        .sidebar-nav .checkbox-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
-            border-radius: 8px;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        
-        .sidebar-nav .checkbox-item:hover {
-            background-color: #f8f9fa;
-        }
-        
-        .sidebar-nav .checkbox-item.checked {
-            color: var(--primary-color);
-            background-color: #eef2ff;
-            font-weight: 600;
-        }
-        
-        .sidebar-nav .checkbox-icon {
-            width: 18px;
-            height: 18px;
-            border: 2px solid #d1d3e2;
-            border-radius: 3px;
-            margin-right: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-        
-        .sidebar-nav .checkbox-item.checked .checkbox-icon {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        
-        .sidebar-nav .checkbox-item.checked .checkbox-icon::after {
-            content: '✓';
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        
-        .nav-divider {
-            height: 1px;
-            background: #e3e6f0;
-            margin: 20px;
-        }
-        
-        /* Content Styles */
-        #content {
-            flex: 1 1 auto;
-            width: 100%;
-            padding: 20px;
-            min-height: 100vh;
-            transition: all 0.3s;
-            overflow: hidden;
-        }
-        
-        .navbar {
-            background: #fff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            border-radius: 8px;
-        }
-        
-        .card {
-            border: none;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(0, 0, 0, 0.15);
-            margin-bottom: 20px;
-            border-radius: 12px;
-        }
-        
-        .card-header {
-            background: #fff;
-            border-bottom: 1px solid #e3e6f0;
-            font-weight: 600;
-            padding: 20px;
-            border-radius: 12px 12px 0 0 !important;
-        }
-        
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            border-radius: 8px;
-            font-weight: 500;
-        }
-        
-        .btn-primary:hover {
-            background-color: #2e59d9;
-            border-color: #2e59d9;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            #sidebar {
-                flex: 0 0 80px;
-                min-width: 80px;
-                max-width: 80px;
-                width: 80px;
-            }
-            
-            #content {
-                overflow: auto;
-            }
-            
-            #sidebar .sidebar-header h4,
-            #sidebar .sidebar-header small,
-            #sidebar .nav-link span,
-            #sidebar .nav-section-title,
-            #sidebar .checkbox-item span {
-                display: none;
-            }
-            
-            #sidebar .nav-link {
-                padding: 15px;
-                justify-content: center;
-            }
-            
-            #sidebar .nav-link i {
-                margin-right: 0;
-                font-size: 1.2rem;
-            }
-            
-            #sidebar .checkbox-item {
-                padding: 15px;
-                justify-content: center;
-            }
-            
-            #sidebar .checkbox-icon {
-                margin-right: 0;
-            }
-        }
-    </style>
+<style>
+:root {
+    --primary-color: #0d6efd;
+    --secondary-color: #030304;
+}
+
+/* ================= BODY ================= */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8f9fc;
+    overflow: hidden;
+}
+
+/* ================= WRAPPER ================= */
+#wrapper {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+
+/* ================= SIDEBAR ================= */
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    min-width: 280px;
+    max-width: 280px;
+    height: 100vh;
+    background: #fff;
+    color: #000;
+    box-shadow: 0 0.15rem 1.75rem rgba(58, 59, 69, 0.15);
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+/* Sidebar header */
+#sidebar .sidebar-header {
+    padding: 25px 20px;
+    background: linear-gradient(180deg, var(--primary-color), #224abe);
+    color: #fff;
+    text-align: center;
+}
+
+.sidebar-nav {
+    padding: 20px 0;
+}
+
+.sidebar-nav .nav-item {
+    margin-bottom: 6px;
+}
+
+/* ================= NAV LINK ================= */
+.sidebar-nav .nav-link {
+    display: flex;                 /* 🔑 TAMBAHAN */
+    align-items: center;           /* 🔑 TAMBAHAN */
+    padding: 10px 15px;
+    color: #000;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: 0.3s;
+    gap: 12px;                     /* 🔑 TAMBAHAN */
+}
+
+/* Ikon */
+.sidebar-nav .nav-link i {
+    width: 22px;
+    font-size: 1.1rem;             /* 🔑 TAMBAHAN */
+    line-height: 1;                /* 🔑 TAMBAHAN */
+    vertical-align: middle;        /* 🔑 TAMBAHAN */
+    position: relative;            /* 🔑 TAMBAHAN */
+    top: -1px;                     /* 🔑 TAMBAHAN (opsional, biar pas) */
+}
+
+/* Teks */
+.sidebar-nav .nav-link span {
+    line-height: 1.4;              /* 🔑 TAMBAHAN */
+}
+
+.sidebar-nav .nav-link:hover {
+    background: #f1f3f9;
+    color: var(--primary-color);
+}
+
+.sidebar-nav .nav-link.active {
+    background: #eef2ff;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.nav-divider {
+    height: 1px;
+    background: #e3e6f0;
+    margin: 20px;
+}
+
+/* ================= CONTENT ================= */
+#content {
+    margin-left: 280px;
+    flex: 1;
+    height: 100vh;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* ================= NAVBAR ================= */
+.navbar {
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,.1);
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+/* ================= CARD ================= */
+.card {
+    border: none;
+    box-shadow: 0 0.15rem 1.75rem rgba(0,0,0,.15);
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+
+    #sidebar {
+        width: 80px;
+        min-width: 80px;
+        max-width: 80px;
+    }
+
+    #content {
+        margin-left: 80px;
+    }
+
+    #sidebar .sidebar-header h4,
+    #sidebar .sidebar-header small,
+    #sidebar .nav-link span {
+        display: none;
+    }
+
+    #sidebar .nav-link {
+        justify-content: center;
+    }
+
+    #sidebar .nav-link i {
+        margin-right: 0;
+        font-size: 1.2rem;
+        top: 0; /* 🔑 reset agar tetap center di mobile */
+    }
+}
+</style>
     
     @stack('styles')
 </head>
@@ -345,6 +253,47 @@
                         <span>Data Sanksi</span>
                     </a>
                 </li>
+
+                <!-- SISTEM AHP (Menu Utama) -->
+<hr class="nav-divider">
+
+<li class="nav-item">
+    <a href="{{ route('admin.ahp.perbandingan') }}" 
+       class="nav-link {{ request()->is('admin/ahp/perbandingan') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-project-diagram"></i>
+        <p>Perbandingan AHP</p>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a href="{{ route('admin.ahp.hitung') }}" class="nav-link">
+        <i class="nav-icon fas fa-calculator"></i>
+        <p>Hitung AHP</p>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a href="{{ route('admin.ahp.hasil') }}" class="nav-link">
+        <i class="nav-icon fas fa-chart-bar"></i>
+        <p>Hasil Perhitungan</p>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a href="{{ route('admin.ahp.ranking') }}" class="nav-link">
+        <i class="nav-icon fas fa-trophy"></i>
+        <p>Ranking Mahasiswa</p>
+    </a>
+</li>
+
+<!-- Data Master Kriteria -->
+<li class="nav-item">
+    <a href="{{ route('admin.criteria.index') }}" 
+       class="nav-link {{ Request::routeIs('criteria.*') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-list-alt"></i>
+        <p>Kelola Kriteria</p>
+    </a>
+</li>
                 
                 <hr class="nav-divider">
                 

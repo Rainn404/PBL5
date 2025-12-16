@@ -27,6 +27,8 @@ use App\Http\Controllers\Admin\DivisiController as AdminDivisiController;
 use App\Http\Controllers\Admin\AnggotaController as AdminAnggotaController;
 use App\Http\Controllers\Admin\PrestasiController as AdminPrestasiController;
 use App\Http\Controllers\Admin\PendaftaranController as AdminPendaftaranController;
+use App\Http\Controllers\Admin\CriterionController;
+use App\Http\Controllers\admin\AhpController;
 
 /*
 |--------------------------------------------------------------------------
@@ -313,4 +315,71 @@ Route::middleware('auth')->group(function () {
 Route::redirect('/admin', '/admin/dashboard');
 Route::fallback(function () {
     return view('errors.404');
+});
+// CRUD Kriteria (rapi & aman)
+Route::prefix('admin')->name('admin.')->group(function () {
+
+    // prefix khusus kriteria
+    Route::prefix('criteria')->name('criteria.')->group(function () {
+
+        // Index & create & store (statis)
+        Route::get('/', [CriterionController::class, 'index'])->name('index');
+        Route::get('/create', [CriterionController::class, 'create'])->name('create');
+        Route::post('/', [CriterionController::class, 'store'])->name('store');
+
+        // Static actions (letakkan sebelum parameter routes untuk menghindari clash)
+        Route::post('/update-order', [CriterionController::class, 'updateOrder'])
+            ->name('update-order');
+
+        Route::get('/export', [CriterionController::class, 'export'])
+            ->name('export');
+
+        // Parameter routes (show / edit / update / delete / toggle)
+        Route::get('/{criterion}', [CriterionController::class, 'show'])->name('show');
+        Route::get('/{criterion}/edit', [CriterionController::class, 'edit'])->name('edit');
+
+        Route::patch('/{criterion}/toggle-status', [CriterionController::class, 'toggleStatus'])
+            ->name('toggle-status');
+
+        Route::put('/{criterion}', [CriterionController::class, 'update'])->name('update');
+        Route::delete('/{criterion}', [CriterionController::class, 'destroy'])->name('destroy');
+    });
+
+});
+Route::prefix('admin')->middleware(['auth'])->group(function () {
+    
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    
+    // Kriteria (CRUD) - gunakan CriterionController yang sudah ada
+    Route::prefix('criteria')->group(function () {
+        Route::get('/', [CriterionController::class, 'index'])->name('admin.criteria.index');
+        Route::get('/create', [CriterionController::class, 'create'])->name('admin.criteria.create');
+        Route::post('/store', [CriterionController::class, 'store'])->name('admin.criteria.store');
+        Route::get('/{id}/edit', [CriterionController::class, 'edit'])->name('admin.criteria.edit');
+        Route::put('/{id}/update', [CriterionController::class, 'update'])->name('admin.criteria.update');
+        Route::delete('/{id}/destroy', [CriterionController::class, 'destroy'])->name('admin.criteria.destroy');
+    });
+    
+    // AHP (Perhitungan)
+    Route::prefix('ahp')->group(function () {
+        Route::get('/', [AhpController::class, 'index'])->name('admin.ahp.index');
+        Route::get('/perbandingan', [AhpController::class, 'perbandingan'])->name('admin.ahp.perbandingan');
+        Route::post('/perbandingan/store', [AhpController::class, 'storePerbandingan'])->name('admin.ahp.storePerbandingan');
+        Route::get('/hitung', [AhpController::class, 'hitung'])->name('admin.ahp.hitung');
+        Route::post('/hitung/proses', [AhpController::class, 'prosesHitung'])->name('admin.ahp.prosesHitung');
+        Route::get('/hasil', [AhpController::class, 'hasil'])->name('admin.ahp.hasil');
+        Route::get('/ranking', [AhpController::class, 'ranking'])->name('admin.ahp.ranking');
+        Route::get('/subkriteria', [AhpController::class, 'subkriteria'])->name('admin.ahp.subkriteria');
+    });
+    
+    // Mahasiswa (jika ada)
+    Route::prefix('mahasiswa')->group(function () {
+        Route::get('/', [MahasiswaController::class, 'index'])->name('admin.mahasiswa.index');
+    });
+    
+    // Home redirect
+    Route::get('/', function () {
+        return redirect()->route('admin.dashboard');
+    });
 });
