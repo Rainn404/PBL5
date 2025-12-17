@@ -305,8 +305,6 @@
     background: #ffffff;
     color: #2563eb;
 }
-
-
     </style>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -518,5 +516,3 @@ document.addEventListener("DOMContentLoaded", () => {
     </script>
 </body>
 </html>
-
-

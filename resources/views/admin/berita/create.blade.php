@@ -18,38 +18,6 @@
                     @error('judul') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
 
- <div class="mb-3">
-    <label for="kategori" class="form-label">Kategori Berita</label>
-    <select
-        class="form-select @error('kategori') is-invalid @enderror"
-        id="kategori"
-        name="kategori"
-        required
-    >
-        <option value="">-- Pilih Kategori --</option>
-
-        @php
-            $kategoriList = [
-                'Kegiatan',
-                'Prestasi',
-                'Pengumuman',
-                'Kerja Sama',
-                'Akademik'
-            ];
-        @endphp
-
-        @foreach($kategoriList as $kat)
-            <option value="{{ $kat }}" {{ old('kategori') === $kat ? 'selected' : '' }}>
-                {{ $kat }}
-            </option>
-        @endforeach
-    </select>
-
-    @error('kategori')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
-
                 <div class="mb-3">
                     <label for="isi" class="form-label">Isi Berita</label>
                     <textarea class="form-control @error('isi') is-invalid @enderror" id="isi" 

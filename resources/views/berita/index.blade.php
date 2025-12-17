@@ -202,7 +202,6 @@ body.page-berita {
   <div class="news-featured-main">
     <img src="{{ Storage::url($utama->foto) }}" alt="">
     <div class="news-content">
-      <span class="news-category">{{ strtoupper($utama->kategori) }}</span>
       <h3>{{ $utama->judul }}</h3>
       <p>{{ Str::limit(strip_tags($utama->isi), 180) }}</p>
 
@@ -219,8 +218,9 @@ body.page-berita {
       <div class="news-side-item">
         <img src="{{ Storage::url($item->foto) }}" alt="">
         <div>
-          <span class="news-category">{{ strtoupper($item->kategori) }}</span>
-          <h4>{{ Str::limit($item->judul, 60) }}</h4>
+          <h4 class="fw-bold">
+    {{ Str::limit($item->judul, 60) }}
+</h4>
           <a href="{{ route('berita.show', $item->id_berita) }}"
              class="btn-readmore-sm">
             READ MORE
@@ -240,7 +240,6 @@ body.page-berita {
     <div class="news-card">
       <img src="{{ Storage::url($item->foto) }}" alt="">
       <div class="news-body">
-        <span class="news-category">{{ strtoupper($item->kategori) }}</span>
         <h5>{{ $item->judul }}</h5>
         <p>{{ Str::limit(strip_tags($item->isi), 100) }}</p>
       </div>

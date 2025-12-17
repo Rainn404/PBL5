@@ -2,7 +2,96 @@
 
 @section('title', 'HIMA-TI - Beranda')
 <style>
-    
+.news-grid{
+    display: flex;
+    gap: 20px;
+    margin-top: 30px;
+    align-items: stretch;
+}
+
+.news-card{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.news-body{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.news-body a{
+    margin-top: auto;
+}
+.btn-read {
+    align-self: flex-start;   /* tidak full width */
+    padding: 6px 14px;        /* kecil & rapi */
+    font-size: 12px;
+    border-radius: 8px;
+    margin-top: auto;
+}
+
+/* SLIDER */
+#headlineCarousel {
+    height: 300px;
+    overflow: hidden;
+    position: relative;
+}
+
+#headlineCarousel .carousel-item,
+#headlineCarousel img {
+    height: 300px;
+}
+
+#headlineCarousel img {
+    object-fit: cover;
+}
+
+/* CAPTION */
+.carousel-caption-custom {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    max-width: 55%;
+    background: rgba(0,0,0,0.6);
+    padding: 14px 16px;
+    border-radius: 10px;
+    color: #fff;
+    z-index: 5;
+}
+
+/* JUDUL */
+.carousel-caption-custom h5 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    line-height: 1.3;
+    color: #fff;
+}
+
+/* DESKRIPSI */
+.carousel-caption-custom p {
+    font-size: 13px;
+    line-height: 1.4;
+    margin-bottom: 10px;
+    color: #ddd;
+}
+
+/* BUTTON */
+.carousel-caption-custom a {
+    font-size: 13px;
+    padding: 6px 12px;
+}
+
+
+/* Responsive HP */
+@media(max-width:768px){
+    .news-grid{
+        flex-direction: column;
+    }
+}
+
     </style>
 @section('content')
 
@@ -82,57 +171,72 @@
         </div>
     </section>
 
-<section class="berita">
-    <div class="container berita-wrapper">
+@if($berita->count() > 0)
+<div class="container mt-4">
 
-       <div class="berita-slider" id="beritaSlider">
-    @foreach($beritaSlider as $berita)
-        <div class="slider-item">
-            <img src="{{ Storage::url($berita->foto) }}" alt="{{ $berita->judul }}">
+    <div id="headlineCarousel"
+         class="carousel slide"
+         data-bs-ride="carousel"
+         data-bs-interval="5000">
 
-            <div class="slider-overlay">
-                <span>{{ \Carbon\Carbon::parse($berita->tanggal)->format('d F Y') }}</span>
-                <h3>{{ $berita->judul }}</h3>
-                <p>{{ \Str::limit(strip_tags($berita->isi), 160) }}</p>
-                <a href="{{ route('berita.show', $berita->id_berita) }}" class="btn-berita-slider">
-    Baca Selengkapnya
-</a>
+        <div class="carousel-inner">
+
+            @foreach($berita->take(1) as $key => $item)
+            <div class="carousel-item active">
+
+                <img src="{{ asset('storage/'.$item->foto) }}"
+                     class="d-block w-100"
+                     alt="{{ $item->judul }}">
+
+                <div class="carousel-caption-custom">
+                    <h5>{{ $item->judul }}</h5>
+                    <p>{{ \Illuminate\Support\Str::limit(strip_tags($item->isi), 120) }}</p>
+                    <a href="{{ route('berita.show', $item->id_berita) }}"
+                       class="btn btn-primary btn-sm">
+                        Baca Selengkapnya
+                    </a>
+                </div>
 
             </div>
-        </div>
-    @endforeach
-</div>
-
-              <div class="berita-bawah">
-            @foreach($beritaBawah as $berita)
-                <div class="berita-kecil">
-                    <img src="{{ Storage::url($berita->foto) }}" alt="{{ $berita->judul }}">
-
-                    <div>
-                        <span>
-                            {{ \Carbon\Carbon::parse($berita->tanggal)->format('d M Y') }}
-                        </span>
-
-                        <h4>{{ $berita->judul }}</h4>
-
-                        <a href="{{ route('berita.show', $berita->id_berita) }}" class="btn-berita-mini">
-    Baca
-</a>
-
-                    </div>
-                </div>
             @endforeach
-        </div>
-
-        <div class="berita-action">
-           <a href="{{ route('berita.index') }}" class="btn-lihat-semua">
-    Lihat Semua Berita
-</a>
 
         </div>
 
     </div>
-</section>
+
+</div>
+@endif
+
+
+@if($berita->count() > 1)
+<div class="container mt-4">
+    <div class="news-grid">
+
+        @foreach($berita->skip(1)->take(3) as $item)
+        <div class="news-card">
+
+            <img src="{{ asset('storage/'.$item->foto) }}"
+                 alt="{{ $item->judul }}">
+
+            <div class="news-body">
+                <h6>{{ $item->judul }}</h6>
+                <p>{{ \Illuminate\Support\Str::limit(strip_tags($item->isi), 80) }}</p>
+                <a href="{{ route('berita.show', $item->id_berita) }}"
+   class="btn btn-primary btn-sm mt-auto">
+   Baca Selengkapnya
+</a>
+
+            </div>
+
+        </div>
+        @endforeach
+
+    </div>
+</div>
+@endif
+
+
+
 
     <!-- Prestasi Section -->
     <section class="prestasi">
