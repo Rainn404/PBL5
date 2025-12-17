@@ -2212,9 +2212,36 @@ section {
     align-items: start;
 }
 
+
 @media (max-width: 768px) {
     .sidebar-container {
         grid-template-columns: 1fr;
         gap: 20px;
     }
+}
+/* ===== SIDEBAR ACTIVE MENU (FORCE) ===== */
+.sidebar .sidebar-nav .nav-link {
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: #444;
+  transition: all 0.25s ease;
+}
+
+/* hover */
+.sidebar .sidebar-nav .nav-link:hover {
+  background-color: #e9f0ff;
+  color: #2563eb;
+}
+
+/* ACTIVE */
+.sidebar .sidebar-nav .nav-link.active {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+}
+
+/* icon ikut aktif */
+.sidebar .sidebar-nav .nav-link.active i {
+  color: #ffffff !important;
 }

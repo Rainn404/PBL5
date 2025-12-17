@@ -95,7 +95,10 @@
       @if($berita->nama_penulis) • Penulis: {{ $berita->nama_penulis }} @endif
     </div>
 
-    <img src="{{ $berita->foto_url }}"
+    @if($berita->foto)
+    <img src="{{ Storage::url($berita->foto) }}" alt="{{ $berita->judul }}">
+@endif
+
          alt="{{ $berita->judul }}"
          class="img-fluid">
 
@@ -220,7 +223,7 @@ function closeLoginModal() {
         <h5 class="fw-bold mb-2">Login Diperlukan</h5>
 
         <p class="text-muted mb-4">
-          Silakan login terlebih dahulu<br>
+          Silakan login/Buat Akun terlebih dahulu<br>
           untuk menambahkan komentar.
         </p>
 
