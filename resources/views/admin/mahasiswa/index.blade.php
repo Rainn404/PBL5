@@ -55,11 +55,14 @@
                         <table class="table table-bordered" width="100%" cellspacing="0">
                             <thead>
                                 <tr style="background-color: #e6f2ff;">
-                                    <th class="text-center align-middle" style="width: 15%; color: #1a73e8;">NIM</th>
-                                    <th class="text-center align-middle" style="width: 25%; color: #1a73e8;">Nama</th>
-                                    <th class="text-center align-middle" style="width: 15%; color: #1a73e8;">Angkatan</th>
-                                    <th class="text-center align-middle" style="width: 20%; color: #1a73e8;">Status</th>
-                                    <th class="text-center align-middle" style="width: 25%; color: #1a73e8;">Aksi</th>
+                                    <th class="text-center align-middle" style="width: 10%; color: #1a73e8;">NIM</th>
+                                    <th class="text-center align-middle" style="width: 18%; color: #1a73e8;">Nama</th>
+                                    <th class="text-center align-middle" style="width: 8%; color: #1a73e8;">IPK</th>
+                                    <th class="text-center align-middle" style="width: 12%; color: #1a73e8;">Juara</th>
+                                    <th class="text-center align-middle" style="width: 12%; color: #1a73e8;">Tingkatan</th>
+                                    <th class="text-center align-middle" style="width: 10%; color: #1a73e8;">Ket</th>
+                                    <th class="text-center align-middle" style="width: 12%; color: #1a73e8;">Status</th>
+                                    <th class="text-center align-middle" style="width: 18%; color: #1a73e8;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -72,16 +75,57 @@
                                         <strong>{{ $mahasiswas->nama }}</strong>
                                     </td>
                                     <td class="text-center align-middle">
+                                        @if($mahasiswas->ipk)
+                                            <span class="badge bg-info text-white">{{ number_format($mahasiswas->ipk, 2) }}</span>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        @php
+                                            $juaraLabels = [1 => 'Peserta', 3 => 'Juara 3', 5 => 'Juara 2', 7 => 'Juara 1'];
+                                        @endphp
+                                        @if($mahasiswas->juara)
+                                            <span class="badge {{ $mahasiswas->juara == 7 ? 'bg-warning text-dark' : 'bg-secondary' }}">
+                                                {{ $juaraLabels[$mahasiswas->juara] ?? '-' }}
+                                            </span>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        @php
+                                            $tingkatanLabels = [1 => 'Internal', 3 => 'Kab/Kota', 5 => 'Provinsi', 7 => 'Nasional', 9 => 'Internasional'];
+                                        @endphp
+                                        @if($mahasiswas->tingkatan)
+                                            <span class="badge bg-primary">{{ $tingkatanLabels[$mahasiswas->tingkatan] ?? '-' }}</span>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        @php
+                                            $ketLabels = [1 => 'Non-Akd', 3 => 'Akademik'];
+                                        @endphp
+                                        @if($mahasiswas->keterangan)
+                                            <span class="badge {{ $mahasiswas->keterangan == 3 ? 'bg-success' : 'bg-secondary' }}">
+                                                {{ $ketLabels[$mahasiswas->keterangan] ?? '-' }}
+                                            </span>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center align-middle">
                                         @if($mahasiswas->status == 'Aktif')
-                                            <span class="badge px-3 py-2" style="background-color: #e6f4ea; color: #137333; border: 1px solid #34a853;">
+                                            <span class="badge px-2 py-1" style="background-color: #e6f4ea; color: #137333; border: 1px solid #34a853;">
                                                 <strong>{{ $mahasiswas->status }}</strong>
                                             </span>
                                         @elseif($mahasiswas->status == 'Tidak Aktif')
-                                            <span class="badge px-3 py-2" style="background-color: #fce8e6; color: #c5221f; border: 1px solid #ea4335;">
+                                            <span class="badge px-2 py-1" style="background-color: #fce8e6; color: #c5221f; border: 1px solid #ea4335;">
                                                 <strong>{{ $mahasiswas->status }}</strong>
                                             </span>
                                         @else
-                                            <span class="badge px-3 py-2" style="background-color: #fef7e0; color: #b06000; border: 1px solid #fbbc04;">
+                                            <span class="badge px-2 py-1" style="background-color: #fef7e0; color: #b06000; border: 1px solid #fbbc04;">
                                                 <strong>{{ $mahasiswas->status }}</strong>
                                             </span>
                                         @endif
@@ -103,7 +147,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="5" class="text-center py-4">
+                                    <td colspan="8" class="text-center py-4">
                                         <i class="fas fa-users text-3xl text-gray-300 mb-2 d-block"></i>
                                         Tidak ada data mahasiswa
                                     </td>
@@ -142,7 +186,7 @@
                                         </li>
                                     @else
                                         <li class="page-item">
-                                            <a class="page-link border-0 text-primary" href="{{ $mahasiswas->previousPageUrl() }}" aria-label="Previous">
+                                            <a class="page-link border-0 text-primary" href="{{ $mahasiswa->previousPageUrl() }}" aria-label="Previous">
                                                 <i class="fas fa-chevron-left fa-xs mr-1"></i> Previous
                                             </a>
                                         </li>
