@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Berita;
 use App\Models\Komentar;
+use Illuminate\Support\Facades\Auth;
+
 
 class BeritaController extends Controller
 {
@@ -28,24 +30,25 @@ class BeritaController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'judul'        => 'required|string|max:200',
-            'isi'          => 'required|string',
-            'kategori'     => 'required|string|max:50',
-            'penulis'      => 'nullable|string|max:100',
-            'tanggal'      => 'nullable|date',
-            'foto'         => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+{
+    $validated = $request->validate([
+        'judul'   => 'required|string|max:200',
+        'isi'     => 'required|string',
+        'penulis' => 'nullable|string|max:100',
+        'tanggal' => 'required|date',
+        'foto'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
 
-        if ($request->hasFile('foto')) {
-            $validated['foto'] = $request->file('foto')->store('berita', 'public');
-        }
-
-        Berita::create($validated);
-
-        return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil ditambahkan.');
+    if ($request->hasFile('foto')) {
+        $validated['foto'] = $request->file('foto')->store('berita', 'public');
     }
+
+    Berita::create($validated);
+
+    return redirect()
+        ->route('admin.berita.index')
+        ->with('success', 'Berita berhasil ditambahkan');
+}
 
     public function show($id)
     {
@@ -122,51 +125,62 @@ public function publicIndex()
      * KOMENTAR PUBLIK
      * ========================================================= */
 
-    public function publicCommentStore(Request $request, $id)
-    {
-        $request->validate([
-            'nama' => 'nullable|string|max:100',
-            'isi'  => 'required|string|max:2000',
-        ]);
-
-        $berita = Berita::findOrFail($id);
-
-        $berita->komentar()->create([
-            'nama' => $request->filled('nama') ? $request->nama : 'Anonim',
-            'isi'  => $request->isi,
-        ]);
-
-        return redirect()->to(route('berita.show', $id) . '#komentar')
-                         ->with('success', 'Komentar berhasil dikirim.');
+   public function publicCommentStore(Request $request, $id)
+{
+    if (!auth::check()) {
+        return redirect()->route('login')
+            ->with('error', 'Silakan login untuk menambahkan komentar.');
     }
 
-    public function publicCommentUpdate(Request $request, $id, $komentarId)
-    {
-        $request->validate([
-            'nama' => 'nullable|string|max:100',
-            'isi'  => 'required|string|max:2000',
-        ]);
+    $request->validate([
+        'isi' => 'required|string|max:2000',
+    ]);
 
-        $berita   = Berita::findOrFail($id);
-        $komentar = $berita->komentar()->where('id', $komentarId)->firstOrFail();
+    $berita = Berita::findOrFail($id);
 
-        $komentar->update([
-            'nama' => $request->filled('nama') ? $request->nama : 'Anonim',
-            'isi'  => $request->isi,
-        ]);
+    $berita->komentar()->create([
+        'nama' => auth()->user()->email,
+        'isi'  => $request->isi,
+    ]);
 
-        return redirect()->to(route('berita.show', $id) . '#komentar')
-                         ->with('success', 'Komentar berhasil diperbarui.');
+    return back()->with('success', 'Komentar berhasil dikirim');
+}
+
+
+
+public function publicCommentUpdate(Request $request, $id, $komentarId)
+{
+    if (!auth::check()) {
+        return redirect()->route('login');
     }
 
-    public function publicCommentDestroy($id, $komentarId)
-    {
-        $berita   = Berita::findOrFail($id);
-        $komentar = $berita->komentar()->where('id', $komentarId)->firstOrFail();
+    $request->validate([
+        'isi' => 'required|string|max:2000',
+    ]);
 
-        $komentar->delete();
+    $berita   = Berita::findOrFail($id);
+    $komentar = $berita->komentar()->where('id', $komentarId)->firstOrFail();
 
-        return redirect()->to(route('berita.show', $id) . '#komentar')
-                         ->with('success', 'Komentar berhasil dihapus.');
+    $komentar->update([
+        'isi' => $request->isi,
+    ]);
+
+    return redirect()->to(route('berita.show', $id) . '#komentar')
+        ->with('success', 'Komentar berhasil diperbarui.');
+}
+
+public function publicCommentDestroy($id, $komentarId)
+{
+    if (!auth::check()) {
+        return redirect()->route('login');
     }
+
+    $berita   = Berita::findOrFail($id);
+    $komentar = $berita->komentar()->where('id', $komentarId)->firstOrFail();
+
+    $komentar->delete();
+
+    return redirect()->to(route('berita.show', $id) . '#komentar')
+        ->with('success', 'Komentar berhasil dihapus.');
+}
 }
