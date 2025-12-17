@@ -8,24 +8,12 @@ class IndexController extends Controller
 {
     public function index()
     {
-        // Ambil berita terbaru, urut berdasarkan tanggal lalu id (aman kalau tanggal null)
         $beritaQuery = Berita::orderByDesc('tanggal')
             ->orderByDesc('id_berita');
 
-        // 5 berita untuk slider atas
-        $beritaSlider = (clone $beritaQuery)
-            ->take(5)
-            ->get();
+        // 4 berita total (1 besar + 3 kecil)
+        $berita = $beritaQuery->take(4)->get();
 
-        // 2 berita pelengkap di bawah
-        $beritaBawah = (clone $beritaQuery)
-            ->skip(5)
-            ->take(2)
-            ->get();
-
-        return view('index', [
-            'beritaSlider' => $beritaSlider,
-            'beritaBawah'  => $beritaBawah,
-        ]);
+        return view('index', compact('berita'));
     }
 }
