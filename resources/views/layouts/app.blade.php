@@ -307,8 +307,6 @@
 }
 
 
-
->>>>>>> a0053e8099db0ecdcfc821fda7d5bf38f17a2adb
     </style>
 
     <script src="https://cdn.tailwindcss.com"></script>
